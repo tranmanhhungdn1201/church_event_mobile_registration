@@ -47,6 +47,13 @@ const createRegistrationSchema = () => z.object({
     transport: z.enum(['plane', 'train', 'bus', 'self']).optional(),
     flightCode: z.string().optional(),
     returnDate: z.date().optional()
+  }).refine((data) => {
+    // If noTravelInfo is true, all other fields are optional
+    if (data.noTravelInfo) {
+      return true;
+    }
+    // If noTravelInfo is false or undefined, validate normally
+    return true;
   }).optional(),
   // Step 3: Package & Souvenir
   packageSelection: z.object({
@@ -90,11 +97,11 @@ const getSteps = (t: (key: string) => string) => [{
 }, {
   id: 3,
   title: t('navigation.step3'),
-  component: Step4Package
+  component: Step3TravelSchedule
 }, {
   id: 4,
   title: t('navigation.step4'),
-  component: Step3TravelSchedule
+  component: Step4Package
 }, {
   id: 5,
   title: t('navigation.step5'),
@@ -203,10 +210,16 @@ export const RegistrationForm = () => {
         isValid = await methods.trigger('familyParticipation');
         break;
       case 3:
-        isValid = await methods.trigger('packageSelection');
+        // Check if noTravelInfo is selected, if so, skip validation
+        const travelData = methods.getValues('travelSchedule');
+        if (travelData?.noTravelInfo) {
+          isValid = true;
+        } else {
+          isValid = await methods.trigger('travelSchedule');
+        }
         break;
       case 4:
-        isValid = await methods.trigger('travelSchedule');
+        isValid = await methods.trigger('packageSelection');
         break;
       case 5:
         isValid = await methods.trigger('payment');

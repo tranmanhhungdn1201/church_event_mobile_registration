@@ -3,3 +3,97 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 /* DO NOT DELETE THESE TAILWIND IMPORTS, OTHERWISE THE STYLING WILL NOT RENDER AT ALL */
+
+/* Fix select dropdown positioning issues */
+select {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+select:focus {
+  z-index: 10 !important;
+}
+
+/* Force select dropdown to open downward */
+select {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Ensure select options don't overlap other elements */
+select option {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile-specific fixes for select dropdown */
+@media (max-width: 768px) {
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  /* Force dropdown to open below on mobile */
+  select:focus {
+    transform: translateY(0) !important;
+  }
+}
+
+/* Additional fixes for select dropdown positioning */
+select {
+  /* Prevent the dropdown from opening upward */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* Ensure proper stacking context */
+.form-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Force select dropdown to render below */
+select:focus {
+  position: relative;
+  z-index: 9999;
+}
+
+/* Fix layout issues in Step4Package */
+.shirt-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.shirt-item-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.shirt-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 640px) {
+  .shirt-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .shirt-item-right {
+    justify-content: space-between;
+  }
+}

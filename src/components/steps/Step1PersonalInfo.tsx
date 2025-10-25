@@ -18,7 +18,7 @@ export const Step1PersonalInfo = () => {
     { value: 'single', label: t('step1.maritalStatusOptions.single') },
     { value: 'married', label: t('step1.maritalStatusOptions.married') },
   ];
-  return <div className="space-y-6">
+  return <div className="space-y-6 form-container">
       <div className="space-y-2">
         <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
           {t('step1.fullName')} <span className="text-red-500">*</span>
@@ -89,15 +89,24 @@ export const Step1PersonalInfo = () => {
             {getValidationMessage((errors.personalInfo as any)?.email)}
           </p>}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 relative">
         <label htmlFor="church" className="block text-sm font-medium text-gray-700">
           {t('step1.church')} <span className="text-red-500">*</span>
         </label>
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-20">
             <HomeIcon className="h-5 w-5 text-gray-400" />
           </div>
-          <select id="church" {...register('personalInfo.church')} className="pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200">
+          <select 
+            id="church" 
+            {...register('personalInfo.church')} 
+            className="pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200 appearance-none bg-white"
+            style={{ 
+              position: 'relative', 
+              zIndex: 5,
+              isolation: 'isolate'
+            }}
+          >
             <option value="" disabled>{t('step1.churchPlaceholder')}</option>
             {churches.map(church => <option key={church} value={church}>
                 {church}
@@ -109,14 +118,21 @@ export const Step1PersonalInfo = () => {
         <label htmlFor="maritalStatus" className="block text-sm font-medium text-gray-700">
           {t('step1.maritalStatus')} <span className="text-red-500">*</span>
         </label>
-        <select id="maritalStatus" {...register('personalInfo.maritalStatus')} className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200">
-          <option value="" disabled>
-            {t('step1.maritalStatusPlaceholder')}
-          </option>
-          {maritalStatusOptions.map(status => <option key={status.value} value={status.value}>
-              {status.label}
-            </option>)}
-        </select>
+        <div className="relative z-10">
+          <select 
+            id="maritalStatus" 
+            {...register('personalInfo.maritalStatus')} 
+            className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200 relative z-10"
+            style={{ position: 'relative', zIndex: 10 }}
+          >
+            <option value="" disabled>
+              {t('step1.maritalStatusPlaceholder')}
+            </option>
+            {maritalStatusOptions.map(status => <option key={status.value} value={status.value}>
+                {status.label}
+              </option>)}
+          </select>
+        </div>
         {(errors.personalInfo as any)?.maritalStatus && <p className="mt-1 text-sm text-red-600">
             {getValidationMessage((errors.personalInfo as any)?.maritalStatus)}
           </p>}

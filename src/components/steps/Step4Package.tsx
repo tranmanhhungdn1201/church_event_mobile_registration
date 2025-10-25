@@ -358,12 +358,12 @@ export const Step4Package = () => {
                 </button>
               </div>
               {fields.length > 0 && <div className="space-y-3">
-                  {fields.map((field: any, index: number) => <div key={field.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex items-center">
+                  {fields.map((field: any, index: number) => <div key={field.id} className="shirt-item">
+                      <div className="shirt-item-left">
                         <ShirtIcon className="h-5 w-5 text-[#2E5AAC] mr-3" />
                         <span className="font-medium text-gray-700">{t('step4.shirtSizes.' + field.size)}</span>
                       </div>
-                      <div className="flex items-center space-x-3">
+                      <div className="shirt-item-right">
                         <div className="flex items-center bg-white rounded-lg border border-gray-200 overflow-hidden">
                           <button 
                             type="button" 

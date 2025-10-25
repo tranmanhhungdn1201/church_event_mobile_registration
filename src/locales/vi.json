@@ -4,7 +4,7 @@
     "back": "Quay lại",
     "submit": "Gửi đăng ký",
     "edit": "Chỉnh sửa",
-    "save": "Lưu",
+    "save": " Lưu",
     "cancel": "Hủy",
     "close": "Đóng",
     "loading": "Đang tải...",
@@ -24,8 +24,8 @@
   "navigation": {
     "step1": "Thông tin cá nhân",
     "step2": "Tham gia gia đình", 
-    "step3": "Gói tham gia & áo lưu niệm",
-    "step4": "Lịch trình di chuyển",
+    "step3": "Lịch trình di chuyển",
+    "step4": "Gói tham gia & áo lưu niệm",
     "step5": "Thanh toán",
     "step6": "Chỗ ở & tài trợ",
     "step7": "Xem lại & xác nhận",
@@ -53,6 +53,7 @@
   "step2": {
     "title": "Tham gia gia đình",
     "attendingWithSpouse": "Tham gia cùng vợ/chồng",
+    "spouseInfo": "Thông tin vợ/chồng",
     "spouseName": "Tên vợ/chồng",
     "spouseNamePlaceholder": "Nhập tên vợ/chồng",
     "spousePhone": "Số điện thoại vợ/chồng",
@@ -138,7 +139,19 @@
     "accountHolder": "Tên tài khoản",
     "bankName": "Ngân hàng",
     "uploadReceipt": "Tải lên biên lai chuyển khoản",
-    "receiptNote": "Tải lên ảnh biên lai (tùy chọn)"
+    "receiptNote": "Tải lên ảnh biên lai (tùy chọn)",
+    "paymentSummary": "Tóm tắt thanh toán",
+    "packageCost": "Chi phí gói tham gia",
+    "shirtCost": "Chi phí áo lưu niệm",
+    "totalAmount": "Tổng số tiền",
+    "mainPackage": "Gói chính",
+    "spousePackage": "Gói vợ/chồng",
+    "childrenPackages": "Gói con cái",
+    "mainShirts": "Áo lưu niệm chính",
+    "spouseShirts": "Áo lưu niệm vợ/chồng",
+    "childrenShirts": "Áo lưu niệm con cái",
+    "additionalShirts": "Áo lưu niệm bổ sung",
+    "shirtUnit": "áo"
   },
   "step6": {
     "title": "Chỗ ở & tài trợ",
@@ -253,8 +266,8 @@
   },
   "language": {
     "switch": "Chuyển ngôn ngữ",
-    "english": "English",
-    "vietnamese": "Tiếng Việt"
+    "english": "EN",
+    "vietnamese": "VN"
   },
   "saveDraft": {
     "title": "Lưu tiến trình",

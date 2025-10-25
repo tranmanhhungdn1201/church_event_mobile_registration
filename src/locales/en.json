@@ -24,8 +24,8 @@
   "navigation": {
     "step1": "Personal Information",
     "step2": "Family Participation",
-    "step3": "Package & Souvenir",
-    "step4": "Travel Schedule", 
+    "step3": "Travel Schedule",
+    "step4": "Package & Souvenir", 
     "step5": "Payment",
     "step6": "Accommodation",
     "step7": "Review & Submit",
@@ -53,6 +53,7 @@
   "step2": {
     "title": "Family Participation",
     "attendingWithSpouse": "Attending with spouse",
+    "spouseInfo": "Spouse Information",
     "spouseName": "Spouse Name",
     "spouseNamePlaceholder": "Enter spouse name",
     "spousePhone": "Spouse Phone",
@@ -138,7 +139,19 @@
     "accountHolder": "Account Name",
     "bankName": "Bank",
     "uploadReceipt": "Upload Transfer Receipt",
-    "receiptNote": "Upload receipt image (optional)"
+    "receiptNote": "Upload receipt image (optional)",
+    "paymentSummary": "Payment Summary",
+    "packageCost": "Package Cost",
+    "shirtCost": "T-shirt Cost",
+    "totalAmount": "Total Amount",
+    "mainPackage": "Main Package",
+    "spousePackage": "Spouse Package",
+    "childrenPackages": "Children Packages",
+    "mainShirts": "Main T-shirts",
+    "spouseShirts": "Spouse T-shirts",
+    "childrenShirts": "Children T-shirts",
+    "additionalShirts": "Additional T-shirts",
+    "shirtUnit": "shirt"
   },
   "step6": {
     "title": "Accommodation & Sponsorship",
@@ -253,8 +266,8 @@
   },
   "language": {
     "switch": "Switch Language",
-    "english": "English",
-    "vietnamese": "Tiếng Việt"
+    "english": "EN",
+    "vietnamese": "VN"
   },
   "saveDraft": {
     "title": "Save Your Progress",

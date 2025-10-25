@@ -1,29 +1,221 @@
 import { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { CalendarIcon, CopyIcon, CheckIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import { CalendarIcon, CopyIcon, CheckIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon, ReceiptIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useValidation } from '../../hooks/useValidation';
+
+interface PaymentItem {
+  name: string;
+  description: string;
+  amount: number;
+}
+
+interface PaymentBreakdown {
+  packages: PaymentItem[];
+  shirts: PaymentItem[];
+  total: number;
+}
 export const Step5Payment = () => {
   const {
     register,
     control,
-    watch,
-    formState: {
-      errors
-    }
+    watch
   } = useFormContext();
   const { t } = useLanguage();
-  const { getValidationMessage } = useValidation();
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(true);
-  const [isCopied, setIsCopied] = useState(false);
+  const [copiedItems, setCopiedItems] = useState({
+    bankName: false,
+    accountNumber: false,
+    accountHolder: false
+  });
   const paymentStatus = watch('payment.status');
-  const handleCopy = text => {
+  
+  // Get form data for payment calculation
+  const mainPackage = watch('packageSelection.mainPackage');
+  const spousePackage = watch('packageSelection.spousePackage');
+  const childrenPackages = watch('packageSelection.childrenPackages') || [];
+  const shirts = watch('packageSelection.shirts') || [];
+  const attendingWithSpouse = watch('familyParticipation.attendingWithSpouse');
+  const spouseWantsTShirt = watch('familyParticipation.spouseWantsTShirt');
+  const children = watch('familyParticipation.children') || [];
+  
+  const SHIRT_PRICE = 100000;
+  
+  const packageOptions = [
+    { id: 'A', name: t('step4.packageA.title'), price: 500000 },
+    { id: 'B', name: t('step4.packageB.title'), price: 800000 },
+    { id: 'C', name: t('step4.packageC.title'), price: 1200000 }
+  ];
+  
+  // Calculate payment breakdown
+  const calculatePaymentBreakdown = (): PaymentBreakdown => {
+    const breakdown: PaymentBreakdown = {
+      packages: [],
+      shirts: [],
+      total: 0
+    };
+    
+    // Main package
+    const mainPkg = packageOptions.find(p => p.id === mainPackage);
+    if (mainPkg) {
+      breakdown.packages.push({
+        name: t('step5.mainPackage'),
+        description: mainPkg.name,
+        amount: mainPkg.price
+      });
+      breakdown.total += mainPkg.price;
+    }
+    
+    // Spouse package
+    if (attendingWithSpouse && spousePackage) {
+      const spousePkg = packageOptions.find(p => p.id === spousePackage);
+      if (spousePkg) {
+        breakdown.packages.push({
+          name: t('step5.spousePackage'),
+          description: spousePkg.name,
+          amount: spousePkg.price
+        });
+        breakdown.total += spousePkg.price;
+      }
+    }
+    
+    // Children packages
+    childrenPackages.forEach((childPackage: any) => {
+      const childPkg = packageOptions.find(p => p.id === childPackage.package);
+      if (childPkg) {
+        const childName = children[childPackage.childIndex]?.name || `${t('step2.childName')} ${childPackage.childIndex + 1}`;
+        breakdown.packages.push({
+          name: t('step5.childrenPackages'),
+          description: `${childPkg.name} - ${childName}`,
+          amount: childPkg.price
+        });
+        breakdown.total += childPkg.price;
+      }
+    });
+    
+    // Spouse T-shirt
+    if (attendingWithSpouse && spouseWantsTShirt) {
+      breakdown.shirts.push({
+        name: t('step5.spouseShirts'),
+        description: `1 ${t('step5.shirtUnit')}`,
+        amount: SHIRT_PRICE
+      });
+      breakdown.total += SHIRT_PRICE;
+    }
+    
+    // Children T-shirts
+    children.forEach((child: any, index: number) => {
+      if (child.wantsTShirt) {
+        const childName = child.name || `${t('step2.childName')} ${index + 1}`;
+        const shirtSize = child.tShirtSize || 'M';
+        breakdown.shirts.push({
+          name: t('step5.childrenShirts'),
+          description: `1 ${t('step5.shirtUnit')} (${t('step4.shirtSizes.' + shirtSize)}) - ${childName}`,
+          amount: SHIRT_PRICE
+        });
+        breakdown.total += SHIRT_PRICE;
+      }
+    });
+    
+    // Additional shirts
+    if (shirts.length > 0) {
+      const totalShirts = shirts.reduce((sum: number, shirt: any) => sum + shirt.quantity, 0);
+      const totalShirtCost = shirts.reduce((sum: number, shirt: any) => sum + (shirt.quantity * SHIRT_PRICE), 0);
+      breakdown.shirts.push({
+        name: t('step5.additionalShirts'),
+        description: `${totalShirts} ${t('step5.shirtUnit')}`,
+        amount: totalShirtCost
+      });
+      breakdown.total += totalShirtCost;
+    }
+    
+    return breakdown;
+  };
+  
+  const paymentBreakdown = calculatePaymentBreakdown();
+  
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+  
+  const handleCopy = (text: string, itemType: string) => {
     navigator.clipboard.writeText(text);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+    setCopiedItems(prev => ({
+      ...prev,
+      [itemType]: true
+    }));
+    setTimeout(() => {
+      setCopiedItems(prev => ({
+        ...prev,
+        [itemType]: false
+      }));
+    }, 2000);
   };
   return <div className="space-y-6">
+      {/* Payment Summary */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center mb-4">
+          <ReceiptIcon className="h-5 w-5 mr-2 text-[#2E5AAC]" />
+          {t('step5.paymentSummary')}
+        </h3>
+        
+        {/* Package costs */}
+        {paymentBreakdown.packages.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-600 mb-2">{t('step5.packageCost')}</h4>
+            <div className="space-y-2">
+              {paymentBreakdown.packages.map((item, index) => (
+                <div key={index} className="flex justify-between items-center py-2 px-3 bg-white rounded-lg border border-gray-100">
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-[#2E5AAC]">
+                    {formatCurrency(item.amount)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Shirt costs */}
+        {paymentBreakdown.shirts.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-600 mb-2">{t('step5.shirtCost')}</h4>
+            <div className="space-y-2">
+              {paymentBreakdown.shirts.map((item, index) => (
+                <div key={index} className="flex justify-between items-center py-2 px-3 bg-white rounded-lg border border-gray-100">
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-[#2E5AAC]">
+                    {formatCurrency(item.amount)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Total */}
+        <div className="border-t border-gray-200 pt-4">
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-semibold text-gray-800">{t('step5.totalAmount')}</span>
+            <span className="text-2xl font-bold text-[#2E5AAC]">
+              {formatCurrency(paymentBreakdown.total)}
+            </span>
+          </div>
+        </div>
+      </div>
+      
       <div className="space-y-4">
         <label className="block text-sm font-medium text-gray-700">
           {t('step5.paymentStatus')}
@@ -79,8 +271,8 @@ export const Step5Payment = () => {
                   <span className="text-sm text-gray-600">{t('step5.bankName')}:</span>
                   <div className="flex items-center">
                     <span className="text-sm font-medium">Vietcombank</span>
-                    <button type="button" onClick={() => handleCopy('Vietcombank')} className="ml-2 p-1 text-gray-400 hover:text-gray-600">
-                      {isCopied ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
+                    <button type="button" onClick={() => handleCopy('Vietcombank', 'bankName')} className="ml-2 p-1 text-gray-400 hover:text-gray-600">
+                      {copiedItems.bankName ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
@@ -88,8 +280,8 @@ export const Step5Payment = () => {
                   <span className="text-sm text-gray-600">{t('step5.accountNumber')}:</span>
                   <div className="flex items-center">
                     <span className="text-sm font-medium">1023456789</span>
-                    <button type="button" onClick={() => handleCopy('1023456789')} className="ml-2 p-1 text-gray-400 hover:text-gray-600">
-                      {isCopied ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
+                    <button type="button" onClick={() => handleCopy('1023456789', 'accountNumber')} className="ml-2 p-1 text-gray-400 hover:text-gray-600">
+                      {copiedItems.accountNumber ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
@@ -99,8 +291,8 @@ export const Step5Payment = () => {
                     <span className="text-sm font-medium">
                       Church Anniversary
                     </span>
-                    <button type="button" onClick={() => handleCopy('Church Anniversary')} className="ml-2 p-1 text-gray-400 hover:text-gray-600">
-                      {isCopied ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
+                    <button type="button" onClick={() => handleCopy('Church Anniversary', 'accountHolder')} className="ml-2 p-1 text-gray-400 hover:text-gray-600">
+                      {copiedItems.accountHolder ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
