@@ -22,46 +22,46 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   progress
 }) => {
   return <div className="container mx-auto px-4 py-3">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center space-x-1 overflow-x-auto flex-1">
-          {Array.from({ length: totalSteps }).map((_, index) => {
-            const IconComponent = stepIcons[index] || UserIcon;
-            const isActive = index + 1 <= currentStep;
-            const isCompleted = index + 1 < currentStep;
-            
-            return (
-              <div key={index} className="flex items-center flex-shrink-0">
-                <div 
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] text-white shadow-md' 
-                      : 'bg-gray-200 text-gray-500'
-                  }`}
-                >
-                  <IconComponent className="w-4 h-4" />
-                </div>
-                {index < totalSteps - 1 && (
-                  <div 
-                    className={`w-3 h-0.5 mx-1 transition-all duration-300 ${
-                      isCompleted ? 'bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a]' : 'bg-gray-200'
-                    }`}
-                  />
-                )}
+      <div className="flex items-center space-x-1 overflow-x-auto mb-2">
+        {Array.from({ length: totalSteps }).map((_, index) => {
+          const IconComponent = stepIcons[index] || UserIcon;
+          const isActive = index + 1 <= currentStep;
+          const isCompleted = index + 1 < currentStep;
+          
+          return (
+            <div key={index} className="flex items-center flex-shrink-0">
+              <div 
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] text-white shadow-md' 
+                    : 'bg-gray-200 text-gray-500'
+                }`}
+              >
+                <IconComponent className="w-4 h-4" />
               </div>
-            );
-          })}
+              {index < totalSteps - 1 && (
+                <div 
+                  className={`w-3 h-0.5 mx-1 transition-all duration-300 ${
+                    isCompleted ? 'bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a]' : 'bg-gray-200'
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center space-x-3">
+        <div className="flex-1 bg-gray-200 rounded-full h-1.5 overflow-hidden">
+          <div 
+            className="bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] h-1.5 rounded-full transition-all duration-500 ease-out shadow-sm" 
+            style={{ width: `${progress}%` }}
+          />
         </div>
-        <div className="bg-white px-2 py-1 rounded-full shadow-sm border border-gray-200 flex-shrink-0 ml-2">
+        <div className="bg-white px-2 py-1 rounded-full shadow-sm border border-gray-200 flex-shrink-0">
           <span className="text-xs font-semibold text-gray-600">
             {progress}%
           </span>
         </div>
-      </div>
-      <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-        <div 
-          className="bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] h-1.5 rounded-full transition-all duration-500 ease-out shadow-sm" 
-          style={{ width: `${progress}%` }}
-        />
       </div>
     </div>;
 };

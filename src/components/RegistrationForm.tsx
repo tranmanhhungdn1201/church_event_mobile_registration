@@ -271,9 +271,9 @@ export const RegistrationForm = () => {
       {isComplete ? <SuccessStep formData={methods.getValues()} /> : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} isLastStep={currentStep === steps.length}>
           {CurrentStepComponent && <CurrentStepComponent formData={methods.getValues()} />}
           {/* Notification */}
-          {notification && <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-4 py-3 rounded-lg shadow-md flex items-center ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-              {notification.type === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-2" /> : <AlertCircleIcon className="w-5 h-5 mr-2" />}
-              <span>{notification.message}</span>
+          {notification && <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-md flex items-center min-w-80 max-w-md ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {notification.type === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-3" /> : <AlertCircleIcon className="w-5 h-5 mr-3" />}
+              <span className="text-sm font-medium">{notification.message}</span>
             </div>}
         </FormLayout>}
       <SaveDraftModal isOpen={isSaveDraftModalOpen} onClose={() => setIsSaveDraftModalOpen(false)} />
