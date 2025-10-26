@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { CalendarIcon, CopyIcon, CheckIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon, ReceiptIcon } from 'lucide-react';
 import { format } from 'date-fns';
@@ -19,7 +19,8 @@ export const Step5Payment = () => {
   const {
     register,
     control,
-    watch
+    watch,
+    setValue
   } = useFormContext();
   const { t } = useLanguage();
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(true);
@@ -28,7 +29,19 @@ export const Step5Payment = () => {
     accountNumber: false,
     accountHolder: false
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const paymentStatus = watch('payment.status');
+  const receiptImage = watch('payment.receiptImage');
+  
+  // Clear receipt image when switching to "will pay later"
+  useEffect(() => {
+    if (paymentStatus === 'willPayLater' && receiptImage) {
+      setValue('payment.receiptImage', null);
+      setImagePreview(null);
+      setUploadError(null);
+    }
+  }, [paymentStatus, receiptImage, setValue]);
   
   // Get form data for payment calculation
   const mainPackage = watch('packageSelection.mainPackage');
@@ -157,6 +170,53 @@ export const Step5Payment = () => {
       }));
     }, 2000);
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setUploadError(null);
+    
+    if (file) {
+      // Check file size (10MB limit)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setUploadError('File quá lớn. Vui lòng chọn file nhỏ hơn 10MB');
+        return;
+      }
+      
+      // Check file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        setUploadError('Định dạng file không hợp lệ. Chỉ chấp nhận PNG, JPG, JPEG hoặc PDF');
+        return;
+      }
+      
+      setValue('payment.receiptImage', file);
+      
+      // Create preview
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result as string);
+        };
+        reader.onerror = () => {
+          setUploadError('Lỗi khi đọc file. Vui lòng thử lại');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // For PDFs, just show the filename
+        setImagePreview(URL.createObjectURL(file));
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setImagePreview(null);
+    setValue('payment.receiptImage', null);
+    setUploadError(null);
+  };
   return <div className="space-y-6">
       {/* Payment Summary */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6 shadow-sm">
@@ -223,13 +283,13 @@ export const Step5Payment = () => {
         <div className="flex rounded-lg overflow-hidden border border-gray-300">
           <label className="flex-1 text-center">
             <input type="radio" value="paid" {...register('payment.status')} className="sr-only" />
-            <div className={`py-3 px-4 cursor-pointer ${paymentStatus === 'paid' ? 'bg-[#2E5AAC] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+            <div className={`py-3 cursor-pointer ${paymentStatus === 'paid' ? 'bg-[#2E5AAC] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
               {t('step5.paymentOptions.paid')}
             </div>
           </label>
           <label className="flex-1 text-center border-l border-gray-300">
             <input type="radio" value="willPayLater" {...register('payment.status')} className="sr-only" />
-            <div className={`py-3 px-4 cursor-pointer ${paymentStatus === 'willPayLater' ? 'bg-[#2E5AAC] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+            <div className={`py-3 cursor-pointer ${paymentStatus === 'willPayLater' ? 'bg-[#2E5AAC] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
               {t('step5.paymentOptions.willPayLater')}
             </div>
           </label>
@@ -237,7 +297,7 @@ export const Step5Payment = () => {
       </div>
       {paymentStatus === 'paid' && <div className="space-y-2">
           <label htmlFor="transferDate" className="block text-sm font-medium text-gray-700">
-            {t('step5.transferDate')}
+            {t('step5.transferDate')} <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -250,6 +310,78 @@ export const Step5Payment = () => {
         }} />} />
           </div>
         </div>}
+      {paymentStatus === 'paid' && <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
+          {t('step5.uploadReceipt')} <span className="text-red-500">*</span>
+        </label>
+        {uploadError && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start">
+            <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-sm">{uploadError}</span>
+          </div>
+        )}
+        {!imagePreview ? (
+          <label htmlFor="receipt-upload" className="block cursor-pointer">
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-[#2E5AAC] hover:bg-blue-50 transition-all duration-200">
+              <div className="space-y-1 text-center">
+                <UploadIcon className="mx-auto h-12 w-12 text-gray-400" />
+                <div className="flex flex-col sm:flex-row justify-center items-center text-sm text-gray-600">
+                  <span className="font-medium text-[#2E5AAC] hover:text-[#6AA6FF]">
+                    {t('common.upload')} a file
+                  </span>
+                  <span className="sm:ml-1">or drag and drop</span>
+                </div>
+                <p className="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
+              </div>
+            </div>
+            <input
+              id="receipt-upload"
+              type="file"
+              className="sr-only"
+              accept="image/*,.pdf"
+              onChange={handleFileChange}
+            />
+          </label>
+        ) : (
+          <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-gray-50">
+            {imagePreview.startsWith('data:image/') || imagePreview.includes('blob:') ? (
+              <div className="flex items-center justify-center min-h-[200px]">
+                <img
+                  src={imagePreview}
+                  alt="Receipt preview"
+                  className="max-w-full h-auto max-h-96 rounded-lg mx-auto"
+                  onError={(e) => {
+                    console.error('Error loading image');
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center min-h-[200px]">
+                <div className="bg-blue-100 rounded-full p-6 mb-4">
+                  <svg className="h-12 w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-600 font-medium">File đã được tải lên</p>
+                <p className="text-xs text-gray-500 mt-1">Click vào nút X để xóa và tải lại</p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors duration-200 shadow-lg"
+              title="Remove file"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>}
       <div className="border rounded-lg overflow-hidden">
         <button type="button" className="w-full flex justify-between items-center p-4 bg-gray-50" onClick={() => setIsInstructionsOpen(!isInstructionsOpen)}>
           <span className='font-medium'>{t('step5.bankInstructions')}</span>
@@ -260,8 +392,8 @@ export const Step5Payment = () => {
               {t('step5.bankSyntax')}
             </p>
             <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-              <code className="text-sm font-mono">
-                {t('step5.bankSyntax')}
+              <code className="text-sm font-mono break-all">
+                FullName_ACE_Package_ShirtSize_Quantity
               </code>
             </div>
             <div className="space-y-2">
@@ -299,24 +431,6 @@ export const Step5Payment = () => {
               </div>
             </div>
           </div>}
-      </div>
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          {t('step5.uploadReceipt')} ({t('common.optional')})
-        </label>
-        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-          <div className="space-y-1 text-center">
-            <UploadIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <div className="flex text-sm text-gray-600">
-              <label htmlFor="receipt-upload" className="relative cursor-pointer rounded-md font-medium text-[#2E5AAC] hover:text-[#6AA6FF]">
-                <span>{t('common.upload')} a file</span>
-                <input id="receipt-upload" type="file" className="sr-only" {...register('payment.receiptImage')} />
-              </label>
-              <p className="pl-1">or drag and drop</p>
-            </div>
-            <p className="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
-          </div>
-        </div>
       </div>
     </div>;
 };

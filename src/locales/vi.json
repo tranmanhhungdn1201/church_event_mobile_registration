@@ -19,7 +19,8 @@
     "copy": "Sao chép",
     "share": "Chia sẻ",
     "addToCalendar": "Thêm vào lịch",
-    "add": "Thêm"
+    "add": "Thêm",
+    "delete": "Xóa"
   },
   "navigation": {
     "step1": "Thông tin cá nhân",
@@ -114,6 +115,11 @@
     "childTShirtSize": "Chọn cỡ áo con",
     "souvenirShirt": "Đăng ký áo lưu niệm bổ sung",
     "additionalSouvenirShirt": "Đăng ký áo lưu niệm bổ sung",
+    "selectSize": "Chọn cỡ áo",
+    "addedShirts": "Danh sách áo đã thêm",
+    "size": "Cỡ áo",
+    "quantity": "Số lượng",
+    "price": "Giá",
     "shirtPrice": "100,000 VNĐ/chiếc",
     "shirtSizes": {
       "S": "S",
@@ -151,7 +157,9 @@
     "spouseShirts": "Áo lưu niệm vợ/chồng",
     "childrenShirts": "Áo lưu niệm con cái",
     "additionalShirts": "Áo lưu niệm bổ sung",
-    "shirtUnit": "áo"
+    "shirtUnit": "áo",
+    "transferDateRequired": "Vui lòng nhập ngày chuyển khoản",
+    "receiptRequired": "Vui lòng tải lên ảnh biên lai chuyển khoản"
   },
   "step6": {
     "title": "Chỗ ở & tài trợ",
@@ -169,7 +177,7 @@
     "bankNote": "Ghi chú chuyển khoản & ngày chuyển (nếu tài trợ)",
     "bankNotePlaceholder": "VD: Ngày chuyển, số tham chiếu",
     "agreeToTerms": "Tôi đồng ý với các điều khoản và điều kiện sự kiện",
-    "termsDescription": "Bằng cách tích vào ô này, bạn đồng ý tuân theo hướng dẫn sự kiện kỷ niệm nhà thờ và quy tắc ứng xử.",
+    "termsDescription": "Bằng cách tích vào ô này, bạn đồng ý tuân theo hướng dẫn sự kiện kỷ niệm hội thánh và quy tắc ứng xử.",
     "termsRequired": "Bạn phải đồng ý với các điều khoản để tiếp tục",
     "tip": "Thông tin chỗ ở là tùy chọn. Bạn có thể cung cấp ngay bây giờ hoặc cập nhật sau bằng số điện thoại đã đăng ký."
   },
@@ -228,7 +236,7 @@
   "success": {
     "title": "Đăng ký thành công!",
     "registrationCode": "Mã đăng ký",
-    "congratulations": "Cảm ơn bạn đã đăng ký sự kiện kỷ niệm nhà thờ. Chúng tôi mong được gặp bạn tại đó!",
+    "congratulations": "Cảm ơn bạn đã đăng ký sự kiện kỷ niệm hội thánh. Chúng tôi mong được gặp bạn tại đó!",
     "nextSteps": "Các bước tiếp theo:",
     "saveCode": "Vui lòng lưu mã này và trình bày tại quầy check-in sự kiện.",
     "joinCommunity": "Tham gia nhóm cộng đồng của chúng tôi",

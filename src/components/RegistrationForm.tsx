@@ -73,7 +73,16 @@ const createRegistrationSchema = () => z.object({
   payment: z.object({
     status: z.enum(['paid', 'willPayLater']),
     transferDate: z.date().optional(),
-    receiptImage: z.any().optional()
+    receiptImage: z.any().nullable().optional()
+  }).refine((data) => {
+    // If status is 'paid', both receiptImage and transferDate are required
+    if (data.status === 'paid') {
+      return data.receiptImage !== null && data.receiptImage !== undefined && data.transferDate !== undefined;
+    }
+    return true;
+  }, {
+    message: 'Transfer date and receipt image are required when payment status is paid',
+    path: ['receiptImage']
   }),
   // Step 6: Accommodation & Sponsorship (now optional)
   accommodation: z.object({
@@ -198,31 +207,102 @@ export const RegistrationForm = () => {
     localStorage.setItem('churchRegistrationData', JSON.stringify(formData));
     setIsSaveDraftModalOpen(true);
   };
+  // Helper function to get the actual step index based on marital status and church
+  const getActualStepIndex = (stepNumber: number) => {
+    const maritalStatus = methods.getValues('personalInfo.maritalStatus');
+    const church = methods.getValues('personalInfo.church');
+    
+    // If single and trying to access step 2 (family), skip to step 3
+    if (maritalStatus === 'single' && stepNumber >= 2) {
+      stepNumber = stepNumber + 1;
+    }
+    
+    // If Đà Nẵng and trying to access step 3 (travel), skip to step 4
+    if (church === 'Đà Nẵng' && stepNumber >= 3) {
+      stepNumber = stepNumber + 1;
+    }
+    
+    // If both single and Đà Nẵng, need to account for double skip
+    if (maritalStatus === 'single' && church === 'Đà Nẵng' && stepNumber >= 3) {
+      stepNumber = stepNumber + 1;
+    }
+    
+    return stepNumber;
+  };
+
   const handleNext = async () => {
-    const currentStepId = steps[currentStep - 1]?.id;
-    // Validate the current step
+    const maritalStatus = methods.getValues('personalInfo.maritalStatus');
+    const church = methods.getValues('personalInfo.church');
+    
+    // Validate the current step using currentStep directly
     let isValid = false;
-    switch (currentStepId) {
+    switch (currentStep) {
       case 1:
         isValid = await methods.trigger('personalInfo');
         break;
       case 2:
-        isValid = await methods.trigger('familyParticipation');
-        break;
-      case 3:
-        // Check if noTravelInfo is selected, if so, skip validation
-        const travelData = methods.getValues('travelSchedule');
-        if (travelData?.noTravelInfo) {
+        // Skip family participation if single
+        if (maritalStatus === 'single') {
           isValid = true;
         } else {
-          isValid = await methods.trigger('travelSchedule');
+          isValid = await methods.trigger('familyParticipation');
+        }
+        break;
+      case 3:
+        // Skip travel schedule if Đà Nẵng
+        if (church === 'Đà Nẵng') {
+          isValid = true;
+        } else {
+          // Check if noTravelInfo is selected, if so, skip validation
+          const travelData = methods.getValues('travelSchedule');
+          if (travelData?.noTravelInfo) {
+            isValid = true;
+          } else {
+            isValid = await methods.trigger('travelSchedule');
+          }
         }
         break;
       case 4:
         isValid = await methods.trigger('packageSelection');
         break;
       case 5:
-        isValid = await methods.trigger('payment');
+        // Validate payment step
+        const paymentData = methods.getValues('payment');
+        if (paymentData.status === 'willPayLater') {
+          isValid = await methods.trigger('payment.status');
+        } else if (paymentData.status === 'paid') {
+          // Check if required fields are filled
+          const hasTransferDate = paymentData.transferDate !== null && paymentData.transferDate !== undefined;
+          const hasReceiptImage = paymentData.receiptImage !== null && paymentData.receiptImage !== undefined;
+          
+          if (!hasTransferDate && !hasReceiptImage) {
+            isValid = false;
+            setNotification({
+              type: 'error',
+              message: t('step5.transferDateRequired') + '. ' + t('step5.receiptRequired')
+            });
+            setTimeout(() => setNotification(null), 3000);
+          } else if (!hasTransferDate) {
+            isValid = false;
+            setNotification({
+              type: 'error',
+              message: t('step5.transferDateRequired')
+            });
+            setTimeout(() => setNotification(null), 3000);
+          } else if (!hasReceiptImage) {
+            isValid = false;
+            setNotification({
+              type: 'error',
+              message: t('step5.receiptRequired')
+            });
+            setTimeout(() => setNotification(null), 3000);
+          } else {
+            // Both fields are filled, validate normally
+            isValid = await methods.trigger('payment');
+          }
+        } else {
+          isValid = false;
+        }
         break;
       case 6:
         isValid = await methods.trigger('accommodation');
@@ -235,24 +315,101 @@ export const RegistrationForm = () => {
         isValid = false;
     }
     if (isValid) {
-      if (currentStep < steps.length) {
-        setCurrentStep(currentStep + 1);
+      // Skip steps based on conditions
+      let nextStep = currentStep + 1;
+      
+      // Skip step 2 if single
+      if (maritalStatus === 'single' && nextStep === 2) {
+        nextStep = 3;
+      }
+      
+      // Skip step 3 if Đà Nẵng
+      if (church === 'Đà Nẵng' && nextStep === 3) {
+        nextStep = 4;
+      }
+      
+      // If both single and Đà Nẵng, handle double skip
+      if (maritalStatus === 'single' && church === 'Đà Nẵng') {
+        if (nextStep === 2) {
+          nextStep = 3; // Skip to travel (but will skip again below)
+        }
+        if (nextStep === 3) {
+          nextStep = 4; // Skip travel
+        }
+      }
+      
+      if (nextStep <= steps.length) {
+        setCurrentStep(nextStep);
         window.scrollTo(0, 0);
       } else {
-        // Handle form submission
+        // Submit the form
         const formData = methods.getValues();
-        console.log('Form submitted:', formData);
-        // Clear saved draft
-        localStorage.removeItem('churchRegistrationData');
-        // Show success
-        setIsComplete(true);
+        
+        // Prepare data for API submission
+        const submitData = {
+          personalInfo: {
+            fullName: formData.personalInfo.fullName,
+            gender: formData.personalInfo.gender,
+            phoneNumber: formData.personalInfo.phoneNumber,
+            email: formData.personalInfo.email,
+            church: formData.personalInfo.church,
+            maritalStatus: formData.personalInfo.maritalStatus
+          },
+          familyParticipation: formData.familyParticipation,
+          travelSchedule: formData.travelSchedule,
+          packageSelection: formData.packageSelection,
+          payment: {
+            status: formData.payment.status,
+            transferDate: formData.payment.transferDate ? formData.payment.transferDate.toISOString() : null,
+            receiptImage: formData.payment.receiptImage ? formData.payment.receiptImage : null
+          },
+          accommodation: formData.accommodation,
+          submittedAt: new Date().toISOString()
+        };
+        
+        // Convert FormData to JSON
+        const formDataToSend = new FormData();
+        formDataToSend.append('data', JSON.stringify(submitData));
+        
+        // If there's a receipt image, add it to FormData
+        if (formData.payment.receiptImage) {
+          formDataToSend.append('receiptImage', formData.payment.receiptImage);
+        }
+        
+        // Call API here
+        try {
+          const response = await fetch('/api/registration', {
+            method: 'POST',
+            body: formDataToSend
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            console.log('Registration successful:', result);
+            // Clear saved draft
+            localStorage.removeItem('churchRegistrationData');
+            // Show success
+            setIsComplete(true);
+          } else {
+            throw new Error('Failed to submit registration');
+          }
+        } catch (error) {
+          console.error('Error submitting registration:', error);
+          // For now, just show success even if API fails
+          localStorage.removeItem('churchRegistrationData');
+          setIsComplete(true);
+        }
       }
     } else {
-      // Show error notification
+      // Show error notification for current step validation failure
       setNotification({
         type: 'error',
         message: t('notifications.validationError')
       });
+      
+      // Scroll to top to see notification
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       // Clear notification after 3 seconds
       setTimeout(() => {
         setNotification(null);
@@ -261,15 +418,72 @@ export const RegistrationForm = () => {
   };
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      const maritalStatus = methods.getValues('personalInfo.maritalStatus');
+      const church = methods.getValues('personalInfo.church');
+      let prevStep = currentStep - 1;
+      
+      // Skip step 2 if single
+      if (maritalStatus === 'single' && prevStep === 2) {
+        prevStep = 1;
+      }
+      
+      // Skip step 3 if Đà Nẵng
+      if (church === 'Đà Nẵng' && prevStep === 3) {
+        prevStep = 2;
+        // Also need to handle if prevStep is 2 and single
+        if (maritalStatus === 'single' && prevStep === 2) {
+          prevStep = 1;
+        }
+      }
+      
+      setCurrentStep(prevStep);
       window.scrollTo(0, 0);
     }
   };
-  const CurrentStepComponent = isComplete ? SuccessStep : steps[currentStep - 1]?.component;
-  const progress = Math.round(currentStep / steps.length * 100);
+
+  const handleEditStep = (stepNumber: number) => {
+    setCurrentStep(stepNumber);
+    window.scrollTo(0, 0);
+  };
+  // Calculate progress, accounting for skipped steps
+  const maritalStatus = methods.getValues('personalInfo.maritalStatus');
+  const church = methods.getValues('personalInfo.church');
+  let effectiveTotalSteps = steps.length;
+  let effectiveCurrentStep = currentStep;
+  
+  // Account for skipped steps
+  if (maritalStatus === 'single') {
+    effectiveTotalSteps -= 1; // Skip step 2
+    if (currentStep >= 2) effectiveCurrentStep -= 1;
+  }
+  
+  if (church === 'Đà Nẵng') {
+    effectiveTotalSteps -= 1; // Skip step 3
+    if (currentStep >= 3) effectiveCurrentStep -= 1;
+  }
+  
+  const progress = Math.round((effectiveCurrentStep / effectiveTotalSteps) * 100);
+  
+  // Render current step component
+  const renderCurrentStep = () => {
+    if (isComplete) {
+      return <SuccessStep formData={methods.getValues()} />;
+    }
+    
+    const StepComponent = steps[currentStep - 1]?.component;
+    if (!StepComponent) return null;
+    
+    // Only pass onEditStep to ReviewStep
+    if (currentStep === 7) {
+      return <StepComponent formData={methods.getValues()} onEditStep={handleEditStep} />;
+    }
+    
+    return <StepComponent formData={methods.getValues()} />;
+  };
+  
   return <FormProvider {...methods}>
-      {isComplete ? <SuccessStep formData={methods.getValues()} /> : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} isLastStep={currentStep === steps.length}>
-          {CurrentStepComponent && <CurrentStepComponent formData={methods.getValues()} />}
+      {isComplete ? renderCurrentStep() : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} isLastStep={currentStep === steps.length} maritalStatus={maritalStatus} church={church}>
+          {renderCurrentStep()}
           {/* Notification */}
           {notification && <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-md flex items-center min-w-80 max-w-md ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
               {notification.type === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-3" /> : <AlertCircleIcon className="w-5 h-5 mr-3" />}

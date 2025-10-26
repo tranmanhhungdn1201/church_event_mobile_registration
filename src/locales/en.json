@@ -19,7 +19,8 @@
     "copy": "Copy",
     "share": "Share",
     "addToCalendar": "Add to Calendar",
-    "add": "Add"
+    "add": "Add",
+    "delete": "Delete"
   },
   "navigation": {
     "step1": "Personal Information",
@@ -114,6 +115,11 @@
     "childTShirtSize": "Select child T-shirt size",
     "souvenirShirt": "Register for additional souvenir shirts",
     "additionalSouvenirShirt": "Register for additional souvenir shirts",
+    "selectSize": "Select Size",
+    "addedShirts": "Added Shirts",
+    "size": "Size",
+    "quantity": "Quantity",
+    "price": "Price",
     "shirtPrice": "100,000 VND each",
     "shirtSizes": {
       "S": "S",

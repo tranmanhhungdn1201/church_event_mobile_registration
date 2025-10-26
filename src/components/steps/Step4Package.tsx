@@ -109,6 +109,11 @@ export const Step4Package = () => {
     const shirtTotal = shirts.reduce((sum: number, shirt: any) => {
       return sum + shirt.quantity * SHIRT_PRICE;
     }, 0);
+    // T-shirts for main registrant
+    const mainWantsTShirt = watch('packageSelection.mainWantsTShirt');
+    if (mainWantsTShirt) {
+      total += SHIRT_PRICE;
+    }
     // T-shirts for spouse and children
     const spouseWantsTShirt = watch('familyParticipation.spouseWantsTShirt');
     if (attendingWithSpouse && spouseWantsTShirt) {
@@ -167,6 +172,38 @@ export const Step4Package = () => {
                 </ul>
               </div>
             </label>)}
+        </div>
+        
+        {/* Main registrant T-shirt option */}
+        <div className="border-t border-gray-200 pt-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+            <div className="flex items-center">
+              <input 
+                id="mainWantsTShirt" 
+                type="checkbox" 
+                {...register('packageSelection.mainWantsTShirt')} 
+                className="h-5 w-5 text-[#2E5AAC] focus:ring-2 focus:ring-[#2E5AAC] border-gray-300 rounded" 
+              />
+              <label htmlFor="mainWantsTShirt" className="ml-3 flex items-center text-sm font-semibold text-gray-700">
+                <ShirtIcon className="h-4 w-4 mr-2 text-[#2E5AAC]" />
+                Mua áo lưu niệm <span className="text-[#2E5AAC] ml-1">({formatCurrency(SHIRT_PRICE)})</span>
+              </label>
+            </div>
+            {watch('packageSelection.mainWantsTShirt') && <div className="mt-4 pl-8">
+                <label htmlFor="mainTShirtSize" className="block text-sm font-medium text-gray-700 mb-2">
+                  Chọn cỡ áo
+                </label>
+                <select 
+                  id="mainTShirtSize" 
+                  {...register('packageSelection.mainTShirtSize')} 
+                  className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200"
+                >
+                  {shirtSizes.map(size => <option key={size.value} value={size.value}>
+                      {size.label}
+                    </option>)}
+                </select>
+              </div>}
+          </div>
         </div>
       </div>
       {/* Spouse package */}
@@ -339,68 +376,124 @@ export const Step4Package = () => {
             </label>
           </div>
           {wantSouvenirShirt && <div className="mt-4 pl-8 space-y-4">
-              <div className="flex items-center space-x-3">
-                <select 
-                  value={selectedSize} 
-                  onChange={e => setSelectedSize(e.target.value)} 
-                  className="block rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200"
-                >
-                  {shirtSizes.map(size => <option key={size.value} value={size.value}>
-                      {size.label}
-                    </option>)}
-                </select>
-                <button 
-                  type="button" 
-                  onClick={handleAddShirt} 
-                  className="h-12 px-6 bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] text-white rounded-lg text-sm font-semibold flex items-center hover:shadow-lg transition-all duration-200"
-                >
-                  <PlusIcon className="h-4 w-4 mr-2" /> {t('common.add')}
-                </button>
+              {/* Add shirt section */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border-2 border-dashed border-blue-200">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      {t('step4.selectSize')}:
+                    </label>
+                    <select 
+                      value={selectedSize} 
+                      onChange={e => setSelectedSize(e.target.value)} 
+                      className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-12 border px-4 transition-all duration-200 bg-white"
+                    >
+                      {shirtSizes.map(size => <option key={size.value} value={size.value}>
+                          {size.label}
+                        </option>)}
+                    </select>
+                  </div>
+                  <div className="flex items-end">
+                    <button 
+                      type="button" 
+                      onClick={handleAddShirt} 
+                      className="h-12 px-8 bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] text-white rounded-lg text-sm font-semibold flex items-center hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+                    >
+                      <PlusIcon className="h-5 w-5 mr-2" /> {t('common.add')}
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              {/* Added shirts list */}
               {fields.length > 0 && <div className="space-y-3">
-                  {fields.map((field: any, index: number) => <div key={field.id} className="shirt-item">
-                      <div className="shirt-item-left">
-                        <ShirtIcon className="h-5 w-5 text-[#2E5AAC] mr-3" />
-                        <span className="font-medium text-gray-700">{t('step4.shirtSizes.' + field.size)}</span>
-                      </div>
-                      <div className="shirt-item-right">
-                        <div className="flex items-center bg-white rounded-lg border border-gray-200 overflow-hidden">
-                          <button 
-                            type="button" 
-                            onClick={() => {
-                              const currentQty = shirts[index].quantity;
-                              if (currentQty > 1) {
+                  <h4 className="text-sm font-semibold text-gray-600 mb-3">
+                    {t('step4.addedShirts')} ({fields.length})
+                  </h4>
+                  {fields.map((field: any, index: number) => <div key={field.id} className="bg-white rounded-xl shadow-md border border-gray-200 p-4 hover:shadow-lg transition-all duration-200">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                        {/* Left section: Shirt icon and size selector */}
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="bg-blue-100 rounded-lg p-3 flex-shrink-0">
+                            <ShirtIcon className="h-6 w-6 text-[#2E5AAC]" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <label className="block text-xs text-gray-500 mb-1">{t('step4.size')}</label>
+                            <select
+                              value={field.size}
+                              onChange={(e) => {
                                 update(index, {
                                   ...shirts[index],
-                                  quantity: currentQty - 1
+                                  size: e.target.value
                                 });
-                              } else {
-                                remove(index);
-                              }
-                            }} 
-                            className="p-2 hover:bg-gray-100 transition-colors duration-200"
+                              }}
+                              className="w-full font-semibold text-gray-800 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#2E5AAC] focus:border-[#2E5AAC] cursor-pointer hover:bg-white transition-all duration-200"
+                            >
+                              {shirtSizes.map(size => <option key={size.value} value={size.value}>
+                                  {size.label}
+                                </option>)}
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Right section: Quantity controls, price and delete */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 flex-shrink-0">
+                          {/* Quantity selector - more compact */}
+                          <div className="flex items-center gap-2">
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                const currentQty = shirts[index].quantity;
+                                if (currentQty > 1) {
+                                  update(index, {
+                                    ...shirts[index],
+                                    quantity: currentQty - 1
+                                  });
+                                } else {
+                                  remove(index);
+                                }
+                              }} 
+                              className="w-9 h-9 rounded-lg border-2 border-gray-300 hover:border-red-500 hover:bg-red-50 transition-all duration-200 text-gray-600 hover:text-red-600 flex items-center justify-center"
+                              title={t('common.delete')}
+                            >
+                              <MinusIcon className="h-4 w-4" />
+                            </button>
+                            <span className="text-lg font-bold text-gray-800 min-w-[2rem] text-center">
+                              {field.quantity}
+                            </span>
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                update(index, {
+                                  ...shirts[index],
+                                  quantity: shirts[index].quantity + 1
+                                });
+                              }} 
+                              className="w-9 h-9 rounded-lg border-2 border-gray-300 hover:border-green-500 hover:bg-green-50 transition-all duration-200 text-gray-600 hover:text-green-600 flex items-center justify-center"
+                            >
+                              <PlusIcon className="h-4 w-4" />
+                            </button>
+                          </div>
+
+                          {/* Price */}
+                          <div className="text-left sm:text-right flex items-center gap-2">
+                            <span className="text-lg font-bold text-[#2E5AAC] whitespace-nowrap">
+                              {formatCurrency(field.quantity * SHIRT_PRICE)}
+                            </span>
+                          </div>
+
+                          {/* Delete button */}
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                            title={t('common.delete')}
                           >
-                            <MinusIcon className="h-4 w-4 text-gray-600" />
-                          </button>
-                          <span className="px-4 py-2 font-semibold text-gray-800 min-w-[3rem] text-center">
-                            {field.quantity}
-                          </span>
-                          <button 
-                            type="button" 
-                            onClick={() => {
-                              update(index, {
-                                ...shirts[index],
-                                quantity: shirts[index].quantity + 1
-                              });
-                            }} 
-                            className="p-2 hover:bg-gray-100 transition-colors duration-200"
-                          >
-                            <PlusIcon className="h-4 w-4 text-gray-600" />
+                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                         </div>
-                        <span className="text-lg font-bold text-[#2E5AAC] min-w-[6rem] text-right">
-                          {formatCurrency(field.quantity * SHIRT_PRICE)}
-                        </span>
                       </div>
                     </div>)}
                 </div>}

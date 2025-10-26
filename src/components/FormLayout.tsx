@@ -13,6 +13,8 @@ interface FormLayoutProps {
   onBack: () => void;
   onSaveDraft: () => void;
   isLastStep?: boolean;
+  maritalStatus?: string;
+  church?: string;
 }
 export const FormLayout: React.FC<FormLayoutProps> = ({
   children,
@@ -23,7 +25,9 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
   onNext,
   onBack,
   onSaveDraft,
-  isLastStep = false
+  isLastStep = false,
+  maritalStatus,
+  church
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useLanguage();
@@ -61,7 +65,7 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
           </div>
         </div>
         {/* Progress indicator */}
-        <StepIndicator currentStep={currentStep} totalSteps={totalSteps} progress={progress} />
+        <StepIndicator currentStep={currentStep} totalSteps={totalSteps} progress={progress} maritalStatus={maritalStatus} church={church} />
       </header>
       {/* Main content */}
       <main className="flex-grow container mx-auto px-4 py-6 pb-24 max-w-4xl">

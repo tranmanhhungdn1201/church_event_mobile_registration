@@ -85,6 +85,31 @@ select:focus {
   flex-shrink: 0;
 }
 
+/* Select inside shirt item */
+.shirt-item-left select {
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+}
+
+.shirt-item-left select:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.shirt-item-left select:focus {
+  outline: 2px solid #2E5AAC;
+  outline-offset: 2px;
+  background-color: white;
+  border-color: #2E5AAC;
+}
+
 /* Mobile responsive fixes */
 @media (max-width: 640px) {
   .shirt-item {
@@ -95,5 +120,9 @@ select:focus {
   
   .shirt-item-right {
     justify-content: space-between;
+  }
+  
+  .shirt-item-left select {
+    width: 100%;
   }
 }

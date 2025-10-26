@@ -2,13 +2,18 @@ import { useFormContext } from 'react-hook-form';
 import { ChevronRightIcon, CalendarIcon, UserIcon, PackageIcon, CreditCardIcon, HomeIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
-export const ReviewStep = () => {
+
+interface ReviewStepProps {
+  formData?: any;
+  onEditStep?: (stepNumber: number) => void;
+}
+
+export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, onEditStep }) => {
   const {
-    getValues,
-    setValue
+    getValues
   } = useFormContext();
   const { t } = useLanguage();
-  const formData = getValues();
+  const formData = formDataProp || getValues();
   // Format currency
   const formatCurrency = (amount: number) => {
     if (!amount) return '₫0';
@@ -26,12 +31,53 @@ export const ReviewStep = () => {
       B: 800000,
       C: 1200000
     };
-    const packagePrice = packagePrices[formData.packageSelection.package as keyof typeof packagePrices] || 0;
-    const packageTotal = packagePrice * formData.packageSelection.quantity;
-    const shirtTotal = (formData.packageSelection.shirts || []).reduce((sum: number, shirt: any) => {
+    
+    let total = 0;
+    
+    // Main registrant package
+    const mainPackage = formData.packageSelection?.mainPackage;
+    if (mainPackage) {
+      total += packagePrices[mainPackage as keyof typeof packagePrices] || 0;
+    }
+    
+    // Spouse package
+    const spousePackage = formData.packageSelection?.spousePackage;
+    if (formData.familyParticipation?.attendingWithSpouse && spousePackage) {
+      total += packagePrices[spousePackage as keyof typeof packagePrices] || 0;
+    }
+    
+    // Children packages
+    if (formData.packageSelection?.childrenPackages) {
+      formData.packageSelection.childrenPackages.forEach((childPkg: any) => {
+        total += packagePrices[childPkg.package as keyof typeof packagePrices] || 0;
+      });
+    }
+    
+    // T-shirts for main registrant
+    if (formData.packageSelection?.mainWantsTShirt) {
+      total += 100000;
+    }
+    
+    // T-shirts for spouse
+    if (formData.familyParticipation?.attendingWithSpouse && formData.familyParticipation?.spouseWantsTShirt) {
+      total += 100000;
+    }
+    
+    // T-shirts for children
+    if (formData.familyParticipation?.children) {
+      formData.familyParticipation.children.forEach((child: any) => {
+        if (child.wantsTShirt) {
+          total += 100000;
+        }
+      });
+    }
+    
+    // Additional souvenir shirts
+    const shirtTotal = (formData.packageSelection?.shirts || []).reduce((sum: number, shirt: any) => {
       return sum + shirt.quantity * 100000; // 100,000 VND per shirt
     }, 0);
-    return packageTotal + shirtTotal;
+    
+    return total + shirtTotal;
   };
   const totalAmount = calculatePackageTotal();
   return <div className="space-y-6">
@@ -45,7 +91,7 @@ export const ReviewStep = () => {
             <UserIcon className="h-5 w-5 text-[#2E5AAC] mr-2" />
             <h3 className='font-medium'>{t('review.personalInfo')}</h3>
           </div>
-          <button type="button" onClick={() => setValue('currentStep', 1)} className="text-[#2E5AAC] text-sm flex items-center">
+          <button type="button" onClick={() => onEditStep?.(1)} className="text-[#2E5AAC] text-sm flex items-center">
             {t('common.edit')} <ChevronRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>
@@ -95,7 +141,7 @@ export const ReviewStep = () => {
             <UserIcon className="h-5 w-5 text-[#2E5AAC] mr-2" />
             <h3 className="font-medium">{t('review.familyParticipation')}</h3>
           </div>
-          <button type="button" onClick={() => setValue('currentStep', 2)} className="text-[#2E5AAC] text-sm flex items-center">
+          <button type="button" onClick={() => onEditStep?.(2)} className="text-[#2E5AAC] text-sm flex items-center">
             {t('common.edit')} <ChevronRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>
@@ -145,7 +191,7 @@ export const ReviewStep = () => {
             <CalendarIcon className="h-5 w-5 text-[#2E5AAC] mr-2" />
             <h3 className="font-medium">{t('review.travelSchedule')}</h3>
           </div>
-          <button type="button" onClick={() => setValue('currentStep', 3)} className="text-[#2E5AAC] text-sm flex items-center">
+          <button type="button" onClick={() => onEditStep?.(3)} className="text-[#2E5AAC] text-sm flex items-center">
             {t('common.edit')} <ChevronRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>
@@ -183,7 +229,7 @@ export const ReviewStep = () => {
             <PackageIcon className="h-5 w-5 text-[#2E5AAC] mr-2" />
             <h3 className="font-medium">{t('review.packageSouvenir')}</h3>
           </div>
-          <button type="button" onClick={() => setValue('currentStep', 4)} className="text-[#2E5AAC] text-sm flex items-center">
+          <button type="button" onClick={() => onEditStep?.(4)} className="text-[#2E5AAC] text-sm flex items-center">
             {t('common.edit')} <ChevronRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>
@@ -191,20 +237,72 @@ export const ReviewStep = () => {
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">{t('review.fields.selectedPackage')}:</span>
             <span className="text-sm font-medium">
-              {t('review.values.package')} {formData.packageSelection.package} (
-              {formData.packageSelection.quantity})
+              {t('review.values.package')} {formData.packageSelection?.mainPackage || 'N/A'}
             </span>
           </div>
-          {formData.packageSelection.wantSouvenirShirt && formData.packageSelection.shirts && formData.packageSelection.shirts.length > 0 && <div className="mt-2 space-y-2">
-                <span className="text-sm text-gray-600">{t('review.fields.souvenirShirts')}:</span>
-                {formData.packageSelection.shirts.map((shirt: any, index: number) => <div key={index} className="flex justify-between">
-                    <span className="text-sm">{t('review.values.size')} {shirt.size}:</span>
-                    <span className="text-sm font-medium">
-                      {shirt.quantity} {t('review.values.pcs')}
-                    </span>
-                  </div>)}
-              </div>}
-          <div className="flex justify-between pt-2 border-t border-gray-100">
+          {/* Show spouse package if attending with spouse */}
+          {formData.familyParticipation?.attendingWithSpouse && formData.packageSelection?.spousePackage && (
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">{t('review.fields.spousePackage')}:</span>
+              <span className="text-sm font-medium">
+                {t('review.values.package')} {formData.packageSelection.spousePackage}
+              </span>
+            </div>
+          )}
+          {/* Show children packages if any */}
+          {formData.packageSelection?.childrenPackages && formData.packageSelection.childrenPackages.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-sm text-gray-600">{t('review.fields.childrenPackages')}:</span>
+              {formData.packageSelection.childrenPackages.map((childPkg: any, index: number) => (
+                <div key={index} className="flex justify-between pl-4">
+                  <span className="text-sm text-gray-600">
+                    {formData.familyParticipation?.children?.[childPkg.childIndex]?.name || `Child ${childPkg.childIndex + 1}`}:
+                  </span>
+                  <span className="text-sm font-medium">
+                    {t('review.values.package')} {childPkg.package}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Show T-shirt selections */}
+          {((formData.packageSelection?.mainWantsTShirt) || 
+            (formData.familyParticipation?.attendingWithSpouse && formData.familyParticipation?.spouseWantsTShirt) ||
+            (formData.familyParticipation?.children && formData.familyParticipation.children.some((c: any) => c.wantsTShirt)) ||
+            (formData.packageSelection?.shirts && formData.packageSelection.shirts.length > 0)) && (
+            <div className="mt-2 space-y-2 border-t border-gray-100 pt-2">
+              <span className="text-sm text-gray-600">{t('review.fields.tShirts')}:</span>
+              {formData.packageSelection?.mainWantsTShirt && (
+                <div className="flex justify-between pl-4">
+                  <span className="text-sm text-gray-600">Main ({formData.packageSelection?.mainTShirtSize}):</span>
+                  <span className="text-sm font-medium">1 {t('review.values.pcs')}</span>
+                </div>
+              )}
+              {formData.familyParticipation?.attendingWithSpouse && formData.familyParticipation?.spouseWantsTShirt && (
+                <div className="flex justify-between pl-4">
+                  <span className="text-sm text-gray-600">Spouse ({formData.familyParticipation?.spouseTShirtSize}):</span>
+                  <span className="text-sm font-medium">1 {t('review.values.pcs')}</span>
+                </div>
+              )}
+              {formData.familyParticipation?.children && formData.familyParticipation.children.map((child: any, index: number) => 
+                child.wantsTShirt && (
+                  <div key={index} className="flex justify-between pl-4">
+                    <span className="text-sm text-gray-600">{child.name} ({child.tShirtSize}):</span>
+                    <span className="text-sm font-medium">1 {t('review.values.pcs')}</span>
+                  </div>
+                )
+              )}
+              {formData.packageSelection?.shirts && formData.packageSelection.shirts.map((shirt: any, index: number) => 
+                <div key={index} className="flex justify-between pl-4">
+                  <span className="text-sm text-gray-600">{t('review.values.size')} {shirt.size}:</span>
+                  <span className="text-sm font-medium">
+                    {shirt.quantity} {t('review.values.pcs')}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="flex justify-between pt-2 border-t border-gray-100 mt-4">
             <span className="text-sm font-medium">{t('review.totalAmount')}:</span>
             <span className="text-sm font-semibold text-[#2E5AAC]">
               {formatCurrency(totalAmount)}
@@ -219,7 +317,7 @@ export const ReviewStep = () => {
             <CreditCardIcon className="h-5 w-5 text-[#2E5AAC] mr-2" />
             <h3 className="font-medium">{t('review.payment')}</h3>
           </div>
-          <button type="button" onClick={() => setValue('currentStep', 5)} className="text-[#2E5AAC] text-sm flex items-center">
+          <button type="button" onClick={() => onEditStep?.(5)} className="text-[#2E5AAC] text-sm flex items-center">
             {t('common.edit')} <ChevronRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>
@@ -251,7 +349,7 @@ export const ReviewStep = () => {
             <HomeIcon className="h-5 w-5 text-[#2E5AAC] mr-2" />
             <h3 className="font-medium">{t('review.accommodationSponsorship')}</h3>
           </div>
-          <button type="button" onClick={() => setValue('currentStep', 6)} className="text-[#2E5AAC] text-sm flex items-center">
+          <button type="button" onClick={() => onEditStep?.(6)} className="text-[#2E5AAC] text-sm flex items-center">
             {t('common.edit')} <ChevronRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>
