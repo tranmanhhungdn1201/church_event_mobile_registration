@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Calendar, MapPin, Clock, Users, Gift, Music, MessageCircle, Phone, Mail } from 'lucide-react';
+import logoImg from '/assets/logo.png';
 
 export const EventInfoPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export const EventInfoPage: React.FC = () => {
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center">
             <img 
-              src="/assets/logo.png" 
+              src={logoImg} 
               alt="IOY DNCOC Logo" 
               className="w-10 h-10 mr-3 object-contain"
             />
@@ -35,7 +36,7 @@ export const EventInfoPage: React.FC = () => {
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="mb-6 animate-fade-in">
             <img 
-              src="/assets/logo.png" 
+              src={logoImg} 
               alt="IOY DNCOC Logo" 
               className="w-24 h-24 mx-auto mb-4 drop-shadow-2xl"
             />
@@ -201,7 +202,7 @@ export const EventInfoPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <div className="flex items-center">
               <img 
-                src="/assets/logo.png" 
+                src={logoImg} 
                 alt="IOY DNCOC Logo" 
                 className="w-10 h-10 mr-3 object-contain"
               />
