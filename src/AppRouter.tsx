@@ -7,7 +7,7 @@ import { RegistrationForm } from "./components/RegistrationForm";
 export function AppRouter() {
   return (
     <LanguageProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<EventInfoPage />} />
           <Route path="/register" element={<RegistrationForm />} />
