@@ -1,4 +1,43 @@
 {
+  "eventInfo": {
+    "title": "Kỷ Niệm Hội Thánh",
+    "tagline": "IOY DNCOC - Cùng Nhau Tôn Vinh Chúa",
+    "eventDate": "Ngày sự kiện",
+    "eventTime": "Thời gian",
+    "eventLocation": "Địa điểm",
+    "dateValue": "15-17 Tháng 3, 2025",
+    "timeValue": "9:00 SA - 5:00 CH",
+    "locationValue": "Hội Thánh Cần Thơ",
+    "aboutEvent": "Về Sự Kiện",
+    "aboutDescription": "Tham gia cùng chúng tôi trong lễ kỷ niệm đặc biệt này khi chúng ta cùng nhau tôn vinh Chúa và kỷ niệm những phước lành của Ngài trong suốt những năm qua.",
+    "highlights": "Điểm Nổi Bật",
+    "highlight1": "Thờ phượng và ca ngợi đầy cảm hứng",
+    "highlight2": "Thông điệp mạnh mẽ từ các diễn giả khách mời",
+    "highlight3": "Hoạt động gia đình và chương trình thiếu nhi",
+    "highlight4": "Giao lưu và chia sẻ",
+    "highlight5": "Bữa ăn và quà tặng đặc biệt",
+    "schedule": "Lịch Trình",
+    "day1": "Ngày 1 - Khai Mạc",
+    "day1Details": "Buổi lễ khai mạc, thờ phượng và thông điệp chào mừng",
+    "day2": "Ngày 2 - Hội Thảo & Hoạt Động",
+    "day2Details": "Hội thảo, hoạt động nhóm và chương trình thiếu nhi",
+    "day3": "Ngày 3 - Lễ Bế Mạc",
+    "day3Details": "Buổi lễ bế mạc, cảm tạ và tiệc chia tay",
+    "packages": "Gói Tham Gia",
+    "packageA": "Gói A - Cơ Bản",
+    "packageAPrice": "500,000 VNĐ",
+    "packageADesc": "Vé tham dự, ăn trưa, tài liệu",
+    "packageB": "Gói B - Tiêu Chuẩn",
+    "packageBPrice": "800,000 VNĐ",
+    "packageBDesc": "Gói A + ăn tối, quà tặng",
+    "packageC": "Gói C - Cao Cấp",
+    "packageCPrice": "1,200,000 VNĐ",
+    "packageCDesc": "Gói B + lưu trú 1 đêm, tour",
+    "startRegistration": "Bắt Đầu Đăng Ký",
+    "contactUs": "Liên Hệ",
+    "phone": "Điện thoại: 0123 456 789",
+    "email": "Email: info@ioydncoc.org"
+  },
   "common": {
     "continue": "Tiếp tục",
     "back": "Quay lại",
@@ -20,7 +59,8 @@
     "share": "Chia sẻ",
     "addToCalendar": "Thêm vào lịch",
     "add": "Thêm",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "loadDraft": "Tải bản nháp"
   },
   "navigation": {
     "step1": "Thông tin cá nhân",
@@ -265,7 +305,9 @@
   },
   "notifications": {
     "draftSaved": "Đã lưu bản nháp thành công",
-    "draftLoaded": "Đã tải bản nháp thành công",
+    "draftLoaded": "Đã tải lại tiến trình đăng ký của bạn. Bạn có thể tiếp tục điền form.",
+    "draftSaveError": "Có lỗi xảy ra khi lưu bản nháp",
+    "draftLoadError": "Có lỗi xảy ra khi tải bản nháp",
     "validationError": "Vui lòng điền đầy đủ thông tin bắt buộc",
     "submitSuccess": "Đăng ký thành công",
     "submitError": "Có lỗi xảy ra khi gửi đăng ký",
@@ -287,5 +329,14 @@
     "copyLabel": "Hoặc sao chép liên kết này",
     "copied": "Đã sao chép!",
     "closeButton": "Đóng"
+  },
+  "loadDraft": {
+    "title": "Tải bản nháp",
+    "emailLabel": "Nhập email đã đăng ký",
+    "emailPlaceholder": "your@email.com",
+    "description": "Nhập email bạn đã sử dụng để lưu bản nháp trước đó",
+    "loadButton": "Tải bản nháp",
+    "notFound": "Không tìm thấy bản nháp với email này",
+    "loadError": "Có lỗi xảy ra khi tải bản nháp"
   }
 }

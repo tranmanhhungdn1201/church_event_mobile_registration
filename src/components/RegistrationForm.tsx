@@ -12,8 +12,10 @@ import { Step6Accommodation } from './steps/Step6Accommodation';
 import { ReviewStep } from './steps/ReviewStep';
 import { SuccessStep } from './steps/SuccessStep';
 import { SaveDraftModal } from './SaveDraftModal';
+import { LoadDraftModal } from './LoadDraftModal';
 import { AlertCircleIcon, CheckCircleIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { saveDraft, submitRegistration } from '../utils/api';
 // Form schema for the entire registration process
 const createRegistrationSchema = () => z.object({
   // Step 1: Personal Information
@@ -94,7 +96,7 @@ const createRegistrationSchema = () => z.object({
     agreeToTerms: z.boolean()
   })
 });
-type RegistrationFormData = z.infer<ReturnType<typeof createRegistrationSchema>>;
+export type RegistrationFormData = z.infer<ReturnType<typeof createRegistrationSchema>>;
 const getSteps = (t: (key: string) => string) => [{
   id: 1,
   title: t('navigation.step1'),
@@ -128,6 +130,7 @@ export const RegistrationForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
   const [isSaveDraftModalOpen, setIsSaveDraftModalOpen] = useState(false);
+  const [isLoadDraftModalOpen, setIsLoadDraftModalOpen] = useState(false);
   const [notification, setNotification] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -171,63 +174,92 @@ export const RegistrationForm = () => {
       }
     }
   });
+  // Helper function to convert and load form data
+  const loadFormData = (data: RegistrationFormData) => {
+    try {
+      // Convert string dates back to Date objects
+      if (data.travelSchedule?.arrivalDate) {
+        data.travelSchedule.arrivalDate = data.travelSchedule.arrivalDate instanceof Date 
+          ? data.travelSchedule.arrivalDate 
+          : new Date(data.travelSchedule.arrivalDate);
+      }
+      if (data.travelSchedule?.returnDate) {
+        data.travelSchedule.returnDate = data.travelSchedule.returnDate instanceof Date 
+          ? data.travelSchedule.returnDate 
+          : new Date(data.travelSchedule.returnDate);
+      }
+      if (data.payment?.transferDate) {
+        data.payment.transferDate = data.payment.transferDate instanceof Date 
+          ? data.payment.transferDate 
+          : new Date(data.payment.transferDate);
+      }
+      methods.reset(data);
+      // Show notification
+      setNotification({
+        type: 'success',
+        message: t('notifications.draftLoaded')
+      });
+      // Clear notification after 3 seconds
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+    } catch (error) {
+      console.error('Error loading saved data:', error);
+      setNotification({
+        type: 'error',
+        message: t('notifications.draftLoadError')
+      });
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+    }
+  };
+
   // Load saved form data from localStorage on initial render
   useEffect(() => {
     const savedData = localStorage.getItem('churchRegistrationData');
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
-        // Convert string dates back to Date objects
-        if (parsedData.travelSchedule?.arrivalDate) {
-          parsedData.travelSchedule.arrivalDate = new Date(parsedData.travelSchedule.arrivalDate);
-        }
-        if (parsedData.travelSchedule?.returnDate) {
-          parsedData.travelSchedule.returnDate = new Date(parsedData.travelSchedule.returnDate);
-        }
-        if (parsedData.payment?.transferDate) {
-          parsedData.payment.transferDate = new Date(parsedData.payment.transferDate);
-        }
-        methods.reset(parsedData);
-        // Show notification
-        setNotification({
-          type: 'success',
-          message: t('notifications.draftLoaded')
-        });
-        // Clear notification after 3 seconds
-        setTimeout(() => {
-          setNotification(null);
-        }, 3000);
+        loadFormData(parsedData);
       } catch (error) {
         console.error('Error loading saved data:', error);
       }
     }
   }, []);
-  const saveFormData = () => {
-    const formData = methods.getValues();
-    localStorage.setItem('churchRegistrationData', JSON.stringify(formData));
-    setIsSaveDraftModalOpen(true);
+
+  // Handle loading draft from server
+  const handleLoadDraftFromServer = (data: RegistrationFormData) => {
+    loadFormData(data);
+    // Also save to localStorage for future use
+    localStorage.setItem('churchRegistrationData', JSON.stringify(data));
   };
-  // Helper function to get the actual step index based on marital status and church
-  const getActualStepIndex = (stepNumber: number) => {
-    const maritalStatus = methods.getValues('personalInfo.maritalStatus');
-    const church = methods.getValues('personalInfo.church');
+  const saveFormData = async () => {
+    const formData = methods.getValues();
     
-    // If single and trying to access step 2 (family), skip to step 3
-    if (maritalStatus === 'single' && stepNumber >= 2) {
-      stepNumber = stepNumber + 1;
+    // Lưu vào localStorage
+    localStorage.setItem('churchRegistrationData', JSON.stringify(formData));
+    
+    // Gửi API để lưu draft
+    const result = await saveDraft(formData);
+    
+    if (result.success) {
+      setNotification({
+        type: 'success',
+        message: t('notifications.draftSaved')
+      });
+      setIsSaveDraftModalOpen(true);
+    } else {
+      setNotification({
+        type: 'error',
+        message: result.error || t('notifications.draftSaveError')
+      });
     }
     
-    // If Đà Nẵng and trying to access step 3 (travel), skip to step 4
-    if (church === 'Đà Nẵng' && stepNumber >= 3) {
-      stepNumber = stepNumber + 1;
-    }
-    
-    // If both single and Đà Nẵng, need to account for double skip
-    if (maritalStatus === 'single' && church === 'Đà Nẵng' && stepNumber >= 3) {
-      stepNumber = stepNumber + 1;
-    }
-    
-    return stepNumber;
+    // Xóa notification sau 3 giây
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   };
 
   const handleNext = async () => {
@@ -345,59 +377,27 @@ export const RegistrationForm = () => {
         // Submit the form
         const formData = methods.getValues();
         
-        // Prepare data for API submission
-        const submitData = {
-          personalInfo: {
-            fullName: formData.personalInfo.fullName,
-            gender: formData.personalInfo.gender,
-            phoneNumber: formData.personalInfo.phoneNumber,
-            email: formData.personalInfo.email,
-            church: formData.personalInfo.church,
-            maritalStatus: formData.personalInfo.maritalStatus
-          },
-          familyParticipation: formData.familyParticipation,
-          travelSchedule: formData.travelSchedule,
-          packageSelection: formData.packageSelection,
-          payment: {
-            status: formData.payment.status,
-            transferDate: formData.payment.transferDate ? formData.payment.transferDate.toISOString() : null,
-            receiptImage: formData.payment.receiptImage ? formData.payment.receiptImage : null
-          },
-          accommodation: formData.accommodation,
-          submittedAt: new Date().toISOString()
-        };
+        // Gửi API để submit đăng ký
+        const result = await submitRegistration(formData);
         
-        // Convert FormData to JSON
-        const formDataToSend = new FormData();
-        formDataToSend.append('data', JSON.stringify(submitData));
-        
-        // If there's a receipt image, add it to FormData
-        if (formData.payment.receiptImage) {
-          formDataToSend.append('receiptImage', formData.payment.receiptImage);
-        }
-        
-        // Call API here
-        try {
-          const response = await fetch('/api/registration', {
-            method: 'POST',
-            body: formDataToSend
-          });
-          
-          if (response.ok) {
-            const result = await response.json();
-            console.log('Registration successful:', result);
-            // Clear saved draft
-            localStorage.removeItem('churchRegistrationData');
-            // Show success
-            setIsComplete(true);
-          } else {
-            throw new Error('Failed to submit registration');
-          }
-        } catch (error) {
-          console.error('Error submitting registration:', error);
-          // For now, just show success even if API fails
+        if (result.success) {
+          // Xóa draft đã lưu
           localStorage.removeItem('churchRegistrationData');
+          // Hiển thị thành công
           setIsComplete(true);
+          setNotification({
+            type: 'success',
+            message: t('notifications.submitSuccess')
+          });
+        } else {
+          // Hiển thị lỗi
+          setNotification({
+            type: 'error',
+            message: result.error || t('notifications.submitError')
+          });
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         }
       }
     } else {
@@ -482,7 +482,7 @@ export const RegistrationForm = () => {
   };
   
   return <FormProvider {...methods}>
-      {isComplete ? renderCurrentStep() : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} isLastStep={currentStep === steps.length} maritalStatus={maritalStatus} church={church}>
+      {isComplete ? renderCurrentStep() : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} onLoadDraft={() => setIsLoadDraftModalOpen(true)} isLastStep={currentStep === steps.length} maritalStatus={maritalStatus} church={church}>
           {renderCurrentStep()}
           {/* Notification */}
           {notification && <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-md flex items-center min-w-80 max-w-md ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -491,5 +491,6 @@ export const RegistrationForm = () => {
             </div>}
         </FormLayout>}
       <SaveDraftModal isOpen={isSaveDraftModalOpen} onClose={() => setIsSaveDraftModalOpen(false)} />
+      <LoadDraftModal isOpen={isLoadDraftModalOpen} onClose={() => setIsLoadDraftModalOpen(false)} onLoadDraft={handleLoadDraftFromServer} />
     </FormProvider>;
 };

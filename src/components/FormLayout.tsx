@@ -12,6 +12,7 @@ interface FormLayoutProps {
   onNext: () => void;
   onBack: () => void;
   onSaveDraft: () => void;
+  onLoadDraft?: () => void;
   isLastStep?: boolean;
   maritalStatus?: string;
   church?: string;
@@ -25,6 +26,7 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
   onNext,
   onBack,
   onSaveDraft,
+  onLoadDraft,
   isLastStep = false,
   maritalStatus,
   church
@@ -36,9 +38,11 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
       <header className="bg-white/95 backdrop-blur-sm shadow-md sticky top-0 z-10 border-b border-gray-100">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#2E5AAC] to-[#1e3a8a] rounded-lg flex items-center justify-center text-white font-bold mr-3 shadow-md">
-              CA
-            </div>
+            <img 
+              src="/assets/logo.png" 
+              alt="IOY DNCOC Logo" 
+              className="w-10 h-10 mr-3 object-contain"
+            />
             <h1 className="text-lg font-semibold text-gray-800">{title}</h1>
           </div>
           <div className="flex items-center space-x-2">
@@ -51,6 +55,15 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
                 <MoreVerticalIcon className="w-4 h-4 text-gray-600" />
               </button>
               {isMenuOpen && <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-20 border border-gray-100">
+                  {onLoadDraft && <button 
+                    onClick={() => {
+                      onLoadDraft();
+                      setIsMenuOpen(false);
+                    }} 
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    {t('common.loadDraft')}
+                  </button>}
                   <button 
                     onClick={() => {
                       onSaveDraft();

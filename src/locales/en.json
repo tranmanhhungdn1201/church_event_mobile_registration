@@ -1,4 +1,43 @@
 {
+  "eventInfo": {
+    "title": "Church Anniversary",
+    "tagline": "IOY DNCOC - Together Glorifying God",
+    "eventDate": "Event Date",
+    "eventTime": "Time",
+    "eventLocation": "Location",
+    "dateValue": "March 15-17, 2025",
+    "timeValue": "9:00 AM - 5:00 PM",
+    "locationValue": "Can Tho Church",
+    "aboutEvent": "About the Event",
+    "aboutDescription": "Join us for this special anniversary celebration as we come together to glorify God and commemorate His blessings throughout the years.",
+    "highlights": "Event Highlights",
+    "highlight1": "Inspiring worship and praise",
+    "highlight2": "Powerful messages from guest speakers",
+    "highlight3": "Family activities and children's programs",
+    "highlight4": "Fellowship and networking",
+    "highlight5": "Special meals and gifts",
+    "schedule": "Schedule",
+    "day1": "Day 1 - Opening Ceremony",
+    "day1Details": "Opening ceremony, worship and welcome message",
+    "day2": "Day 2 - Workshops & Activities",
+    "day2Details": "Workshops, group activities and children's programs",
+    "day3": "Day 3 - Closing Ceremony",
+    "day3Details": "Closing ceremony, thanksgiving and farewell dinner",
+    "packages": "Participation Packages",
+    "packageA": "Package A - Basic",
+    "packageAPrice": "500,000 VND",
+    "packageADesc": "Event ticket, lunch, materials",
+    "packageB": "Package B - Standard",
+    "packageBPrice": "800,000 VND",
+    "packageBDesc": "Package A + dinner, gifts",
+    "packageC": "Package C - Premium",
+    "packageCPrice": "1,200,000 VND",
+    "packageCDesc": "Package B + 1 night stay, tour",
+    "startRegistration": "Start Registration",
+    "contactUs": "Contact Us",
+    "phone": "Phone: 0123 456 789",
+    "email": "Email: info@ioydncoc.org"
+  },
   "common": {
     "continue": "Continue",
     "back": "Back",
@@ -20,7 +59,8 @@
     "share": "Share",
     "addToCalendar": "Add to Calendar",
     "add": "Add",
-    "delete": "Delete"
+    "delete": "Delete",
+    "loadDraft": "Load Draft"
   },
   "navigation": {
     "step1": "Personal Information",
@@ -263,7 +303,9 @@
   },
   "notifications": {
     "draftSaved": "Draft saved successfully",
-    "draftLoaded": "Draft loaded successfully",
+    "draftLoaded": "Your registration progress has been loaded. You can continue filling out the form.",
+    "draftSaveError": "Error occurred while saving draft",
+    "draftLoadError": "Error occurred while loading draft",
     "validationError": "Please fill in all required fields",
     "submitSuccess": "Registration submitted successfully",
     "submitError": "Error occurred while submitting registration",
@@ -285,5 +327,14 @@
     "copyLabel": "Or copy this link",
     "copied": "Copied!",
     "closeButton": "Close"
+  },
+  "loadDraft": {
+    "title": "Load Draft",
+    "emailLabel": "Enter registered email",
+    "emailPlaceholder": "your@email.com",
+    "description": "Enter the email you used to save the draft previously",
+    "loadButton": "Load Draft",
+    "notFound": "No draft found with this email",
+    "loadError": "Error occurred while loading draft"
   }
 }
