@@ -17,6 +17,8 @@ interface FormLayoutProps {
   maritalStatus?: string;
   church?: string;
 }
+import logoImg from '/assets/logo.png';
+
 export const FormLayout: React.FC<FormLayoutProps> = ({
   children,
   title,
@@ -39,7 +41,7 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center">
             <img 
-              src="/assets/logo.png" 
+              src={logoImg} 
               alt="IOY DNCOC Logo" 
               className="w-10 h-10 mr-3 object-contain"
             />
