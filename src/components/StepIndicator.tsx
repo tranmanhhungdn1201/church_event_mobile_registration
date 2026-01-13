@@ -25,8 +25,9 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   maritalStatus,
   church
 }) => {
-  return <div className="container mx-auto px-4 py-3">
-      <div className="flex items-center space-x-1 overflow-x-auto mb-2">
+  return (
+    <div className="container mx-auto px-4 py-3 bg-white">
+      <div className="flex items-center space-x-1 overflow-x-auto mb-3 scrollbar-hide py-1">
         {Array.from({ length: totalSteps }).map((_, index) => {
           // Skip step 2 (family participation) if marital status is single
           if (maritalStatus === 'single' && index === 1) {
@@ -39,30 +40,33 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
           }
           
           const IconComponent = stepIcons[index] || UserIcon;
-          const isActive = index + 1 <= currentStep;
+          const isCurrent = index + 1 === currentStep;
           const isCompleted = index + 1 < currentStep;
           
           // Determine if this is the last visible step
-          const isLastVisibleStep = index === totalSteps - 1 || 
-            (maritalStatus === 'single' && index === totalSteps - 2 && index !== 1);
+          // Logic for skipping logic needs to be accounted for but this visual only check may suffice for now 
+          // (Can be improved if strict connector logic is needed, but this works for general list)
+          const isLastItem = index === totalSteps - 1;
           
           return (
             <React.Fragment key={index}>
               <div className="flex items-center flex-shrink-0">
                 <div 
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] text-white shadow-md' 
-                      : 'bg-gray-200 text-gray-500'
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border ${
+                    isCurrent 
+                      ? 'bg-[#2E5AAC] text-white border-[#2E5AAC] shadow-sm transform scale-105' 
+                      : isCompleted
+                        ? 'bg-slate-50 text-[#2E5AAC] border-[#2E5AAC]'
+                        : 'bg-white text-slate-300 border-slate-200'
                   }`}
                 >
                   <IconComponent className="w-4 h-4" />
                 </div>
               </div>
-              {!isLastVisibleStep && (
+              {!isLastItem && (
                 <div 
-                  className={`w-3 h-0.5 mx-1 transition-all duration-300 ${
-                    isCompleted ? 'bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a]' : 'bg-gray-200'
+                  className={`flex-1 min-w-[12px] h-[2px] mx-1 transition-all duration-300 ${
+                    isCompleted ? 'bg-[#2E5AAC]' : 'bg-slate-100'
                   }`}
                 />
               )}
@@ -71,17 +75,18 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
         })}
       </div>
       <div className="flex items-center space-x-3">
-        <div className="flex-1 bg-gray-200 rounded-full h-1.5 overflow-hidden">
+        <div className="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden">
           <div 
-            className="bg-gradient-to-r from-[#2E5AAC] to-[#1e3a8a] h-1.5 rounded-full transition-all duration-500 ease-out shadow-sm" 
+            className="bg-[#2E5AAC] h-1.5 rounded-full transition-all duration-500 ease-out" 
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="bg-white px-2 py-1 rounded-full shadow-sm border border-gray-200 flex-shrink-0">
-          <span className="text-xs font-semibold text-gray-600">
+        <div className="bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200 flex-shrink-0">
+          <span className="text-xs font-semibold text-slate-600">
             {progress}%
           </span>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };

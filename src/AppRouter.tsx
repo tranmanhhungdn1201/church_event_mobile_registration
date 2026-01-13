@@ -1,6 +1,6 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
-import { EventInfoPage } from "./components/EventInfoPage";
+// import { EventInfoPage } from "./components/EventInfoPage";
 import { RegistrationForm } from "./components/RegistrationForm";
 
 export function AppRouter() {
@@ -8,8 +8,8 @@ export function AppRouter() {
     <LanguageProvider>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<EventInfoPage />} />
-          <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/" element={<RegistrationForm />} />
+          {/* <Route path="/info" element={<EventInfoPage />} /> */}
         </Routes>
       </HashRouter>
     </LanguageProvider>

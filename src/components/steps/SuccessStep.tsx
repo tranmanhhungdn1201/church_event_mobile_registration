@@ -1,60 +1,90 @@
-import { CheckCircleIcon, CalendarIcon, ShareIcon, MessageCircleIcon } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import { useState } from 'react';
+import { CheckCircleIcon, CalendarIcon, ShareIcon, MessageCircleIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { ReviewStep } from './ReviewStep';
+
+interface SuccessStepProps {
+  formData: any;
+}
+
 export const SuccessStep = ({
   formData
-}) => {
+}: SuccessStepProps) => {
   const { t } = useLanguage();
-  // Generate a random registration code
-  const registrationCode = `CA${Math.floor(10000 + Math.random() * 90000)}`;
-  return <div className="max-w-md mx-auto py-12 px-4 text-center">
-      <div className="rounded-full bg-green-100 p-3 w-16 h-16 flex items-center justify-center mx-auto mb-6">
-        <CheckCircleIcon className="h-8 w-8 text-green-600" />
+  const [showDetails, setShowDetails] = useState(false);
+  const fullName = formData?.personalInfo?.fullName || '';
+
+  return (
+    <div className="max-w-md mx-auto py-12 px-4 text-center animate-fade-in-up">
+      <div className="rounded-full bg-green-50 p-4 w-24 h-24 flex items-center justify-center mx-auto mb-8 shadow-sm">
+        <CheckCircleIcon className="h-12 w-12 text-green-500" />
       </div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      
+      <h2 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">
         {t('success.title')}
       </h2>
-      <p className="text-gray-600 mb-8">
-        {t('success.congratulations')}
+      <p className="text-slate-500 mb-10 text-lg">
+        {t('success.congratulations')} {fullName && <span className="font-semibold text-slate-700">{fullName}</span>}!
       </p>
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <p className="text-sm text-gray-500 mb-2">{t('success.registrationCode')}</p>
-        <p className="text-xl font-bold text-[#2E5AAC] mb-4">
-          {registrationCode}
-        </p>
-        <div className="flex justify-center mb-4">
-          <QRCodeSVG value={registrationCode} size={150} />
-        </div>
-        <p className="text-sm text-gray-600">
-          {t('success.saveCode')}
-        </p>
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        <button type="button" className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-          <CalendarIcon className="h-5 w-5 mr-2 text-gray-500" />
-          {t('common.addToCalendar')}
-        </button>
-        <button type="button" className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-          <ShareIcon className="h-5 w-5 mr-2 text-gray-500" />
-          {t('common.share')}
+      
+      <div className="mb-8">
+        <button
+          type="button"
+          onClick={() => setShowDetails(!showDetails)}
+          className="inline-flex items-center justify-center py-3 px-6 border border-slate-200 rounded-xl text-sm font-semibold text-[#2E5AAC] bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
+        >
+          {showDetails ? (
+            <>
+              {t('success.hideDetails')}
+              <ChevronUpIcon className="ml-2 h-4 w-4" />
+            </>
+          ) : (
+            <>
+              {t('success.reviewDetails')}
+              <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </>
+          )}
         </button>
       </div>
-      <div className="bg-blue-50 rounded-lg p-4 text-left">
-        <h3 className="font-medium text-blue-800 mb-2 flex items-center">
-          <MessageCircleIcon className="h-5 w-5 mr-2" />
-          {t('success.joinCommunity')}
-        </h3>
-        <p className="text-sm text-blue-700 mb-3">
-          {t('success.communityDescription')}
-        </p>
-        <div className="flex space-x-3">
-          <button type="button" className="flex-1 bg-white py-2 px-3 rounded border border-blue-200 text-sm font-medium text-blue-800">
-            {t('success.joinZalo')}
-          </button>
-          <button type="button" className="flex-1 bg-white py-2 px-3 rounded border border-blue-200 text-sm font-medium text-blue-800">
-            {t('success.joinTelegram')}
-          </button>
+
+      {showDetails && (
+        <div className="text-left mb-8 animate-fade-in">
+          <ReviewStep formData={formData} />
         </div>
-      </div>
-    </div>;
+      )}
+
+      {!showDetails && (
+        <>
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <button type="button" className="flex items-center justify-center py-4 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+              <CalendarIcon className="h-5 w-5 mr-2 text-slate-400" />
+              {t('common.addToCalendar')}
+            </button>
+            <button type="button" className="flex items-center justify-center py-4 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+              <ShareIcon className="h-5 w-5 mr-2 text-slate-400" />
+              {t('common.share')}
+            </button>
+          </div>
+          
+          <div className="bg-[#2E5AAC]/5 rounded-2xl p-6 text-left border border-[#2E5AAC]/10">
+            <h3 className="font-semibold text-slate-900 mb-2 flex items-center text-lg">
+              <MessageCircleIcon className="h-5 w-5 mr-2.5 text-[#2E5AAC]" />
+              {t('success.joinCommunity')}
+            </h3>
+            <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+              {t('success.communityDescription')}
+            </p>
+            <div className="flex space-x-3">
+              <button type="button" className="flex-1 bg-white py-2.5 px-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                {t('success.joinZalo')}
+              </button>
+              <button type="button" className="flex-1 bg-white py-2.5 px-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                {t('success.joinTelegram')}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
 };

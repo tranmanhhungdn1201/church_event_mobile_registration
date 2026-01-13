@@ -212,7 +212,9 @@ Hoặc nếu không có thông tin:
       "size": "S" | "M" | "L" | "XL" | "XXL",
       "quantity": number (min: 1)
     }
-  ] (optional)
+  ] (optional),
+  "wantMagazine": boolean (default: false),
+  "magazineQuantity": number (default: 1)
 }
 ```
 
@@ -291,6 +293,9 @@ Hoặc nếu chưa thanh toán:
   "stayStatus": "arranged" | "notArranged" (optional),
   "accommodationInfo": "string (optional)",
   "needAssistance": boolean (optional),
+  "assistanceDetails": "string (optional)",
+  "participateBigGame": "yes" | "no" | "considering" (optional),
+  "participateSports": "yes" | "no" | "considering" (optional),
   "sponsorshipAmount": number (optional),
   "bankNote": "string (optional)",
   "agreeToTerms": boolean (required)

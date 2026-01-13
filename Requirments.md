@@ -84,7 +84,7 @@ This flow supports **Vietnamese locale** and can be integrated into an existing 
 - Payment status *(Paid / Will pay later)*
 - If Paid → Date of transfer *(date picker)*
 - Bank transfer instructions *(accordion)*:
-  - Syntax: `FullName_ACE_Package_ShirtSize_Quantity`
+  - Syntax: `Name_Church_Name`
   - Account info (with “Copy” button)
 - Upload receipt *(optional)*
 - CTA: Continue

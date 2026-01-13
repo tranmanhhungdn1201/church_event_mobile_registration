@@ -1,23 +1,24 @@
 import { useFormContext, Controller } from 'react-hook-form';
-import { AlertCircleIcon, InfoIcon } from 'lucide-react';
+import { AlertCircleIcon, InfoIcon, CheckIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useValidation } from '../../hooks/useValidation';
+import { formStyles } from '../../utils/styles';
+
 export const Step6Accommodation = () => {
   const {
     register,
     watch,
-    setValue,
+    control,
     formState: {
       errors
     }
   } = useFormContext();
   const { t } = useLanguage();
-  const { getValidationMessage } = useValidation();
   const stayStatus = watch('accommodation.stayStatus');
   const needAssistance = watch('accommodation.needAssistance');
   const agreeToTerms = watch('accommodation.agreeToTerms');
+  
   // Format currency
-  const formatCurrency = amount => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
@@ -25,97 +26,225 @@ export const Step6Accommodation = () => {
       maximumFractionDigits: 0
     }).format(amount);
   };
-  return <div className="space-y-6">
-      <div className="p-4 bg-blue-50 rounded-lg flex">
-        <InfoIcon className="h-5 w-5 text-[#2E5AAC] mr-3 flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-blue-800">
+
+  return (
+    <div className={formStyles.section}>
+      <div className={formStyles.tipBox}>
+        <InfoIcon className={formStyles.tipIcon} />
+        <p className={formStyles.tipText}>
           {t('step6.tip')}
         </p>
       </div>
+
       <div className="space-y-4">
-        <label className="block text-sm font-medium text-gray-700">
-          {t('step6.stayStatus')} ({t('common.optional')})
+        <label className={formStyles.label}>
+          {t('step6.stayStatus')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
         </label>
-        <div className="flex rounded-lg overflow-hidden border border-gray-300">
-          <label className="flex-1 text-center">
-            <input type="radio" value="arranged" {...register('accommodation.stayStatus')} className="sr-only" />
-            <div className={`py-3 px-4 cursor-pointer ${stayStatus === 'arranged' ? 'bg-[#2E5AAC] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-              {t('step6.stayOptions.arranged')}
+        <div className="grid grid-cols-2 gap-4">
+          <label className="relative block group cursor-pointer">
+            <input 
+              type="radio" 
+              value="arranged" 
+              {...register('accommodation.stayStatus')} 
+              className="peer sr-only" 
+            />
+            <div className="w-full py-4 px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:bg-slate-50 peer-checked:hover:bg-[#2E5AAC] shadow-sm h-full flex items-center justify-center">
+              <span className="font-semibold text-sm">{t('step6.stayOptions.arranged')}</span>
             </div>
           </label>
-          <label className="flex-1 text-center border-l border-gray-300">
-            <input type="radio" value="notArranged" {...register('accommodation.stayStatus')} className="sr-only" />
-            <div className={`py-3 px-4 cursor-pointer ${stayStatus === 'notArranged' ? 'bg-[#2E5AAC] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-              {t('step6.stayOptions.notArranged')}
+          <label className="relative block group cursor-pointer">
+            <input 
+              type="radio" 
+              value="notArranged" 
+              {...register('accommodation.stayStatus')} 
+              className="peer sr-only" 
+            />
+            <div className="w-full py-4 px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:bg-slate-50 peer-checked:hover:bg-[#2E5AAC] shadow-sm h-full flex items-center justify-center">
+              <span className="font-semibold text-sm">{t('step6.stayOptions.notArranged')}</span>
             </div>
           </label>
         </div>
       </div>
-      {stayStatus === 'arranged' && <div className="space-y-2">
-          <label htmlFor="accommodationInfo" className="block text-sm font-medium text-gray-700">
+
+      {stayStatus === 'arranged' && (
+        <div className="space-y-2 animate-fade-in-up">
+          <label htmlFor="accommodationInfo" className={formStyles.label}>
             {t('step6.accommodationInfo')}
           </label>
-          <textarea id="accommodationInfo" {...register('accommodation.accommodationInfo')} rows={3} className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm" placeholder={t('step6.accommodationPlaceholder')} />
-        </div>}
-      {stayStatus === 'notArranged' && <div className="space-y-2">
-          <div className="flex items-center">
-            <input id="needAssistance" type="checkbox" {...register('accommodation.needAssistance')} className="h-4 w-4 text-[#2E5AAC] focus:ring-[#2E5AAC] border-gray-300 rounded" />
-            <label htmlFor="needAssistance" className="ml-2 block text-sm font-medium text-gray-700">
-              {t('step6.needAssistance')}
-            </label>
-          </div>
-          {needAssistance &&           <p className="text-sm text-gray-600 mt-2 pl-6">
-              {t('step6.assistanceNote')}
-            </p>}
-        </div>}
-      <div className="border-t border-gray-200 pt-6 space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="sponsorshipAmount" className="block text-sm font-medium text-gray-700">
-            {t('step6.sponsorshipAmount')} ({t('common.optional')})
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500 sm:text-sm">₫</span>
+          <textarea 
+            id="accommodationInfo" 
+            {...register('accommodation.accommodationInfo')} 
+            rows={3} 
+            className={formStyles.textarea}
+            placeholder={t('step6.accommodationPlaceholder')} 
+          />
+        </div>
+      )}
+
+      {stayStatus === 'notArranged' && (
+        <div className="space-y-3 animate-fade-in-up">
+           <label className={`flex items-start space-x-3 cursor-pointer group p-4 rounded-xl border transition-all duration-200 ${needAssistance ? 'bg-slate-50 border-slate-300 ring-1 ring-slate-300' : 'bg-white border-slate-200 hover:border-slate-300'}`}>
+            <div className={`w-5 h-5 mt-0.5 rounded flex items-center justify-center border transition-all duration-200 ${needAssistance ? 'bg-slate-600 border-slate-600' : 'bg-white border-slate-300 group-hover:border-slate-400'}`}>
+              <input 
+                id="needAssistance" 
+                type="checkbox" 
+                {...register('accommodation.needAssistance')} 
+                className="sr-only" 
+              />
+              {needAssistance && <CheckIcon className="w-3.5 h-3.5 text-white" />}
             </div>
-            <Controller control={useFormContext().control} name="accommodation.sponsorshipAmount" render={({
-            field
-          }) => <input type="text" id="sponsorshipAmount" className="pl-7 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm h-11 border" placeholder="0" value={field.value || ''} onChange={e => {
-            // Remove non-numeric characters and parse as number
-            const value = e.target.value.replace(/[^\d]/g, '');
-            field.onChange(value ? parseInt(value, 10) : null);
-          }} onBlur={e => {
-            if (field.value) {
-              // Format the displayed value on blur
-              e.target.value = formatCurrency(field.value).replace('₫', '').trim();
-            }
-          }} />} />
+            <span className={`text-sm font-medium transition-colors leading-relaxed ${needAssistance ? 'text-slate-900' : 'text-slate-700'}`}>
+              {t('step6.needAssistance')}
+            </span>
+          </label>
+          {needAssistance && (
+            <div className="space-y-3 animate-fade-in-up pl-1">
+              <textarea
+                {...register('accommodation.assistanceDetails')}
+                rows={3}
+                className={formStyles.textarea}
+                placeholder={t('step6.assistanceRequestPlaceholder')}
+              />
+              <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-start">
+                <InfoIcon className="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-amber-800">
+                  {t('step6.assistanceNote')}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="border-t border-slate-100 pt-8 space-y-6">
+        <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+          {t('step6.activityTip')}
+        </h3>
+        
+        {/* Big Game */}
+        <div className="space-y-3">
+          <label className={formStyles.label}>
+            {t('step6.bigGame')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { value: 'yes', label: t('step6.participationOptions.yes') },
+              { value: 'no', label: t('step6.participationOptions.no') },
+              { value: 'considering', label: t('step6.participationOptions.considering') }
+            ].map((option) => (
+              <label key={option.value} className="relative block group cursor-pointer">
+                <input 
+                  type="radio" 
+                  value={option.value} 
+                  {...register('accommodation.participateBigGame')} 
+                  className="peer sr-only" 
+                />
+                <div className="w-full py-3 px-2 text-center rounded-lg border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:bg-slate-50 peer-checked:hover:bg-[#2E5AAC] shadow-sm flex items-center justify-center">
+                  <span className="font-semibold text-xs sm:text-sm">{option.label}</span>
+                </div>
+              </label>
+            ))}
           </div>
         </div>
-        <div className="space-y-2">
-          <label htmlFor="bankNote" className="block text-sm font-medium text-gray-700">
-            {t('step6.bankNote')}
+
+        {/* Sports */}
+        <div className="space-y-3">
+          <label className={formStyles.label}>
+            {t('step6.sports')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
           </label>
-          <textarea id="bankNote" {...register('accommodation.bankNote')} rows={2} className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-[#2E5AAC] focus:border-[#2E5AAC] sm:text-sm" placeholder={t('step6.bankNotePlaceholder')} />
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { value: 'yes', label: t('step6.participationOptions.yes') },
+              { value: 'no', label: t('step6.participationOptions.no') },
+              { value: 'considering', label: t('step6.participationOptions.considering') }
+            ].map((option) => (
+              <label key={option.value} className="relative block group cursor-pointer">
+                <input 
+                  type="radio" 
+                  value={option.value} 
+                  {...register('accommodation.participateSports')} 
+                  className="peer sr-only" 
+                />
+                <div className="w-full py-3 px-2 text-center rounded-lg border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:bg-slate-50 peer-checked:hover:bg-[#2E5AAC] shadow-sm flex items-center justify-center">
+                  <span className="font-semibold text-xs sm:text-sm">{option.label}</span>
+                </div>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="border-t border-gray-200 pt-6">
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <input id="agreeToTerms" type="checkbox" {...register('accommodation.agreeToTerms')} className="h-4 w-4 text-[#2E5AAC] focus:ring-[#2E5AAC] border-gray-300 rounded" />
+
+      <div className="border-t border-slate-100 pt-8 space-y-6">
+        <div className="space-y-2">
+          <label htmlFor="sponsorshipAmount" className={formStyles.label}>
+            {t('step6.sponsorshipAmount')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
+          </label>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+              <span className="text-slate-500 font-medium">₫</span>
+            </div>
+            <Controller 
+              control={control} 
+              name="accommodation.sponsorshipAmount" 
+              render={({ field }) => (
+                <input 
+                  type="text" 
+                  id="sponsorshipAmount" 
+                  className={`${formStyles.input} pl-8 font-medium`}
+                  placeholder="0" 
+                  value={field.value ? formatCurrency(field.value).replace('₫', '').trim() : ''} 
+                  onChange={e => {
+                    // Remove non-numeric characters and parse as number
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    field.onChange(value ? parseInt(value, 10) : null);
+                  }} 
+                />
+              )} 
+            />
           </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="agreeToTerms" className="font-medium text-gray-700">
+        </div>
+        
+        <div className="space-y-2">
+          <label htmlFor="bankNote" className={formStyles.label}>
+            {t('step6.bankNote')}
+          </label>
+          <textarea 
+            id="bankNote" 
+            {...register('accommodation.bankNote')} 
+            rows={2} 
+            className={formStyles.textarea}
+            placeholder={t('step6.bankNotePlaceholder')} 
+          />
+        </div>
+      </div>
+
+      <div className="border-t border-slate-100 pt-6">
+        <label className={`flex items-start p-4 rounded-xl border transition-all duration-200 cursor-pointer ${agreeToTerms ? 'bg-[#2E5AAC]/5 border-[#2E5AAC]/30' : 'bg-white border-slate-200 hover:border-slate-300'}`}>
+          <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-all duration-200 flex-shrink-0 ${agreeToTerms ? 'bg-[#2E5AAC] border-[#2E5AAC]' : 'bg-white border-slate-300'}`}>
+            <input 
+              id="agreeToTerms" 
+              type="checkbox" 
+              {...register('accommodation.agreeToTerms')} 
+              className="sr-only" 
+            />
+            {agreeToTerms && <CheckIcon className="w-3.5 h-3.5 text-white" />}
+          </div>
+          <div className="ml-3">
+            <span className={`block text-sm font-semibold transition-colors ${agreeToTerms ? 'text-[#2E5AAC]' : 'text-slate-800'}`}>
               {t('step6.agreeToTerms')}
-            </label>
-            <p className="text-gray-500">
+            </span>
+            <p className="text-slate-500 text-xs mt-1 leading-relaxed">
               {t('step6.termsDescription')}
             </p>
           </div>
-        </div>
-        {errors.accommodation?.agreeToTerms && <div className="mt-2 flex items-center text-sm text-red-600">
-            <AlertCircleIcon className="h-4 w-4 mr-1" />
+        </label>
+        {(errors.accommodation as any)?.agreeToTerms && (
+          <div className="mt-3 flex items-center text-sm text-red-500 bg-red-50 p-3 rounded-lg border border-red-100">
+            <AlertCircleIcon className="h-4 w-4 mr-2 flex-shrink-0" />
             <span>{t('step6.termsRequired')}</span>
-          </div>}
+          </div>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };

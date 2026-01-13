@@ -65,11 +65,15 @@ const createRegistrationSchema = () => z.object({
       childIndex: z.number(),
       package: z.enum(['A', 'B', 'C'])
     })).optional(),
+    mainWantsTShirt: z.boolean().default(false),
+    mainTShirtSize: z.enum(['S', 'M', 'L', 'XL', 'XXL']).optional(),
     wantSouvenirShirt: z.boolean().default(false),
     shirts: z.array(z.object({
       size: z.enum(['S', 'M', 'L', 'XL', 'XXL']),
       quantity: z.number().min(1)
-    })).optional()
+    })).optional(),
+    wantMagazine: z.boolean().default(false).optional(),
+    magazineQuantity: z.number().min(1).default(1).optional()
   }),
   // Step 5: Payment
   payment: z.object({
@@ -91,10 +95,14 @@ const createRegistrationSchema = () => z.object({
     stayStatus: z.enum(['arranged', 'notArranged']).optional(),
     accommodationInfo: z.string().optional(),
     needAssistance: z.boolean().optional(),
+    assistanceDetails: z.string().optional(),
+    participateBigGame: z.enum(['yes', 'no', 'considering']).optional(),
+    participateSports: z.enum(['yes', 'no', 'considering']).optional(),
     sponsorshipAmount: z.number().optional(),
     bankNote: z.string().optional(),
     agreeToTerms: z.boolean()
-  })
+  }),
+  isDraft: z.boolean().optional()
 });
 export type RegistrationFormData = z.infer<ReturnType<typeof createRegistrationSchema>>;
 const getSteps = (t: (key: string) => string) => [{
@@ -161,8 +169,12 @@ export const RegistrationForm = () => {
         mainPackage: 'A',
         spousePackage: 'A',
         childrenPackages: [],
+        mainWantsTShirt: false,
+        mainTShirtSize: 'M',
         wantSouvenirShirt: false,
-        shirts: []
+        shirts: [],
+        wantMagazine: false,
+        magazineQuantity: 1
       },
       payment: {
         status: 'willPayLater'
@@ -170,6 +182,8 @@ export const RegistrationForm = () => {
       accommodation: {
         stayStatus: 'notArranged',
         needAssistance: false,
+        participateBigGame: 'considering',
+        participateSports: 'considering',
         agreeToTerms: false
       }
     }
@@ -194,6 +208,9 @@ export const RegistrationForm = () => {
           : new Date(data.payment.transferDate);
       }
       methods.reset(data);
+      if (data.isDraft === false) {
+        setIsComplete(true);
+      }
       // Show notification
       setNotification({
         type: 'success',
@@ -485,10 +502,16 @@ export const RegistrationForm = () => {
       {isComplete ? renderCurrentStep() : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} onLoadDraft={() => setIsLoadDraftModalOpen(true)} isLastStep={currentStep === steps.length} maritalStatus={maritalStatus} church={church}>
           {renderCurrentStep()}
           {/* Notification */}
-          {notification && <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-md flex items-center min-w-80 max-w-md ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-              {notification.type === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-3" /> : <AlertCircleIcon className="w-5 h-5 mr-3" />}
+          {notification && (
+            <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-xl shadow-lg border flex items-center min-w-[300px] max-w-md animate-fade-in ${
+              notification.type === 'success' 
+                ? 'bg-green-50 text-green-700 border-green-100' 
+                : 'bg-red-50 text-red-700 border-red-100'
+            }`}>
+              {notification.type === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-3 flex-shrink-0" /> : <AlertCircleIcon className="w-5 h-5 mr-3 flex-shrink-0" />}
               <span className="text-sm font-medium">{notification.message}</span>
-            </div>}
+            </div>
+          )}
         </FormLayout>}
       <SaveDraftModal isOpen={isSaveDraftModalOpen} onClose={() => setIsSaveDraftModalOpen(false)} />
       <LoadDraftModal isOpen={isLoadDraftModalOpen} onClose={() => setIsLoadDraftModalOpen(false)} onLoadDraft={handleLoadDraftFromServer} />

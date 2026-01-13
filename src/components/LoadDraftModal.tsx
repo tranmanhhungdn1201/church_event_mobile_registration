@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { XIcon, LoaderIcon, AlertCircleIcon, CheckCircleIcon } from 'lucide-react';
+import { XIcon, LoaderIcon, AlertCircleIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getDraftByEmail } from '../utils/api';
+import { formStyles } from '../utils/styles';
 import type { RegistrationFormData } from './RegistrationForm';
 
 interface LoadDraftModalProps {
@@ -50,35 +51,55 @@ export const LoadDraftModal: React.FC<LoadDraftModalProps> = ({
   const convertApiDataToFormData = (apiData: any): RegistrationFormData => {
     return {
       personalInfo: apiData.personalInfo || {},
-      familyParticipation: apiData.familyParticipation || {},
+      familyParticipation: apiData.familyParticipation ? {
+        ...apiData.familyParticipation,
+        numberOfChildren: Number(apiData.familyParticipation.numberOfChildren || 0),
+        children: Array.isArray(apiData.familyParticipation.children) 
+          ? apiData.familyParticipation.children.map((child: any) => ({
+              ...child,
+              tShirtSize: child.tShirtSize || undefined
+            }))
+          : (typeof apiData.familyParticipation.children === 'object' && apiData.familyParticipation.children !== null)
+            ? Object.values(apiData.familyParticipation.children).map((child: any) => ({
+                ...child,
+                tShirtSize: child.tShirtSize || undefined
+              }))
+            : [],
+        spouseTShirtSize: apiData.familyParticipation.spouseTShirtSize || undefined
+      } : {},
       travelSchedule: apiData.travelSchedule ? {
         ...apiData.travelSchedule,
         arrivalDate: apiData.travelSchedule.arrivalDate ? new Date(apiData.travelSchedule.arrivalDate) : undefined,
         returnDate: apiData.travelSchedule.returnDate ? new Date(apiData.travelSchedule.returnDate) : undefined
       } : undefined,
-      packageSelection: apiData.packageSelection || {},
+      packageSelection: apiData.packageSelection ? {
+        ...apiData.packageSelection,
+        wantMagazine: apiData.packageSelection.wantMagazine || false,
+        magazineQuantity: apiData.packageSelection.magazineQuantity || 1
+      } : {},
       payment: apiData.payment ? {
         ...apiData.payment,
         transferDate: apiData.payment.transferDate ? new Date(apiData.payment.transferDate) : undefined,
         receiptImage: apiData.payment.receiptImage || null
       } : {},
-      accommodation: apiData.accommodation || {}
+      accommodation: apiData.accommodation || {},
+      isDraft: apiData.isDraft
     };
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-md w-full p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">{t('loadDraft.title')}</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded">
+    <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-slate-900">{t('loadDraft.title')}</h2>
+          <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
             <XIcon className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleLoadDraft} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+        <form onSubmit={handleLoadDraft} className="space-y-6">
+          <div className="space-y-2">
+            <label className={formStyles.label}>
               {t('loadDraft.emailLabel')}
             </label>
             <input
@@ -86,34 +107,34 @@ export const LoadDraftModal: React.FC<LoadDraftModalProps> = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t('loadDraft.emailPlaceholder')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2E5AAC]"
+              className={formStyles.input}
               required
               disabled={isLoading}
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="text-xs text-slate-500">
               {t('loadDraft.description')}
             </p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-800 p-3 rounded-lg flex items-start">
-              <AlertCircleIcon className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-              <span className="text-sm">{error}</span>
+            <div className="bg-red-50 text-red-700 p-4 rounded-xl flex items-start border border-red-100">
+              <AlertCircleIcon className="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" />
+              <span className="text-sm font-medium">{error}</span>
             </div>
           )}
 
-          <div className="flex gap-2 justify-end">
+          <div className="flex gap-3 justify-end pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-200"
+              className={formStyles.buttonSecondary}
               disabled={isLoading}
             >
               {t('common.cancel')}
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#2E5AAC] text-white rounded-lg text-sm font-medium hover:bg-[#1e4a8c] flex items-center gap-2"
+              className={`${formStyles.buttonPrimary} flex items-center gap-2`}
               disabled={isLoading}
             >
               {isLoading && <LoaderIcon className="w-4 h-4 animate-spin" />}
@@ -125,4 +146,3 @@ export const LoadDraftModal: React.FC<LoadDraftModalProps> = ({
     </div>
   );
 };
-

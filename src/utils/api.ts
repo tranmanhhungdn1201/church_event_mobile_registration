@@ -3,6 +3,23 @@ import type { RegistrationFormData } from '../components/RegistrationForm';
 // API base URL - có thể được cấu hình từ environment variable
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
+// API Key - có thể được cấu hình từ environment variable
+const API_KEY = import.meta.env.VITE_API_KEY || '';
+
+/**
+ * Tạo headers mặc định cho API requests
+ */
+const getDefaultHeaders = (): HeadersInit => {
+  const headers: HeadersInit = {};
+  
+  // Thêm X-API-Key nếu có
+  if (API_KEY) {
+    headers['X-API-Key'] = API_KEY;
+  }
+  
+  return headers;
+};
+
 /**
  * Chuẩn bị dữ liệu để gửi API
  */
@@ -49,6 +66,7 @@ export const saveDraft = async (formData: RegistrationFormData): Promise<{ succe
 
     const response = await fetch(`${API_BASE_URL}/registration/draft`, {
       method: 'POST',
+      headers: getDefaultHeaders(),
       body: formDataToSend
     });
 
@@ -76,6 +94,7 @@ export const getDraftByEmail = async (email: string): Promise<{ success: boolean
     const response = await fetch(`${API_BASE_URL}/registration/draft?email=${encodeURIComponent(email)}`, {
       method: 'GET',
       headers: {
+        ...getDefaultHeaders(),
         'Content-Type': 'application/json'
       }
     });
@@ -92,7 +111,7 @@ export const getDraftByEmail = async (email: string): Promise<{ success: boolean
     }
 
     const result = await response.json();
-    return { success: true, data: result };
+    return { success: true, data: result.data }; // Correctly unwrap the data field
   } catch (error) {
     console.error('Error getting draft:', error);
     return {
@@ -119,6 +138,7 @@ export const submitRegistration = async (formData: RegistrationFormData): Promis
 
     const response = await fetch(`${API_BASE_URL}/registration`, {
       method: 'POST',
+      headers: getDefaultHeaders(),
       body: formDataToSend
     });
 
@@ -128,7 +148,7 @@ export const submitRegistration = async (formData: RegistrationFormData): Promis
     }
 
     const result = await response.json();
-    return { success: true, data: result };
+    return { success: true, data: result.data }; // Correctly unwrap the data field
   } catch (error) {
     console.error('Error submitting registration:', error);
     return {
