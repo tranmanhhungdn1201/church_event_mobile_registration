@@ -1,4 +1,4 @@
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { AlertCircleIcon, InfoIcon, CheckIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formStyles } from '../../utils/styles';
@@ -17,15 +17,7 @@ export const Step6Accommodation = () => {
   const needAssistance = watch('accommodation.needAssistance');
   const agreeToTerms = watch('accommodation.agreeToTerms');
   
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
+
 
   return (
     <div className={formStyles.section}>
@@ -172,53 +164,7 @@ export const Step6Accommodation = () => {
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="border-t border-slate-100 pt-8 space-y-6">
-        <div className="space-y-2">
-          <label htmlFor="sponsorshipAmount" className={formStyles.label}>
-            {t('step6.sponsorshipAmount')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <span className="text-slate-500 font-medium">₫</span>
-            </div>
-            <Controller 
-              control={control} 
-              name="accommodation.sponsorshipAmount" 
-              render={({ field }) => (
-                <input 
-                  type="text" 
-                  id="sponsorshipAmount" 
-                  className={`${formStyles.input} pl-8 font-medium`}
-                  placeholder="0" 
-                  value={field.value ? formatCurrency(field.value).replace('₫', '').trim() : ''} 
-                  onChange={e => {
-                    // Remove non-numeric characters and parse as number
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    field.onChange(value ? parseInt(value, 10) : null);
-                  }} 
-                />
-              )} 
-            />
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <label htmlFor="bankNote" className={formStyles.label}>
-            {t('step6.bankNote')}
-          </label>
-          <textarea 
-            id="bankNote" 
-            {...register('accommodation.bankNote')} 
-            rows={2} 
-            className={formStyles.textarea}
-            placeholder={t('step6.bankNotePlaceholder')} 
-          />
-        </div>
-      </div>
-
-      <div className="border-t border-slate-100 pt-6">
         <label className={`flex items-start p-4 rounded-xl border transition-all duration-200 cursor-pointer ${agreeToTerms ? 'bg-[#2E5AAC]/5 border-[#2E5AAC]/30' : 'bg-white border-slate-200 hover:border-slate-300'}`}>
           <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-all duration-200 flex-shrink-0 ${agreeToTerms ? 'bg-[#2E5AAC] border-[#2E5AAC]' : 'bg-white border-slate-300'}`}>
             <input 

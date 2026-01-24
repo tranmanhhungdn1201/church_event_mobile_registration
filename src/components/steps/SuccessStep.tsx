@@ -5,10 +5,12 @@ import { ReviewStep } from './ReviewStep';
 
 interface SuccessStepProps {
   formData: any;
+  onReset?: () => void;
 }
 
 export const SuccessStep = ({
-  formData
+  formData,
+  onReset
 }: SuccessStepProps) => {
   const { t } = useLanguage();
   const [showDetails, setShowDetails] = useState(false);
@@ -82,6 +84,16 @@ export const SuccessStep = ({
                 {t('success.joinTelegram')}
               </button>
             </div>
+          </div>
+          
+          <div className="mt-8">
+            <button
+              type="button"
+              onClick={onReset}
+              className="w-full py-3.5 px-4 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-200 transition-colors shadow-sm"
+            >
+              {t('success.backToHome')}
+            </button>
           </div>
         </>
       )}

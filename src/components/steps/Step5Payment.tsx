@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { CalendarIcon, CopyIcon, CheckIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon, ReceiptIcon, AlertCircleIcon } from 'lucide-react';
+import { CalendarIcon, CopyIcon, CheckIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon, ReceiptIcon, AlertCircleIcon, DownloadIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formStyles } from '../../utils/styles';
@@ -53,6 +53,7 @@ export const Step5Payment = () => {
   const attendingWithSpouse = watch('familyParticipation.attendingWithSpouse');
   const spouseWantsTShirt = watch('familyParticipation.spouseWantsTShirt');
   const children = watch('familyParticipation.children') || [];
+  const sponsorshipAmount = watch('accommodation.sponsorshipAmount') || 0;
   
   const SHIRT_PRICE = 100000;
   
@@ -143,6 +144,11 @@ export const Step5Payment = () => {
       });
       breakdown.total += totalShirtCost;
     }
+
+    // Sponsorship
+    if (sponsorshipAmount > 0) {
+      breakdown.total += Number(sponsorshipAmount);
+    }
     
     return breakdown;
   };
@@ -220,8 +226,65 @@ export const Step5Payment = () => {
     setUploadError(null);
   };
 
+  const handleDownloadQR = () => {
+    const link = document.createElement('a');
+    link.href = '/assets/payment-qr.png';
+    link.download = 'Church_Event_Payment_QR.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className={formStyles.section}>
+      {/* Sponsorship Section */}
+      <div className="space-y-6 mb-8 border-b border-slate-100 pb-8">
+        <div className="space-y-2">
+          <label htmlFor="sponsorshipAmount" className={formStyles.label}>
+            {t('step6.sponsorshipAmount')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
+          </label>
+          <p className="text-sm text-slate-600 mb-2 whitespace-pre-line">
+            {t('step6.sponsorshipDescription')}
+          </p>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+              <span className="text-slate-500 font-medium">₫</span>
+            </div>
+            <Controller 
+              control={control} 
+              name="accommodation.sponsorshipAmount" 
+              render={({ field }) => (
+                <input 
+                  type="text" 
+                  id="sponsorshipAmount" 
+                  className={`${formStyles.input} pl-8 font-medium`}
+                  placeholder="0" 
+                  value={field.value ? formatCurrency(field.value).replace('₫', '').trim() : ''} 
+                  onChange={e => {
+                    // Remove non-numeric characters and parse as number
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    field.onChange(value ? parseInt(value, 10) : null);
+                  }} 
+                />
+              )} 
+            />
+          </div>
+        </div>
+        
+        <div className="space-y-2">
+          <label htmlFor="bankNote" className={formStyles.label}>
+            {t('step6.bankNote')}
+          </label>
+          <textarea 
+            id="bankNote" 
+            {...register('accommodation.bankNote')} 
+            rows={2} 
+            className={formStyles.textarea}
+            placeholder={t('step6.bankNotePlaceholder')} 
+          />
+        </div>
+      </div>
+
       {/* Payment Summary */}
       <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
         <h3 className="text-lg font-semibold text-slate-800 flex items-center mb-4">
@@ -265,6 +328,23 @@ export const Step5Payment = () => {
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Sponsorship cost */}
+        {sponsorshipAmount > 0 && (
+          <div className="mb-4">
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t('step6.sponsorshipAmount')}</h4>
+            <div className="space-y-3">
+              <div className="flex justify-between items-start py-3 px-4 bg-white rounded-xl border border-slate-100 shadow-sm">
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{t('step6.sponsorshipAmount')}</p>
+                </div>
+                <span className="text-sm font-semibold text-[#2E5AAC]">
+                  {formatCurrency(sponsorshipAmount)}
+                </span>
+              </div>
             </div>
           </div>
         )}
@@ -429,6 +509,24 @@ export const Step5Payment = () => {
                 Name_Church_Name
               </code>
             </div>
+
+            <div className="flex flex-col items-center justify-center py-2">
+              <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm">
+                <img 
+                  src="/assets/payment-qr.png" 
+                  alt="Payment QR Code" 
+                  className="max-w-[200px] h-auto rounded-lg"
+                />
+              </div>
+              <button 
+                type="button"
+                onClick={handleDownloadQR}
+                className="mt-3 flex items-center text-sm font-medium text-[#2E5AAC] hover:text-[#254a8f] transition-colors py-2 px-4 rounded-lg hover:bg-blue-50"
+              >
+                <DownloadIcon className="w-4 h-4 mr-2" />
+                {t('step5.downloadQR')}
+              </button>
+            </div>
             
             <div className="space-y-3">
               <p className="text-sm font-semibold text-slate-800">{t('step5.accountInfo')}:</p>
@@ -436,8 +534,8 @@ export const Step5Payment = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-slate-500">{t('step5.bankName')}:</span>
                   <div className="flex items-center">
-                    <span className="text-sm font-medium text-slate-900">Vietcombank</span>
-                    <button type="button" onClick={() => handleCopy('Vietcombank', 'bankName')} className="ml-2 p-1.5 text-slate-400 hover:text-[#2E5AAC] hover:bg-blue-50 rounded-md transition-colors">
+                    <span className="text-sm font-medium text-slate-900">{t('step5.bankNameValue')}</span>
+                    <button type="button" onClick={() => handleCopy(t('step5.bankNameValue'), 'bankName')} className="ml-2 p-1.5 text-slate-400 hover:text-[#2E5AAC] hover:bg-blue-50 rounded-md transition-colors">
                       {copiedItems.bankName ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
                     </button>
                   </div>
@@ -445,8 +543,8 @@ export const Step5Payment = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-slate-500">{t('step5.accountNumber')}:</span>
                   <div className="flex items-center">
-                    <span className="text-sm font-medium text-slate-900">1023456789</span>
-                    <button type="button" onClick={() => handleCopy('1023456789', 'accountNumber')} className="ml-2 p-1.5 text-slate-400 hover:text-[#2E5AAC] hover:bg-blue-50 rounded-md transition-colors">
+                    <span className="text-sm font-medium text-slate-900">{t('step5.accountNumberValue')}</span>
+                    <button type="button" onClick={() => handleCopy(t('step5.accountNumberValue'), 'accountNumber')} className="ml-2 p-1.5 text-slate-400 hover:text-[#2E5AAC] hover:bg-blue-50 rounded-md transition-colors">
                       {copiedItems.accountNumber ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
                     </button>
                   </div>
@@ -455,9 +553,9 @@ export const Step5Payment = () => {
                   <span className="text-sm text-slate-500">{t('step5.accountHolder')}:</span>
                   <div className="flex items-center">
                     <span className="text-sm font-medium text-slate-900">
-                      Church Anniversary
+                      {t('step5.accountHolderValue')}
                     </span>
-                    <button type="button" onClick={() => handleCopy('Church Anniversary', 'accountHolder')} className="ml-2 p-1.5 text-slate-400 hover:text-[#2E5AAC] hover:bg-blue-50 rounded-md transition-colors">
+                    <button type="button" onClick={() => handleCopy(t('step5.accountHolderValue'), 'accountHolder')} className="ml-2 p-1.5 text-slate-400 hover:text-[#2E5AAC] hover:bg-blue-50 rounded-md transition-colors">
                       {copiedItems.accountHolder ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
                     </button>
                   </div>

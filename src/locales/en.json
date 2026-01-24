@@ -184,10 +184,14 @@
     "transferDate": "Transfer Date",
     "bankInstructions": "Bank Transfer Instructions",
     "bankSyntax": "Please use the following syntax for your transfer description: Name_Church_Name",
+    "downloadQR": "Download QR Code",
     "accountInfo": "Account Information",
     "accountNumber": "Account Number",
     "accountHolder": "Account Name",
     "bankName": "Bank",
+    "accountNumberValue": "000001228176",
+    "accountHolderValue": "Nguyen Thi Van Anh",
+    "bankNameValue": "Southeast Asia Commercial Joint Stock Bank (SeABank)",
     "uploadReceipt": "Upload Transfer Receipt",
     "receiptNote": "Upload receipt image (optional)",
     "paymentSummary": "Payment Summary",
@@ -224,9 +228,10 @@
       "considering": "Considering"
     },
     "sponsorshipAmount": "Sponsorship Amount",
+    "sponsorshipDescription": "To contribute to the 10th anniversary program “From the ocean, You call my name” to be celebrated fully in God's grace, and to share love with brothers and sisters in need of support, the Da Nang Family looks forward to receiving your cooperation and sponsorship within your ability.\nSincerely grateful for your generosity.",
     "sponsorshipPlaceholder": "Enter sponsorship amount",
-    "bankNote": "Bank Note & Transfer Date (if sponsoring)",
-    "bankNotePlaceholder": "e.g., Transfer date, reference number",
+    "bankNote": "Message for sponsorship (optional)",
+    "bankNotePlaceholder": "e.g., Message, wish...",
     "agreeToTerms": "I agree to the event terms and conditions",
     "termsDescription": "By checking this box, you agree to follow the church anniversary event guidelines and code of conduct.",
     "termsRequired": "You must agree to the terms to continue",
@@ -304,7 +309,8 @@
     "hideDetails": "Hide Details",
     "contactInfo": "Contact Information",
     "phone": "Phone: 0123 456 789",
-    "email": "Email: info@church.com"
+    "email": "Email: info@church.com",
+    "backToHome": "Back to Home"
   },
   "validation": {
     "required": "This field is required",

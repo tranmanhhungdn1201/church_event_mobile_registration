@@ -134,6 +134,59 @@ const getSteps = (t: (key: string) => string) => [{
   title: t('navigation.step7'),
   component: ReviewStep
 }];
+
+
+const DEFAULT_VALUES: any = {
+  personalInfo: {
+    fullName: '',
+    gender: 'male',
+    phoneNumber: '',
+    email: '',
+    church: 'Cần Thơ',
+    maritalStatus: ''
+  },
+  familyParticipation: {
+    attendingWithSpouse: false,
+    spouseName: '',
+    spousePhone: '',
+    spouseWantsTShirt: false,
+    spouseTShirtSize: 'M',
+    numberOfChildren: 0,
+    children: []
+  },
+  travelSchedule: {
+    noTravelInfo: false,
+    flightCode: ''
+  },
+  packageSelection: {
+    mainPackage: 'A',
+    spousePackage: 'A',
+    childrenPackages: [],
+    mainWantsTShirt: false,
+    mainTShirtSize: 'M',
+    wantSouvenirShirt: false,
+    shirts: [],
+    wantMagazine: false,
+    magazineQuantity: 1
+  },
+  payment: {
+    status: 'willPayLater',
+    transferDate: undefined,
+    receiptImage: null
+  },
+  accommodation: {
+    stayStatus: 'notArranged',
+    accommodationInfo: '',
+    needAssistance: false,
+    assistanceDetails: '',
+    participateBigGame: 'considering',
+    participateSports: 'considering',
+    agreeToTerms: false,
+    sponsorshipAmount: undefined,
+    bankNote: ''
+  }
+};
+
 export const RegistrationForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
@@ -150,43 +203,7 @@ export const RegistrationForm = () => {
   // Initialize form with default values and validation schema
   const methods = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
-    defaultValues: {
-      personalInfo: {
-        gender: 'male',
-        church: 'Cần Thơ'
-      },
-      familyParticipation: {
-        attendingWithSpouse: false,
-        spouseWantsTShirt: false,
-        spouseTShirtSize: 'M',
-        numberOfChildren: 0,
-        children: []
-      },
-      travelSchedule: {
-        noTravelInfo: false
-      },
-      packageSelection: {
-        mainPackage: 'A',
-        spousePackage: 'A',
-        childrenPackages: [],
-        mainWantsTShirt: false,
-        mainTShirtSize: 'M',
-        wantSouvenirShirt: false,
-        shirts: [],
-        wantMagazine: false,
-        magazineQuantity: 1
-      },
-      payment: {
-        status: 'willPayLater'
-      },
-      accommodation: {
-        stayStatus: 'notArranged',
-        needAssistance: false,
-        participateBigGame: 'considering',
-        participateSports: 'considering',
-        agreeToTerms: false
-      }
-    }
+    defaultValues: DEFAULT_VALUES
   });
   // Helper function to convert and load form data
   const loadFormData = (data: RegistrationFormData) => {
@@ -481,10 +498,17 @@ export const RegistrationForm = () => {
   
   const progress = Math.round((effectiveCurrentStep / effectiveTotalSteps) * 100);
   
+  const handleReset = () => {
+    methods.reset(DEFAULT_VALUES);
+    setIsComplete(false);
+    setCurrentStep(1);
+    window.scrollTo(0, 0);
+  };
+
   // Render current step component
   const renderCurrentStep = () => {
     if (isComplete) {
-      return <SuccessStep formData={methods.getValues()} />;
+      return <SuccessStep formData={methods.getValues()} onReset={handleReset} />;
     }
     
     const StepComponent = steps[currentStep - 1]?.component;
