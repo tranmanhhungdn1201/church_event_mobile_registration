@@ -72,7 +72,7 @@ This flow supports **Vietnamese locale** and can be integrated into an existing 
 **UI Components**
 - Package cards *(A / B / C)* showing benefits + price
 - Select package and quantity *(stepper)*
-- Checkbox: “Register for souvenir shirt (100k/each)”
+- Checkbox: “Register for souvenir shirt (160k/each)”
   - If checked → select sizes & quantities
 - Sticky footer shows subtotal
 - CTA: Continue

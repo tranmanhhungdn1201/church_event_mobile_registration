@@ -192,48 +192,52 @@ Hoặc nếu không có thông tin:
 
 ---
 
-## 4. packageSelection (Gói tham gia & Áo lưu niệm)
+## 4. packageSelection (Gói tham gia & Áo lưu niệm & Tạp chí)
 
 **Required:** ✅
 
 ```json
 {
-  "mainPackage": "A" | "B" | "C",
-  "spousePackage": "A" | "B" | "C" (optional),
-  "childrenPackages": [
+  "adultPackages": [
     {
-      "childIndex": number,
-      "package": "A" | "B" | "C"
-    }
-  ] (optional),
-  "wantSouvenirShirt": boolean (default: false),
-  "shirts": [
-    {
-      "size": "S" | "M" | "L" | "XL" | "XXL",
+      "id": "ADULT_A" | "ADULT_B" | "ADULT_C" | "ADULT_D",
       "quantity": number (min: 1)
     }
-  ] (optional),
-  "wantMagazine": boolean (default: false),
-  "magazineQuantity": number (default: 1)
+  ],
+  "childPackages": [
+    {
+      "id": "CHILD_A" | "CHILD_B" | "CHILD_C",
+      "quantity": number (min: 1)
+    }
+  ],
+  "shirts": [
+    {
+      "size": "S" | "M" | "L" | "XL" | "2XL" | "3XL" | "4XL",
+      "quantity": number (min: 1)
+    }
+  ],
+  "magazineQuantity": share (min: 0)
 }
 ```
+
+**Lưu ý:**
+- Các mảng `adultPackages`, `childPackages`, `shirts` chỉ chứa những mục có số lượng > 0.
 
 **Ví dụ:**
 ```json
 {
-  "mainPackage": "B",
-  "spousePackage": "A",
-  "childrenPackages": [
+  "adultPackages": [
     {
-      "childIndex": 0,
-      "package": "A"
-    },
-    {
-      "childIndex": 1,
-      "package": "A"
+      "id": "ADULT_A",
+      "quantity": 2
     }
   ],
-  "wantSouvenirShirt": true,
+  "childPackages": [
+    {
+      "id": "CHILD_A",
+      "quantity": 1
+    }
+  ],
   "shirts": [
     {
       "size": "M",
@@ -243,7 +247,8 @@ Hoặc nếu không có thông tin:
       "size": "L",
       "quantity": 1
     }
-  ]
+  ],
+  "magazineQuantity": 1
 }
 ```
 
@@ -284,33 +289,28 @@ Hoặc nếu chưa thanh toán:
 
 ---
 
-## 6. accommodation (Chỗ ở & Tài trợ)
+## 6. accommodation (Hỗ trợ & Tài trợ & Hoạt động)
 
-**Required:** ✅
+**Required:** ❌ (Optional)
 
 ```json
 {
-  "stayStatus": "arranged" | "notArranged" (optional),
-  "accommodationInfo": "string (optional)",
-  "needAssistance": boolean (optional),
   "assistanceDetails": "string (optional)",
   "participateBigGame": "yes" | "no" | "considering" (optional),
   "participateSports": "yes" | "no" | "considering" (optional),
   "sponsorshipAmount": number (optional),
-  "bankNote": "string (optional)",
-  "agreeToTerms": boolean (required)
+  "bankNote": "string (optional)"
 }
 ```
 
 **Ví dụ:**
 ```json
 {
-  "stayStatus": "arranged",
-  "accommodationInfo": "Khách sạn ABC, 123 Đường XYZ",
-  "needAssistance": false,
+  "assistanceDetails": "Cần tìm khách sạn gần hội thánh",
+  "participateBigGame": "yes",
+  "participateSports": "considering",
   "sponsorshipAmount": 500000,
-  "bankNote": "Chuyển khoản ngày 20/12/2024, mã tham chiếu: ABC123",
-  "agreeToTerms": true
+  "bankNote": "Chuyển khoản ngày 20/12/2024, mã tham chiếu: ABC123"
 }
 ```
 
@@ -398,12 +398,11 @@ Content-Type: multipart/form-data
     "receiptImage": null
   },
   "accommodation": {
-    "stayStatus": "arranged",
-    "accommodationInfo": "Khách sạn ABC",
-    "needAssistance": false,
+    "assistanceDetails": "Cần tìm khách sạn gần hội thánh",
+    "participateBigGame": "yes",
+    "participateSports": "considering",
     "sponsorshipAmount": null,
-    "bankNote": null,
-    "agreeToTerms": true
+    "bankNote": null
   },
   "isDraft": false,
   "submittedAt": "2024-12-20T15:00:00.000Z"
@@ -455,7 +454,6 @@ Content-Type: multipart/form-data
 - `personalInfo`: Tất cả field required
 - `packageSelection.mainPackage`: Required
 - `payment.status`: Required
-- `accommodation.agreeToTerms`: Must be `true`
 - Nếu `payment.status === "paid"`:
   - `payment.transferDate`: Required
   - `receiptImage`: Required (file phải được gửi trong FormData)

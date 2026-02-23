@@ -20,7 +20,7 @@ export const Step1PersonalInfo = () => {
     name: 'personalInfo.gender'
   });
   
-  const churches = ['Cần Thơ', 'Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Bình Dương', 'Other'];
+  const churches = ['Cần Thơ', 'Hồ Chí Minh', 'Hà Nội', 'Bình Dương', 'Other'];
   const maritalStatusOptions = [
     { value: 'single', label: t('step1.maritalStatusOptions.single') },
     { value: 'married', label: t('step1.maritalStatusOptions.married') },

@@ -32,14 +32,16 @@ const createRegistrationSchema = () => z.object({
     attendingWithSpouse: z.boolean().optional(),
     spouseName: z.string().optional(),
     spousePhone: z.string().optional(),
-    spouseWantsTShirt: z.boolean().optional().default(false),
-    spouseTShirtSize: z.enum(['S', 'M', 'L', 'XL', 'XXL']).optional(),
     numberOfChildren: z.number().min(0).default(0),
+    counts: z.object({
+      above11: z.number().min(0).default(0),
+      between6And11: z.number().min(0).default(0),
+      under6: z.number().min(0).default(0)
+    }).optional(),
     children: z.array(z.object({
       name: z.string(),
       age: z.number().min(0).max(18),
-      wantsTShirt: z.boolean().default(false),
-      tShirtSize: z.enum(['S', 'M', 'L', 'XL', 'XXL']).optional()
+      group: z.string().optional()
     })).optional()
   }),
   // Step 4: Travel Schedule (now optional)
@@ -59,21 +61,28 @@ const createRegistrationSchema = () => z.object({
   }).optional(),
   // Step 3: Package & Souvenir
   packageSelection: z.object({
-    mainPackage: z.enum(['A', 'B', 'C']),
-    spousePackage: z.enum(['A', 'B', 'C']).optional(),
-    childrenPackages: z.array(z.object({
-      childIndex: z.number(),
-      package: z.enum(['A', 'B', 'C'])
-    })).optional(),
-    mainWantsTShirt: z.boolean().default(false),
-    mainTShirtSize: z.enum(['S', 'M', 'L', 'XL', 'XXL']).optional(),
-    wantSouvenirShirt: z.boolean().default(false),
+    adultPackages: z.array(z.object({
+      id: z.string(),
+      quantity: z.number().min(0)
+    })).default([]),
+    childPackages: z.array(z.object({
+      id: z.string(),
+      quantity: z.number().min(0)
+    })).default([]),
     shirts: z.array(z.object({
-      size: z.enum(['S', 'M', 'L', 'XL', 'XXL']),
+      size: z.enum(['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL']),
       quantity: z.number().min(1)
     })).optional(),
-    wantMagazine: z.boolean().default(false).optional(),
-    magazineQuantity: z.number().min(1).default(1).optional()
+    magazineQuantity: z.number().min(0).default(0).optional()
+  }).refine((data) => {
+    // Ensure at least one package is selected
+    const totalPackages = 
+      data.adultPackages.reduce((sum, pkg) => sum + pkg.quantity, 0) + 
+      data.childPackages.reduce((sum, pkg) => sum + pkg.quantity, 0);
+    return totalPackages > 0;
+  }, {
+    message: "Vui lòng chọn ít nhất một gói tham gia",
+    path: ["adultPackages"]
   }),
   // Step 5: Payment
   payment: z.object({
@@ -92,15 +101,11 @@ const createRegistrationSchema = () => z.object({
   }),
   // Step 6: Accommodation & Sponsorship (now optional)
   accommodation: z.object({
-    stayStatus: z.enum(['arranged', 'notArranged']).optional(),
-    accommodationInfo: z.string().optional(),
-    needAssistance: z.boolean().optional(),
     assistanceDetails: z.string().optional(),
     participateBigGame: z.enum(['yes', 'no', 'considering']).optional(),
     participateSports: z.enum(['yes', 'no', 'considering']).optional(),
     sponsorshipAmount: z.number().optional(),
-    bankNote: z.string().optional(),
-    agreeToTerms: z.boolean()
+    bankNote: z.string().optional()
   }),
   isDraft: z.boolean().optional()
 });
@@ -123,11 +128,11 @@ const getSteps = (t: (key: string) => string) => [{
   component: Step4Package
 }, {
   id: 5,
-  title: t('navigation.step5'),
+  title: t('navigation.step5'), // Payment
   component: Step5Payment
 }, {
   id: 6,
-  title: t('navigation.step6'),
+  title: t('navigation.step6'), // Accomodation & Sponsorship
   component: Step6Accommodation
 }, {
   id: 7,
@@ -149,9 +154,12 @@ const DEFAULT_VALUES: any = {
     attendingWithSpouse: false,
     spouseName: '',
     spousePhone: '',
-    spouseWantsTShirt: false,
-    spouseTShirtSize: 'M',
     numberOfChildren: 0,
+    counts: {
+      above11: 0,
+      between6And11: 0,
+      under6: 0
+    },
     children: []
   },
   travelSchedule: {
@@ -159,30 +167,20 @@ const DEFAULT_VALUES: any = {
     flightCode: ''
   },
   packageSelection: {
-    mainPackage: 'A',
-    spousePackage: 'A',
-    childrenPackages: [],
-    mainWantsTShirt: false,
-    mainTShirtSize: 'M',
-    wantSouvenirShirt: false,
+    adultPackages: [],
+    childPackages: [],
     shirts: [],
-    wantMagazine: false,
-    magazineQuantity: 1
+    magazineQuantity: 0
   },
   payment: {
     status: 'willPayLater',
-    transferDate: undefined,
+    transferDate: new Date(),
     receiptImage: null
   },
   accommodation: {
-    stayStatus: 'notArranged',
-    accommodationInfo: '',
-    needAssistance: false,
     assistanceDetails: '',
     participateBigGame: 'considering',
     participateSports: 'considering',
-    agreeToTerms: false,
-    sponsorshipAmount: undefined,
     bankNote: ''
   }
 };
@@ -332,7 +330,7 @@ export const RegistrationForm = () => {
         isValid = await methods.trigger('packageSelection');
         break;
       case 5:
-        // Validate payment step
+        // Payment step
         const paymentData = methods.getValues('payment');
         if (paymentData.status === 'willPayLater') {
           isValid = await methods.trigger('payment.status');
@@ -371,6 +369,7 @@ export const RegistrationForm = () => {
         }
         break;
       case 6:
+        // Accommodation & Sponsorship
         isValid = await methods.trigger('accommodation');
         break;
       case 7:

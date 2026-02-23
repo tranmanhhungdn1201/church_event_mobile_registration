@@ -26,56 +26,43 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
   };
   // Calculate total
   const calculatePackageTotal = () => {
-    const packagePrices = {
-      A: 500000,
-      B: 800000,
-      C: 1200000
+    const packagePrices: Record<string, number> = {
+      ADULT_A: 2000000,
+      ADULT_B: 1700000,
+      ADULT_C: 1000000,
+      ADULT_D: 600000
+    };
+    const childPackagePrices: Record<string, number> = {
+      CHILD_A: 700000,
+      CHILD_B: 400000,
+      CHILD_C: 200000
     };
     
     let total = 0;
     
-    // Main registrant package
-    const mainPackage = formData.packageSelection?.mainPackage;
-    if (mainPackage) {
-      total += packagePrices[mainPackage as keyof typeof packagePrices] || 0;
-    }
-    
-    // Spouse package
-    const spousePackage = formData.packageSelection?.spousePackage;
-    if (formData.familyParticipation?.attendingWithSpouse && spousePackage) {
-      total += packagePrices[spousePackage as keyof typeof packagePrices] || 0;
-    }
-    
-    // Children packages
-    if (formData.packageSelection?.childrenPackages) {
-      formData.packageSelection.childrenPackages.forEach((childPkg: any) => {
-        total += packagePrices[childPkg.package as keyof typeof packagePrices] || 0;
+    // Adult packages
+    if (formData.packageSelection?.adultPackages) {
+      formData.packageSelection.adultPackages.forEach((pkg: any) => {
+        total += pkg.quantity * (packagePrices[pkg.id] || 0);
       });
     }
-    
-    // T-shirts for main registrant
-    if (formData.packageSelection?.mainWantsTShirt) {
-      total += 100000;
-    }
-    
-    // T-shirts for spouse
-    if (formData.familyParticipation?.attendingWithSpouse && formData.familyParticipation?.spouseWantsTShirt) {
-      total += 100000;
-    }
-    
-    // T-shirts for children
-    if (formData.familyParticipation?.children) {
-      formData.familyParticipation.children.forEach((child: any) => {
-        if (child.wantsTShirt) {
-          total += 100000;
-        }
+
+    // Child packages
+    if (formData.packageSelection?.childPackages) {
+       formData.packageSelection.childPackages.forEach((pkg: any) => {
+        total += pkg.quantity * (childPackagePrices[pkg.id] || 0);
       });
     }
-    
-    // Additional souvenir shirts
+
+    // Shirts
     const shirtTotal = (formData.packageSelection?.shirts || []).reduce((sum: number, shirt: any) => {
-      return sum + shirt.quantity * 100000; // 100,000 VND per shirt
+      return sum + shirt.quantity * 160000; // 160,000 VND per shirt
     }, 0);
+    
+    // Magazine
+    if (formData.packageSelection?.wantMagazine) {
+        total += (formData.packageSelection.magazineQuantity || 1) * 180000;
+    }
     
     return total + shirtTotal;
   };
@@ -273,71 +260,57 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
         </div>
         <div className="p-5 space-y-4">
           <div className="space-y-4">
-             <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-               <div>
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.selectedPackage')}</span>
-                  <span className="text-sm font-medium text-slate-900">{t('review.values.package')} {formData.packageSelection?.mainPackage || 'N/A'}</span>
+             <div className="pb-3 border-b border-slate-50">
+               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-2">{t('step4.adultPackages')}</span>
+               <div className="space-y-2">
+                 {formData.packageSelection?.adultPackages?.map((pkg: any) => {
+                    if (pkg.quantity > 0) {
+                        return (
+                             <div key={pkg.id} className="flex justify-between items-center text-sm">
+                                <span className="text-slate-700">
+                                    {t(`step4.package${pkg.id.replace('ADULT_', '')}.title`)}
+                                </span>
+                                <span className="font-medium text-slate-900">x{pkg.quantity}</span>
+                            </div>
+                        )
+                    }
+                    return null;
+                 })}
+                  {(!formData.packageSelection?.adultPackages || formData.packageSelection.adultPackages.every((p:any) => p.quantity === 0)) && (
+                      <span className="text-sm text-slate-400 italic">None selected</span>
+                  )}
                </div>
              </div>
 
-            {/* Show spouse package if attending with spouse */}
-            {formData.familyParticipation?.attendingWithSpouse && formData.packageSelection?.spousePackage && (
-               <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                <div>
-                   <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.spousePackage')}</span>
-                   <span className="text-sm font-medium text-slate-900">{t('review.values.package')} {formData.packageSelection.spousePackage}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Show children packages if any */}
-            {formData.packageSelection?.childrenPackages && formData.packageSelection.childrenPackages.length > 0 && (
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('review.fields.childrenPackages')}</span>
-                <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  {formData.packageSelection.childrenPackages.map((childPkg: any, index: number) => (
-                    <div key={index} className="flex justify-between border-b border-slate-200 last:border-0 pb-2 last:pb-0">
-                      <span className="text-sm text-slate-600">
-                        {formData.familyParticipation?.children?.[childPkg.childIndex]?.name || `Child ${childPkg.childIndex + 1}`}:
-                      </span>
-                      <span className="text-sm font-medium text-slate-900">
-                        {t('review.values.package')} {childPkg.package}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Show child packages */}
+            <div className="pb-3 border-b border-slate-50">
+                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-2">{t('step4.childPackages')}</span>
+                 <div className="space-y-2">
+                 {formData.packageSelection?.childPackages?.map((pkg: any) => {
+                    if (pkg.quantity > 0) {
+                        return (
+                             <div key={pkg.id} className="flex justify-between items-center text-sm">
+                                <span className="text-slate-700">
+                                    {t(`step4.childPackage${pkg.id.replace('CHILD_', '')}.title`)}
+                                </span>
+                                <span className="font-medium text-slate-900">x{pkg.quantity}</span>
+                            </div>
+                        )
+                    }
+                     return null;
+                 })}
+                  {(!formData.packageSelection?.childPackages || formData.packageSelection.childPackages.every((p:any) => p.quantity === 0)) && (
+                      <span className="text-sm text-slate-400 italic">None selected</span>
+                  )}
+               </div>
+            </div>
 
             {/* Show T-shirt selections */}
-            {((formData.packageSelection?.mainWantsTShirt) || 
-              (formData.familyParticipation?.attendingWithSpouse && formData.familyParticipation?.spouseWantsTShirt) ||
-              (formData.familyParticipation?.children && formData.familyParticipation.children.some((c: any) => c.wantsTShirt)) ||
-              (formData.packageSelection?.shirts && formData.packageSelection.shirts.length > 0)) && (
+            {(formData.packageSelection?.shirts && formData.packageSelection.shirts.length > 0) && (
               <div className="space-y-2">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('review.fields.souvenirShirts')}</span>
                 <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  {formData.packageSelection?.mainWantsTShirt && (
-                    <div className="flex justify-between border-b border-slate-200 last:border-0 pb-2 last:pb-0">
-                      <span className="text-sm text-slate-600">Main ({formData.packageSelection?.mainTShirtSize}):</span>
-                      <span className="text-sm font-medium text-slate-900">1 {t('review.values.pcs')}</span>
-                    </div>
-                  )}
-                  {formData.familyParticipation?.attendingWithSpouse && formData.familyParticipation?.spouseWantsTShirt && (
-                    <div className="flex justify-between border-b border-slate-200 last:border-0 pb-2 last:pb-0">
-                      <span className="text-sm text-slate-600">Spouse ({formData.familyParticipation?.spouseTShirtSize}):</span>
-                      <span className="text-sm font-medium text-slate-900">1 {t('review.values.pcs')}</span>
-                    </div>
-                  )}
-                  {formData.familyParticipation?.children && formData.familyParticipation.children.map((child: any, index: number) => 
-                    child.wantsTShirt && (
-                      <div key={index} className="flex justify-between border-b border-slate-200 last:border-0 pb-2 last:pb-0">
-                        <span className="text-sm text-slate-600">{child.name} ({child.tShirtSize}):</span>
-                        <span className="text-sm font-medium text-slate-900">1 {t('review.values.pcs')}</span>
-                      </div>
-                    )
-                  )}
-                  {formData.packageSelection?.shirts && formData.packageSelection.shirts.map((shirt: any, index: number) => 
+                  {formData.packageSelection.shirts.map((shirt: any, index: number) => 
                     <div key={index} className="flex justify-between border-b border-slate-200 last:border-0 pb-2 last:pb-0">
                       <span className="text-sm text-slate-600">{t('review.values.size')} {shirt.size}:</span>
                       <span className="text-sm font-medium text-slate-900">
@@ -345,6 +318,21 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                       </span>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Show Magazine selections */}
+            {(formData.packageSelection?.magazineQuantity && formData.packageSelection.magazineQuantity > 0) && (
+              <div className="space-y-2 pt-2">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('step4.magazine')}</span>
+                <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <div className="flex justify-between pb-2">
+                      <span className="text-sm text-slate-600">{t('step4.registerMagazine')}:</span>
+                      <span className="text-sm font-medium text-slate-900">
+                        {formData.packageSelection.magazineQuantity} {t('review.values.pcs')}
+                      </span>
+                    </div>
                 </div>
               </div>
             )}
@@ -425,27 +413,29 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
         </div>
         <div className="p-5 space-y-4">
           <div className="grid grid-cols-1 gap-4">
-            <div>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.accommodation')}</span>
-              <span className="text-sm font-medium text-slate-900">
-                {formData.accommodation.stayStatus === 'arranged' ? t('review.values.alreadyArranged') : t('review.values.notArranged')}
-              </span>
-            </div>
-            
-            {formData.accommodation.stayStatus === 'arranged' && formData.accommodation.accommodationInfo && (
+            {formData.accommodation.assistanceDetails && (
               <div>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.details')}</span>
-                <p className="text-sm text-slate-900 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  {formData.accommodation.accommodationInfo}
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.needAssistance')}</span>
+                <p className="text-sm text-slate-900 bg-slate-50 p-3 rounded-lg border border-slate-100 break-words">
+                  {formData.accommodation.assistanceDetails}
                 </p>
               </div>
             )}
-            
-            {formData.accommodation.stayStatus === 'notArranged' && (
+
+            {formData.accommodation.participateBigGame && (
               <div>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.needAssistance')}</span>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.bigGame')}</span>
                 <span className="text-sm font-medium text-slate-900">
-                  {formData.accommodation.needAssistance ? t('common.yes') : t('common.no')}
+                   {t(`step6.participationOptions.${formData.accommodation.participateBigGame}`)}
+                </span>
+              </div>
+            )}
+            
+            {formData.accommodation.participateSports && (
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.sports')}</span>
+                <span className="text-sm font-medium text-slate-900">
+                   {t(`step6.participationOptions.${formData.accommodation.participateSports}`)}
                 </span>
               </div>
             )}

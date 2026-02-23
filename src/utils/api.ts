@@ -33,9 +33,23 @@ const prepareFormData = (formData: RegistrationFormData, isDraft: boolean = fals
       church: formData.personalInfo.church,
       maritalStatus: formData.personalInfo.maritalStatus
     },
-    familyParticipation: formData.familyParticipation,
+    familyParticipation: {
+      ...formData.familyParticipation,
+      spouseWantsTShirt: undefined,
+      spouseTShirtSize: undefined,
+      children: formData.familyParticipation.children ? formData.familyParticipation.children.map(child => ({
+        ...child,
+        wantsTShirt: undefined,
+        tShirtSize: undefined
+      })) : []
+    },
     travelSchedule: formData.travelSchedule,
-    packageSelection: formData.packageSelection,
+    packageSelection: {
+      adultPackages: formData.packageSelection.adultPackages.filter(p => p.quantity > 0),
+      childPackages: formData.packageSelection.childPackages.filter(p => p.quantity > 0),
+      shirts: formData.packageSelection.shirts ? formData.packageSelection.shirts.filter(s => s.quantity > 0) : [],
+      magazineQuantity: formData.packageSelection.magazineQuantity || 0
+    },
     payment: {
       status: formData.payment.status,
       transferDate: formData.payment.transferDate ? formData.payment.transferDate.toISOString() : null,

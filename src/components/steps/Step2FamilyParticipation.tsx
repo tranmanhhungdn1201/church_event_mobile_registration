@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useFormContext, useFieldArray, Controller } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { PlusIcon, MinusIcon, UserIcon, PhoneIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formStyles } from '../../utils/styles';
@@ -8,41 +8,89 @@ export const Step2FamilyParticipation = () => {
   const {
     register,
     control,
-    watch,
     setValue,
+    getValues
   } = useFormContext();
   const { t } = useLanguage();
-  const attendingWithSpouse = watch('familyParticipation.attendingWithSpouse');
-  const numberOfChildren = watch('familyParticipation.numberOfChildren');
-  const {
-    fields,
-    append,
-    remove
-  } = useFieldArray({
+  
+  const attendingWithSpouse = useWatch({
     control,
-    name: 'familyParticipation.children'
+    name: 'familyParticipation.attendingWithSpouse'
   });
+  
+  const counts = useWatch({
+    control,
+    name: 'familyParticipation.counts'
+  }) || { above11: 0, between6And11: 0, under6: 0 };
 
-  // Sync children array with the number of children
+  // Sync counts to children array and total number of children
   useEffect(() => {
-    const currentChildrenCount = fields.length;
-    if (numberOfChildren > currentChildrenCount) {
-      // Add more children
-      for (let i = currentChildrenCount; i < numberOfChildren; i++) {
-        append({
-          name: '',
-          age: 0,
-          wantsTShirt: false,
-          tShirtSize: 'M'
-        });
-      }
-    } else if (numberOfChildren < currentChildrenCount) {
-      // Remove excess children
-      for (let i = currentChildrenCount - 1; i >= numberOfChildren; i--) {
-        remove(i);
-      }
+    const totalChildren = (counts.above11 || 0) + (counts.between6And11 || 0) + (counts.under6 || 0);
+    setValue('familyParticipation.numberOfChildren', totalChildren);
+
+    const currentChildren = getValues('familyParticipation.children') || [];
+    const newChildren: any[] = [];
+
+    // Helper to find existing child or create new one
+    // We try to preserve existing data (like t-shirt preferences) if possible
+    // by matching based on group
+    
+    // Group 1: Above 11
+    const above11Children = currentChildren.filter((c: any) => c.group === 'above11');
+    for (let i = 0; i < (counts.above11 || 0); i++) {
+        if (i < above11Children.length) {
+            newChildren.push(above11Children[i]);
+        } else {
+            newChildren.push({
+                name: `${t('step2.ageGroups.above11')} ${i + 1}`,
+                age: 12, // Default age for this group
+                group: 'above11'
+            });
+        }
     }
-  }, [numberOfChildren, fields.length, append, remove]);
+
+    // Group 2: 6-11
+    const between6And11Children = currentChildren.filter((c: any) => c.group === 'between6And11');
+    for (let i = 0; i < (counts.between6And11 || 0); i++) {
+        if (i < between6And11Children.length) {
+            newChildren.push(between6And11Children[i]);
+        } else {
+            newChildren.push({
+                name: `${t('step2.ageGroups.between6And11')} ${i + 1}`,
+                age: 8, // Default age
+                group: 'between6And11'
+            });
+        }
+    }
+
+    // Group 3: Under 6
+    const under6Children = currentChildren.filter((c: any) => c.group === 'under6');
+    for (let i = 0; i < (counts.under6 || 0); i++) {
+        if (i < under6Children.length) {
+            newChildren.push(under6Children[i]);
+        } else {
+            newChildren.push({
+                name: `${t('step2.ageGroups.under6')} ${i + 1}`,
+                age: 3, // Default age
+                group: 'under6'
+            });
+        }
+    }
+    
+    // Update the children array
+    // Check if changed to avoid infinite loop
+    if (JSON.stringify(newChildren) !== JSON.stringify(currentChildren)) {
+        setValue('familyParticipation.children', newChildren);
+    }
+
+  }, [counts, setValue, getValues, t]);
+
+
+  const updateCount = (key: 'above11' | 'between6And11' | 'under6', delta: number) => {
+      const currentVal = counts[key] || 0;
+      const newVal = Math.max(0, currentVal + delta);
+      setValue(`familyParticipation.counts.${key}`, newVal);
+  };
 
   return (
     <div className={formStyles.section}>
@@ -104,108 +152,99 @@ export const Step2FamilyParticipation = () => {
         )}
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-slate-100">
+      <div className="space-y-6 pt-6 border-t border-slate-100">
         <label className={formStyles.label}>
           {t('step2.numberOfChildren')}
         </label>
-        <div className="flex items-center">
-          <div className="flex items-center bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-            <button 
-              type="button" 
-              onClick={() => {
-                const newValue = Math.max(0, numberOfChildren - 1);
-                setValue('familyParticipation.numberOfChildren', newValue);
-              }} 
-              className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-r border-slate-200"
-              disabled={numberOfChildren === 0}
-            >
-              <MinusIcon className="h-4 w-4 text-slate-600" />
-            </button>
-            <div className="px-6 py-2 min-w-[4rem] text-center bg-white">
-              <span className="text-lg font-semibold text-slate-900">
-                {numberOfChildren}
-              </span>
+        
+        {/* Above 11 */}
+        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div>
+                <div className="font-semibold text-slate-800">{t('step2.ageGroups.above11')}</div>
             </div>
-            <button 
-              type="button" 
-              onClick={() => {
-                setValue('familyParticipation.numberOfChildren', numberOfChildren + 1);
-              }} 
-              className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 border-l border-slate-200"
-            >
-              <PlusIcon className="h-4 w-4 text-slate-600" />
-            </button>
-          </div>
+            <div className="flex items-center bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+                <button 
+                type="button" 
+                onClick={() => updateCount('above11', -1)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-r border-slate-200"
+                disabled={!counts.above11}
+                >
+                <MinusIcon className="h-4 w-4 text-slate-600" />
+                </button>
+                <div className="px-6 py-2 min-w-[4rem] text-center bg-white">
+                <span className="text-lg font-semibold text-slate-900">
+                    {counts.above11 || 0}
+                </span>
+                </div>
+                <button 
+                type="button" 
+                onClick={() => updateCount('above11', 1)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 border-l border-slate-200"
+                >
+                <PlusIcon className="h-4 w-4 text-slate-600" />
+                </button>
+            </div>
         </div>
-      </div>
 
-      {numberOfChildren > 0 && (
-        <div className="space-y-5 animate-fade-in-up">
-          <div className="grid gap-x-4 gap-y-6">
-            {fields.map((field, index) => (
-              <div key={field.id} className="bg-slate-50 rounded-xl border border-slate-200 p-5 space-y-4 hover:shadow-md transition-shadow relative">
-                <div className="absolute top-0 right-0 p-3 opacity-10">
-                   <UserIcon className="w-16 h-16" />
+        {/* 6 - 11 */}
+        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div>
+                <div className="font-semibold text-slate-800">{t('step2.ageGroups.between6And11')}</div>
+            </div>
+            <div className="flex items-center bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+                <button 
+                type="button" 
+                onClick={() => updateCount('between6And11', -1)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-r border-slate-200"
+                disabled={!counts.between6And11}
+                >
+                <MinusIcon className="h-4 w-4 text-slate-600" />
+                </button>
+                <div className="px-6 py-2 min-w-[4rem] text-center bg-white">
+                <span className="text-lg font-semibold text-slate-900">
+                    {counts.between6And11 || 0}
+                </span>
                 </div>
-                
-                <h4 className="text-sm font-bold text-[#2E5AAC] uppercase tracking-wider border-b border-slate-200 pb-2">
-                  {t('step2.childName')} {index + 1}
-                </h4>
-                
-                <div className="grid sm:grid-cols-2 gap-4 relative z-10">
-                  <div className="space-y-1.5">
-                    <label className={formStyles.label}>
-                      {t('step2.childName')}
-                    </label>
-                    <input 
-                      type="text" 
-                      {...register(`familyParticipation.children.${index}.name`)} 
-                      className={formStyles.input}
-                      placeholder={t('step2.childNamePlaceholder')} 
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className={formStyles.label}>
-                      {t('step2.childAge')}
-                    </label>
-                    <Controller 
-                      control={control} 
-                      name={`familyParticipation.children.${index}.age`} 
-                      render={({ field }) => (
-                        <div className="flex items-center">
-                          <div className="flex items-center bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden w-full">
-                            <button 
-                              type="button" 
-                              onClick={() => field.onChange(Math.max(0, field.value - 1))} 
-                              className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors border-r border-slate-200"
-                              disabled={field.value === 0}
-                            >
-                              <MinusIcon className="h-4 w-4 text-slate-600" />
-                            </button>
-                            <div className="px-4 py-2 flex-1 text-center bg-white">
-                              <span className="text-base font-semibold text-slate-900">
-                                {field.value}
-                              </span>
-                            </div>
-                            <button 
-                              type="button" 
-                              onClick={() => field.onChange(Math.min(18, field.value + 1))} 
-                              className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors border-l border-slate-200"
-                              disabled={field.value === 18}
-                            >
-                              <PlusIcon className="h-4 w-4 text-slate-600" />
-                            </button>
-                          </div>
-                        </div>
-                      )} 
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                <button 
+                type="button" 
+                onClick={() => updateCount('between6And11', 1)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 border-l border-slate-200"
+                >
+                <PlusIcon className="h-4 w-4 text-slate-600" />
+                </button>
+            </div>
         </div>
-      )}
+
+        {/* Under 6 */}
+        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div>
+                <div className="font-semibold text-slate-800">{t('step2.ageGroups.under6')}</div>
+            </div>
+            <div className="flex items-center bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+                <button 
+                type="button" 
+                onClick={() => updateCount('under6', -1)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-r border-slate-200"
+                disabled={!counts.under6}
+                >
+                <MinusIcon className="h-4 w-4 text-slate-600" />
+                </button>
+                <div className="px-6 py-2 min-w-[4rem] text-center bg-white">
+                <span className="text-lg font-semibold text-slate-900">
+                    {counts.under6 || 0}
+                </span>
+                </div>
+                <button 
+                type="button" 
+                onClick={() => updateCount('under6', 1)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 transition-colors duration-200 border-l border-slate-200"
+                >
+                <PlusIcon className="h-4 w-4 text-slate-600" />
+                </button>
+            </div>
+        </div>
+
+      </div>
     </div>
   );
 };

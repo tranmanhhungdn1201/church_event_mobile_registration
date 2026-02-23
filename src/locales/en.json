@@ -106,8 +106,13 @@
     "childName": "Child Name",
     "childNamePlaceholder": "Enter child name",
     "childAge": "Age",
-    "childWantsTShirt": "Purchase T-shirt for this child",
-    "childTShirtSize": "Select T-shirt size"
+    "childWantsTShirt": "Buy souvenir t-shirt for this child",
+    "childTShirtSize": "Select size",
+    "ageGroups": {
+      "above11": "Above 11 years old",
+      "between6And11": "6 - 11 years old",
+      "under6": "Under 6 years old"
+    }
   },
   "step3": {
     "title": "Travel Schedule",
@@ -130,6 +135,16 @@
   },
   "step4": {
     "title": "Package & Souvenir",
+    "participantInfo": "Adults & Children > 11:",
+    "participantInstruction": "Please select adult packages for yourself, spouse, and children over 11.",
+    "childParticipantInfo": "Number of children (6-11) attending:",
+    "childParticipantInstruction": "Please select packages for all registered children.",
+    "warning": {
+      "adultCountMismatch": "Warning: You selected {{selected}} packages but only have {{expected}} registered adult(s).",
+      "childCountMismatch": "Warning: You selected {{selected}} packages but only have {{expected}} registered child(ren)."
+    },
+    "viewSizeChart": "View Size Chart",
+    "sizeChart": "Size Chart",
     "selectPackage": "Select Package",
     "packageA": {
       "title": "Package A",
@@ -162,7 +177,7 @@
     "registerMagazine": "Register for commemorative magazine",
 
     "price": "Price",
-    "shirtPrice": "100,000 VND each",
+    "shirtPrice": "160,000 VND each",
     "buyTShirt": "Buy Souvenir T-Shirt",
     "tShirtSize": "T-Shirt Size",
     "shirtSizes": {

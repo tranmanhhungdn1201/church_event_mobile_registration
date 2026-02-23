@@ -24,15 +24,27 @@
     "day3": "Ngày 3 - Lễ Bế Mạc",
     "day3Details": "Buổi lễ bế mạc, cảm tạ và tiệc chia tay",
     "packages": "Gói Tham Gia",
-    "packageA": "Gói A - Cơ Bản",
-    "packageAPrice": "500,000 VNĐ",
-    "packageADesc": "Vé tham dự, ăn trưa, tài liệu",
-    "packageB": "Gói B - Tiêu Chuẩn",
-    "packageBPrice": "800,000 VNĐ",
-    "packageBDesc": "Gói A + ăn tối, quà tặng",
-    "packageC": "Gói C - Cao Cấp",
-    "packageCPrice": "1,200,000 VNĐ",
-    "packageCDesc": "Gói B + lưu trú 1 đêm, tour",
+    "packageA": "Cầu Rồng (Gợi ý lựa chọn cho Hôn nhân)",
+    "packageAPrice": "2,000,000 VNĐ",
+    "packageADesc": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "packageB": "Cầu Sông Hàn (Gợi ý lựa chọn cho Độc thân)",
+    "packageBPrice": "1,700,000 VNĐ",
+    "packageBDesc": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "packageC": "Cầu Trần Thị Lý",
+    "packageCPrice": "1,000,000 VNĐ",
+    "packageCDesc": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "packageD": "Cầu Tiên Sơn",
+    "packageDPrice": "600,000 VNĐ",
+    "packageDDesc": "Bao gồm: Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "childPackageA": "Cầu Rồng",
+    "childPackageAPrice": "700,000 VNĐ",
+    "childPackageADesc": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "childPackageB": "Cầu Trần Thị Lý",
+    "childPackageBPrice": "400,000 VNĐ",
+    "childPackageBDesc": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "childPackageC": "Cầu Tiên Sơn",
+    "childPackageCPrice": "200,000 VNĐ",
+    "childPackageCDesc": "Bao gồm: Buổi lễ kỷ niệm (trưa Chủ Nhật)",
     "startRegistration": "Bắt Đầu Đăng Ký",
     "contactUs": "Liên Hệ",
     "phone": "Điện thoại: 0123 456 789",
@@ -107,7 +119,12 @@
     "childNamePlaceholder": "Nhập tên con",
     "childAge": "Tuổi",
     "childWantsTShirt": "Mua áo lưu niệm cho con này",
-    "childTShirtSize": "Chọn cỡ áo"
+    "childTShirtSize": "Chọn cỡ áo",
+    "ageGroups": {
+      "above11": "Trên 11 tuổi",
+      "between6And11": "Từ 6 - 11 tuổi",
+      "under6": "Dưới 6 tuổi"
+    }
   },
   "step3": {
     "title": "Lịch trình di chuyển",
@@ -125,35 +142,70 @@
     "returnDate": "Ngày về",
     "returnTime": "Giờ về",
     "tip": "Thông tin lịch trình di chuyển là tùy chọn. Bạn có thể cung cấp ngay bây giờ hoặc cập nhật sau.",
-    "noTravelInfo": "Tôi không có thông tin di chuyển",
+    "noTravelInfo": "Tôi chưa chưa có lịch trình di chuyển",
     "noTravelInfoNote": "Bạn có thể bỏ qua bước này và cập nhật thông tin di chuyển sau khi có thông tin chi tiết."
   },
   "step4": {
     "title": "Gói tham gia & áo lưu niệm",
+    "participantInfo": "Số người lớn & trẻ > 11t:",
+    "participantInstruction": "Vui lòng chọn gói người lớn cho bạn, vợ/chồng và các bé trên 11 tuổi.",
+    "childParticipantInfo": "Số lượng trẻ em (6-11t) tham gia:",
+    "childParticipantInstruction": "Vui lòng chọn đủ gói cho số trẻ em đã đăng ký.",
+    "warning": {
+      "adultCountMismatch": "Cảnh báo: Bạn đã chọn {{selected}} gói nhưng chỉ có {{expected}} người lớn (bao gồm trẻ >11t) đăng ký.",
+      "childCountMismatch": "Cảnh báo: Bạn đã chọn {{selected}} gói nhưng chỉ có {{expected}} trẻ em (6-11t) đăng ký."
+    },
+    "viewSizeChart": "Xem bảng size",
+    "sizeChart": "Bảng Size Áo",
     "selectPackage": "Chọn gói tham gia",
     "packageA": {
-      "title": "Gói A",
-      "price": "500,000 VNĐ",
-      "description": "Bao gồm: Vé tham dự, ăn trưa, tài liệu"
+      "title": "Cầu Rồng (Gợi ý lựa chọn cho Hôn nhân)",
+      "price": "2,000,000 VNĐ",
+      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "packageB": {
-      "title": "Gói B", 
-      "price": "800,000 VNĐ",
-      "description": "Bao gồm: Gói A + ăn tối, quà tặng"
+      "title": "Cầu Sông Hàn (Gợi ý lựa chọn cho Độc thân)",
+      "price": "1,700,000 VNĐ",
+      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "packageC": {
-      "title": "Gói C",
-      "price": "1,200,000 VNĐ", 
-      "description": "Bao gồm: Gói B + lưu trú 1 đêm, tour tham quan"
+      "title": "Cầu Trần Thị Lý",
+      "price": "1,000,000 VNĐ",
+      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
     },
+    "packageD": {
+      "title": "Cầu Tiên Sơn",
+      "price": "600,000 VNĐ",
+      "description": "Bao gồm: Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+    },
+    "contactBTC": "Nếu ACE có nhu cầu khác ngoài 4 gói trên, xin vui lòng liên hệ BTC qua sdt [sdt c Linh] để được hỗ trợ",
+    "childPackageA": {
+      "title": "Cầu Rồng",
+      "price": "700,000 VNĐ",
+      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
+    },
+    "childPackageB": {
+      "title": "Cầu Trần Thị Lý", 
+      "price": "400,000 VNĐ",
+      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+    },
+    "childPackageC": {
+      "title": "Cầu Tiên Sơn",
+      "price": "200,000 VNĐ",
+      "description": "Bao gồm: Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+    },
+    "adultPackages": "Gói người lớn",
+    "childPackages": "Gói trẻ em",
+    "childPackageNote": "Chọn gói trẻ em cho các con từ 6 đến 11 tuổi",
+    "adultPackageNote": "Trẻ em trên 11 tuổi vui lòng chọn gói dành cho người lớn",
     "quantity": "Số lượng",
-    "spouseTShirt": "Áo lưu niệm cho vợ/chồng",
-    "spouseWantsTShirt": "Mua áo lưu niệm cho vợ/chồng",
-    "spouseTShirtSize": "Chọn cỡ áo vợ/chồng",
-    "childrenTShirt": "Áo lưu niệm cho con",
-    "childWantsTShirt": "Mua áo lưu niệm cho con",
-    "childTShirtSize": "Chọn cỡ áo con",
-    "souvenirShirt": "Đăng ký áo lưu niệm bổ sung",
+    "spouseTShirt": "Áo lưu niệm",
+    "spouseWantsTShirt": "Mua áo lưu niệm",
+    "spouseTShirtSize": "Chọn cỡ áo",
+    "childrenTShirt": "Áo lưu niệm",
+    "childWantsTShirt": "Mua áo lưu niệm",
+    "childTShirtSize": "Chọn cỡ áo",
+    "souvenirShirt": "Đăng ký áo lưu niệm",
     "additionalSouvenirShirt": "Đăng ký áo lưu niệm bổ sung",
     "selectSize": "Chọn cỡ áo",
     "addedShirts": "Danh sách áo đã thêm",
@@ -162,7 +214,7 @@
     "registerMagazine": "Đăng ký tạp chí kỷ niệm",
 
     "price": "Giá",
-    "shirtPrice": "100,000 VNĐ/chiếc",
+    "shirtPrice": "160,000 VNĐ/chiếc",
     "buyTShirt": "Mua áo lưu niệm",
     "tShirtSize": "Cỡ áo",
     "shirtSizes": {
@@ -170,7 +222,9 @@
       "M": "M", 
       "L": "L",
       "XL": "XL",
-      "XXL": "XXL"
+      "2XL": "2XL",
+      "3XL": "3XL",
+      "4XL": "4XL"
     },
     "subtotal": "Tổng cộng"
   },
@@ -219,8 +273,8 @@
     "accommodationInfo": "Thông tin chỗ ở",
     "accommodationPlaceholder": "Tên khách sạn, địa chỉ, hoặc ở với gia đình/bạn bè",
     "needAssistance": "Cần hỗ trợ từ ban tổ chức",
-    "assistanceRequestPlaceholder": "Vui lòng ghi rõ nội dung cần hỗ trợ (VD: Cần tìm khách sạn gần hội thánh, cần ở ghép...)",
-    "assistanceNote": "Đội ngũ của chúng tôi sẽ liên hệ với bạn để sắp xếp chỗ ở phù hợp dựa trên nhu cầu của bạn.",
+    "assistanceRequestPlaceholder": "Vui lòng ghi rõ nội dung cần hỗ trợ (VD: Sức khỏe, di chuyển, lưu trú, dị ứng, y tế, tài chính,..)",
+    "assistanceNote": "ACE sẽ liên hệ với bạn để hỗ trợ nhu cầu của bạn.",
     "activityTip": "Đăng ký hoạt động",
     "bigGame": "ACE có tham gia trò chơi lớn không?",
     "sports": "ACE có tham gia thể thao trải nghiệm không?",

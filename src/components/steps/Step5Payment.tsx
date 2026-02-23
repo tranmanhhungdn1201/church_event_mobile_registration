@@ -46,21 +46,18 @@ export const Step5Payment = () => {
   }, [paymentStatus, receiptImage, setValue]);
   
   // Get form data for payment calculation
-  const mainPackage = watch('packageSelection.mainPackage');
-  const spousePackage = watch('packageSelection.spousePackage');
-  const childrenPackages = watch('packageSelection.childrenPackages') || [];
+  const adultPackages = watch('packageSelection.adultPackages') || [];
+  const childPackages = watch('packageSelection.childPackages') || [];
   const shirts = watch('packageSelection.shirts') || [];
-  const attendingWithSpouse = watch('familyParticipation.attendingWithSpouse');
-  const spouseWantsTShirt = watch('familyParticipation.spouseWantsTShirt');
-  const children = watch('familyParticipation.children') || [];
   const sponsorshipAmount = watch('accommodation.sponsorshipAmount') || 0;
   
-  const SHIRT_PRICE = 100000;
+  const SHIRT_PRICE = 160000;
   
   const packageOptions = [
-    { id: 'A', name: t('step4.packageA.title'), price: 500000 },
-    { id: 'B', name: t('step4.packageB.title'), price: 800000 },
-    { id: 'C', name: t('step4.packageC.title'), price: 1200000 }
+    { id: 'ADULT_A', name: t('step4.packageA.title'), price: 2000000 },
+    { id: 'ADULT_B', name: t('step4.packageB.title'), price: 1700000 },
+    { id: 'ADULT_C', name: t('step4.packageC.title'), price: 1000000 },
+    { id: 'ADULT_D', name: t('step4.packageD.title'), price: 600000 }
   ];
   
   // Calculate payment breakdown
@@ -71,78 +68,81 @@ export const Step5Payment = () => {
       total: 0
     };
     
-    // Main package
-    const mainPkg = packageOptions.find(p => p.id === mainPackage);
-    if (mainPkg) {
-      breakdown.packages.push({
-        name: t('step5.mainPackage'),
-        description: mainPkg.name,
-        amount: mainPkg.price
-      });
-      breakdown.total += mainPkg.price;
-    }
-    
-    // Spouse package
-    if (attendingWithSpouse && spousePackage) {
-      const spousePkg = packageOptions.find(p => p.id === spousePackage);
-      if (spousePkg) {
-        breakdown.packages.push({
-          name: t('step5.spousePackage'),
-          description: spousePkg.name,
-          amount: spousePkg.price
-        });
-        breakdown.total += spousePkg.price;
-      }
-    }
-    
-    // Children packages
-    childrenPackages.forEach((childPackage: any) => {
-      const childPkg = packageOptions.find(p => p.id === childPackage.package);
-      if (childPkg) {
-        const childName = children[childPackage.childIndex]?.name || `${t('step2.childName')} ${childPackage.childIndex + 1}`;
-        breakdown.packages.push({
-          name: t('step5.childrenPackages'),
-          description: `${childPkg.name} - ${childName}`,
-          amount: childPkg.price
-        });
-        breakdown.total += childPkg.price;
+    // Adult packages
+    adultPackages.forEach((pkg: any) => {
+      if (pkg.quantity > 0) {
+        const option = packageOptions.find(p => p.id === pkg.id);
+        if (option) {
+          const amount = pkg.quantity * option.price;
+          breakdown.packages.push({
+            name: `${option.name} (${t('step4.quantity')}: ${pkg.quantity})`,
+            description: option.id === 'ADULT_A' || option.id === 'ADULT_B' 
+              ? option.name.includes('Hôn nhân') ? 'Gói gia đình' : 'Gói độc thân'
+              : option.name,
+            amount: amount
+          });
+          breakdown.total += amount;
+        }
       }
     });
-    
-    // Spouse T-shirt
-    if (attendingWithSpouse && spouseWantsTShirt) {
-      breakdown.shirts.push({
-        name: t('step5.spouseShirts'),
-        description: `1 ${t('step5.shirtUnit')}`,
-        amount: SHIRT_PRICE
-      });
-      breakdown.total += SHIRT_PRICE;
-    }
-    
-    // Children T-shirts
-    children.forEach((child: any, index: number) => {
-      if (child.wantsTShirt) {
-        const childName = child.name || `${t('step2.childName')} ${index + 1}`;
-        const shirtSize = child.tShirtSize || 'M';
-        breakdown.shirts.push({
-          name: t('step5.childrenShirts'),
-          description: `1 ${t('step5.shirtUnit')} (${t('step4.shirtSizes.' + shirtSize)}) - ${childName}`,
-          amount: SHIRT_PRICE
-        });
-        breakdown.total += SHIRT_PRICE;
-      }
+
+    // Child packages
+    childPackages.forEach((pkg: any) => {
+       if (pkg.quantity > 0) {
+        // Find option in a child-specific list if we had one defined in this scope, 
+        // but Step4 has the child prices. We should replicate or import them.
+        // For now defining them here locally or using a shared constant is best.
+        // Let's rely on mapping ID to price manually or via a quick object since I can't easily share constants across files without more refactoring.
+        // Wait, packageOptions in this file only has A, B, C with old prices. I need to update packageOptions first!
+        
+        let price = 0;
+        let name = '';
+
+        if (pkg.id === 'CHILD_A') { name = t('step4.childPackageA.title'); price = 700000; }
+        else if (pkg.id === 'CHILD_B') { name = t('step4.childPackageB.title'); price = 400000; }
+        else if (pkg.id === 'CHILD_C') { name = t('step4.childPackageC.title'); price = 200000; }
+
+        if (price > 0) {
+          const amount = pkg.quantity * price;
+          breakdown.packages.push({
+             name: `${t('step4.childPackages')} - ${name} (${t('step4.quantity')}: ${pkg.quantity})`,
+             description: 'Gói trẻ em',
+             amount: amount
+          });
+          breakdown.total += amount;
+        }
+       }
     });
     
-    // Additional shirts
+    // Shirts
     if (shirts.length > 0) {
       const totalShirts = shirts.reduce((sum: number, shirt: any) => sum + shirt.quantity, 0);
       const totalShirtCost = shirts.reduce((sum: number, shirt: any) => sum + (shirt.quantity * SHIRT_PRICE), 0);
+      
+      // Group by size for display
+      const shirtDetails = shirts.map((s: any) => `${s.quantity}x ${s.size}`).join(', ');
+
       breakdown.shirts.push({
         name: t('step5.additionalShirts'),
-        description: `${totalShirts} ${t('step5.shirtUnit')}`,
+        description: shirtDetails,
         amount: totalShirtCost
       });
       breakdown.total += totalShirtCost;
+    }
+
+    // Magazine
+    const wantMagazine = watch('packageSelection.wantMagazine');
+    const magazineQuantity = watch('packageSelection.magazineQuantity') || 1;
+    if (wantMagazine) {
+        // SHIRT_PRICE was 160000, MAGAZINE_PRICE is also 160000
+        const magPrice = 160000; 
+        const amount = magazineQuantity * magPrice;
+         breakdown.shirts.push({
+            name: t('step4.magazine'),
+            description: `${t('step4.quantity')}: ${magazineQuantity}`,
+            amount: amount
+         });
+         breakdown.total += amount;
     }
 
     // Sponsorship
@@ -237,54 +237,6 @@ export const Step5Payment = () => {
 
   return (
     <div className={formStyles.section}>
-      {/* Sponsorship Section */}
-      <div className="space-y-6 mb-8 border-b border-slate-100 pb-8">
-        <div className="space-y-2">
-          <label htmlFor="sponsorshipAmount" className={formStyles.label}>
-            {t('step6.sponsorshipAmount')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
-          </label>
-          <p className="text-sm text-slate-600 mb-2 whitespace-pre-line">
-            {t('step6.sponsorshipDescription')}
-          </p>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <span className="text-slate-500 font-medium">₫</span>
-            </div>
-            <Controller 
-              control={control} 
-              name="accommodation.sponsorshipAmount" 
-              render={({ field }) => (
-                <input 
-                  type="text" 
-                  id="sponsorshipAmount" 
-                  className={`${formStyles.input} pl-8 font-medium`}
-                  placeholder="0" 
-                  value={field.value ? formatCurrency(field.value).replace('₫', '').trim() : ''} 
-                  onChange={e => {
-                    // Remove non-numeric characters and parse as number
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    field.onChange(value ? parseInt(value, 10) : null);
-                  }} 
-                />
-              )} 
-            />
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <label htmlFor="bankNote" className={formStyles.label}>
-            {t('step6.bankNote')}
-          </label>
-          <textarea 
-            id="bankNote" 
-            {...register('accommodation.bankNote')} 
-            rows={2} 
-            className={formStyles.textarea}
-            placeholder={t('step6.bankNotePlaceholder')} 
-          />
-        </div>
-      </div>
-
       {/* Payment Summary */}
       <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
         <h3 className="text-lg font-semibold text-slate-800 flex items-center mb-4">
