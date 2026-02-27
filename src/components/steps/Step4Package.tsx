@@ -17,33 +17,43 @@ export const Step4Package = () => {
     getValues
   } = useFormContext();
   const { t } = useLanguage();
+  const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
   const [selectedSize, setSelectedSize] = useState('M');
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   
+  const getSuggestedFor = (key: string) => {
+    const translation = t(key);
+    return translation !== key ? translation : undefined;
+  };
+
   const packageOptions = [
     {
       id: 'ADULT_A',
       name: t('step4.packageA.title'),
       price: 2000000,
-      description: t('step4.packageA.description')
+      description: t('step4.packageA.description'),
+      suggestedFor: getSuggestedFor('step4.packageA.suggestedFor')
     },
     {
       id: 'ADULT_B', 
       name: t('step4.packageB.title'),
       price: 1700000,
-      description: t('step4.packageB.description')
+      description: t('step4.packageB.description'),
+      suggestedFor: getSuggestedFor('step4.packageB.suggestedFor')
     },
     {
       id: 'ADULT_C',
       name: t('step4.packageC.title'),
       price: 1000000,
-      description: t('step4.packageC.description')
+      description: t('step4.packageC.description'),
+      suggestedFor: getSuggestedFor('step4.packageC.suggestedFor')
     },
     {
       id: 'ADULT_D',
       name: t('step4.packageD.title'),
       price: 600000,
-      description: t('step4.packageD.description')
+      description: t('step4.packageD.description'),
+      suggestedFor: getSuggestedFor('step4.packageD.suggestedFor')
     }
   ];
 
@@ -68,19 +78,28 @@ export const Step4Package = () => {
     }
   ];
   
-  const shirtSizes = [
-    { value: 'S', label: t('step4.shirtSizes.S') },
-    { value: 'M', label: t('step4.shirtSizes.M') },
-    { value: 'L', label: t('step4.shirtSizes.L') },
-    { value: 'XL', label: t('step4.shirtSizes.XL') },
-    { value: '2XL', label: t('step4.shirtSizes.2XL') },
-    { value: '3XL', label: t('step4.shirtSizes.3XL') },
-    { value: '4XL', label: t('step4.shirtSizes.4XL') }
+  const maleShirtSizes = [
+    { value: 'S', label: 'S' },
+    { value: 'M', label: 'M' },
+    { value: 'L', label: 'L' },
+    { value: 'XL', label: 'XL' },
+    { value: '2XL', label: '2XL' },
+    { value: '3XL', label: '3XL' }
   ];
+
+  const femaleShirtSizes = [
+    { value: 'S', label: 'S' },
+    { value: 'M', label: 'M' },
+    { value: 'L', label: 'L' },
+    { value: 'XL', label: 'XL' },
+    { value: '2XL', label: '2XL' }
+  ];
+
+  const currentShirtSizes = selectedGender === 'male' ? maleShirtSizes : femaleShirtSizes;
 
   const shirts = watch('packageSelection.shirts') || [];
   const wantMagazine = watch('packageSelection.wantMagazine');
-  const magazineQuantity = watch('packageSelection.magazineQuantity') || 1;
+  const magazineQuantity = watch('packageSelection.magazineQuantity') ?? 0;
   
   const adultPackages = watch('packageSelection.adultPackages') || [];
   const childPackages = watch('packageSelection.childPackages') || [];
@@ -89,6 +108,7 @@ export const Step4Package = () => {
   const attendingWithSpouse = watch('familyParticipation.attendingWithSpouse');
   // const numberOfChildren = watch('familyParticipation.numberOfChildren') || 0; // Deprecated for validation
   const counts = watch('familyParticipation.counts') || {};
+  const maritalStatus = watch('personalInfo.maritalStatus');
   
   // Adults = Self + Spouse (if any) + Children > 11
   const expectedAdults = 1 + (attendingWithSpouse ? 1 : 0) + (counts.above11 || 0);
@@ -195,8 +215,8 @@ export const Step4Package = () => {
   };
 
   const handleAddShirt = () => {
-    // Check if shirt size already exists
-    const existingIndex = shirts.findIndex((s: any) => s.size === selectedSize);
+    // Check if shirt size + gender already exists
+    const existingIndex = shirts.findIndex((s: any) => s.size === selectedSize && s.gender === selectedGender);
     
     if (existingIndex >= 0) {
       // Update existing
@@ -207,10 +227,17 @@ export const Step4Package = () => {
     } else {
       // Add new
       append({
+        gender: selectedGender,
         size: selectedSize,
         quantity: 1
       });
     }
+  };
+
+  // When gender changes, reset size to first available
+  const handleGenderChange = (gender: 'male' | 'female') => {
+    setSelectedGender(gender);
+    setSelectedSize(gender === 'male' ? 'M' : 'M');
   };
 
   const updatePackageQuantity = (type: 'adult' | 'child', index: number, delta: number) => {
@@ -258,9 +285,11 @@ export const Step4Package = () => {
             <p className="font-semibold mb-1">
               {t('step4.participantInfo')} {expectedAdults}
             </p>
-            <p className="text-blue-600/80">
-              {t('step4.participantInstruction')}
-            </p>
+            {maritalStatus !== 'single' && (
+              <p className="text-blue-600/80">
+                {t('step4.participantInstruction')}
+              </p>
+            )}
           </div>
         </div>
 
@@ -289,7 +318,12 @@ export const Step4Package = () => {
               <div className="flex flex-col gap-3">
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
-                     <h4 className="text-lg font-semibold text-slate-800">{pkg.name}</h4>
+                     <div>
+                       <h4 className="text-lg font-semibold text-slate-800">{pkg.name}</h4>
+                       {pkg.suggestedFor && (
+                         <p className="text-sm italic text-[#2E5AAC] mt-0.5">{pkg.suggestedFor}</p>
+                       )}
+                     </div>
                      <p className="text-lg font-bold text-[#2E5AAC] sm:hidden">
                         {formatCurrency(pkg.price)}
                      </p>
@@ -353,9 +387,11 @@ export const Step4Package = () => {
              <p className="font-semibold mb-1">
               {t('step4.childParticipantInfo')} {expectedChildren}
             </p>
-            <p className="text-blue-600/80">
-              {t('step4.childParticipantInstruction')}
-            </p>
+            {maritalStatus !== 'single' && (
+              <p className="text-blue-600/80">
+                {t('step4.childParticipantInstruction')}
+              </p>
+            )}
           </div>
         </div>
 
@@ -436,7 +472,37 @@ export const Step4Package = () => {
                 </label>
            </div>
            
-            <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+            <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100 space-y-3">
+                {/* Gender Toggle */}
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-2 block">Loại áo:</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleGenderChange('male')}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                        selectedGender === 'male'
+                          ? 'border-[#2E5AAC] bg-[#2E5AAC] text-white shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                      }`}
+                    >
+                      👔 Nam
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleGenderChange('female')}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                        selectedGender === 'female'
+                          ? 'border-pink-500 bg-pink-500 text-white shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                      }`}
+                    >
+                      👗 Nữ
+                    </button>
+                  </div>
+                </div>
+
+                {/* Size + Add Button */}
                 <div className="flex flex-row items-end gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
@@ -458,7 +524,7 @@ export const Step4Package = () => {
                         onChange={e => setSelectedSize(e.target.value)} 
                         className={`${formStyles.input} py-2`}
                       >
-                        {shirtSizes.map(size => (
+                        {currentShirtSizes.map(size => (
                           <option key={size.value} value={size.value}>
                             {size.label}
                           </option>
@@ -470,7 +536,11 @@ export const Step4Package = () => {
                     <button 
                       type="button" 
                       onClick={handleAddShirt} 
-                      className={`${formStyles.buttonPrimary} h-[42px] px-4 flex items-center whitespace-nowrap`}
+                      className={`h-[42px] px-4 flex items-center whitespace-nowrap rounded-lg font-semibold text-white transition-all shadow-sm ${
+                        selectedGender === 'male'
+                          ? 'bg-[#2E5AAC] hover:bg-[#254a8f]'
+                          : 'bg-pink-500 hover:bg-pink-600'
+                      }`}
                     >
                       <PlusIcon className="h-5 w-5 sm:mr-2" /> 
                       <span className="hidden sm:inline">{t('common.add')}</span>
@@ -487,16 +557,26 @@ export const Step4Package = () => {
                 {t('step4.addedShirts')}
                 </h4>
                 {fields.map((field: any, index: number) => (
-                <div key={field.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
+                <div key={field.id} className={`rounded-xl shadow-sm border p-3 sm:p-4 ${
+                  field.gender === 'female' ? 'bg-pink-50/50 border-pink-100' : 'bg-white border-slate-200'
+                }`}>
                     <div className="flex items-center justify-between gap-3">
                         {/* Left: Icon + Info */}
                         <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="bg-blue-50 rounded-lg p-2 sm:p-3 flex-shrink-0">
-                                <ShirtIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[#2E5AAC]" />
+                            <div className={`rounded-lg p-2 sm:p-3 flex-shrink-0 ${
+                              field.gender === 'female' ? 'bg-pink-50' : 'bg-blue-50'
+                            }`}>
+                                <ShirtIcon className={`h-5 w-5 sm:h-6 sm:w-6 ${
+                                  field.gender === 'female' ? 'text-pink-500' : 'text-[#2E5AAC]'
+                                }`} />
                             </div>
                             <div className="min-w-0">
-                                 <p className="font-bold text-slate-800 text-sm sm:text-base">Size: {field.size}</p>
-                                 <p className="text-sm font-bold text-[#2E5AAC] sm:hidden">
+                                 <p className="font-bold text-slate-800 text-sm sm:text-base">
+                                   {field.gender === 'female' ? '👗 Nữ' : '👔 Nam'} — Size: {field.size}
+                                 </p>
+                                 <p className={`text-sm font-bold sm:hidden ${
+                                   field.gender === 'female' ? 'text-pink-500' : 'text-[#2E5AAC]'
+                                 }`}>
                                     {formatCurrency(field.quantity * SHIRT_PRICE)}
                                  </p>
                             </div>
@@ -506,7 +586,9 @@ export const Step4Package = () => {
                         <div className="flex items-center gap-2 sm:gap-4">
                              {/* Price Desktop */}
                             <div className="hidden sm:block text-right min-w-[6rem]">
-                                <span className="text-lg font-bold text-[#2E5AAC] whitespace-nowrap">
+                                <span className={`text-lg font-bold whitespace-nowrap ${
+                                  field.gender === 'female' ? 'text-pink-500' : 'text-[#2E5AAC]'
+                                }`}>
                                     {formatCurrency(field.quantity * SHIRT_PRICE)}
                                 </span>
                             </div>
@@ -615,7 +697,7 @@ export const Step4Package = () => {
             </p>
           </div>
           <div className="text-sm text-slate-500 text-left sm:text-right">
-            <p className="font-medium">{t('step4.selectPackage')}, T-shirts & Magazine</p>
+            <p className="font-medium">{t('step4.selectPackage')}, Áo kỷ niệm & Tạp chí</p>
           </div>
         </div>
       </div>

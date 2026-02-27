@@ -26,25 +26,25 @@
     "packages": "Gói Tham Gia",
     "packageA": "Cầu Rồng (Gợi ý lựa chọn cho Hôn nhân)",
     "packageAPrice": "2,000,000 VNĐ",
-    "packageADesc": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "packageADesc": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
     "packageB": "Cầu Sông Hàn (Gợi ý lựa chọn cho Độc thân)",
     "packageBPrice": "1,700,000 VNĐ",
-    "packageBDesc": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "packageBDesc": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)",
     "packageC": "Cầu Trần Thị Lý",
     "packageCPrice": "1,000,000 VNĐ",
-    "packageCDesc": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "packageCDesc": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
     "packageD": "Cầu Tiên Sơn",
     "packageDPrice": "600,000 VNĐ",
-    "packageDDesc": "Bao gồm: Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "packageDDesc": "Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
     "childPackageA": "Cầu Rồng",
     "childPackageAPrice": "700,000 VNĐ",
-    "childPackageADesc": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "childPackageADesc": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
     "childPackageB": "Cầu Trần Thị Lý",
     "childPackageBPrice": "400,000 VNĐ",
-    "childPackageBDesc": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "childPackageBDesc": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
     "childPackageC": "Cầu Tiên Sơn",
     "childPackageCPrice": "200,000 VNĐ",
-    "childPackageCDesc": "Bao gồm: Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "childPackageCDesc": "Buổi lễ kỷ niệm (trưa Chủ Nhật)",
     "startRegistration": "Bắt Đầu Đăng Ký",
     "contactUs": "Liên Hệ",
     "phone": "Điện thoại: 0123 456 789",
@@ -69,10 +69,9 @@
     "upload": "Tải lên",
     "copy": "Sao chép",
     "share": "Chia sẻ",
-    "addToCalendar": "Thêm vào lịch",
     "add": "Thêm",
     "delete": "Xóa",
-    "loadDraft": "Tải bản nháp"
+    "loadDraft": "Tiếp tục đăng ký"
   },
   "navigation": {
     "step1": "Thông tin cá nhân",
@@ -128,7 +127,7 @@
   },
   "step3": {
     "title": "Lịch trình di chuyển",
-    "arrivalDate": "Ngày & giờ đến",
+    "arrivalDate": "Thời gian dự kiến đến Đà Nẵng",
     "arrivalTime": "Giờ đến",
     "transport": "Phương tiện di chuyển",
     "transportOptions": {
@@ -139,18 +138,18 @@
     },
     "flightCode": "Mã chuyến bay",
     "flightCodePlaceholder": "VD: VN123",
-    "returnDate": "Ngày về",
+    "returnDate": "Thời gian dự kiến quay trở về",
     "returnTime": "Giờ về",
     "tip": "Thông tin lịch trình di chuyển là tùy chọn. Bạn có thể cung cấp ngay bây giờ hoặc cập nhật sau.",
-    "noTravelInfo": "Tôi chưa chưa có lịch trình di chuyển",
+    "noTravelInfo": "Tôi chưa có lịch trình di chuyển",
     "noTravelInfoNote": "Bạn có thể bỏ qua bước này và cập nhật thông tin di chuyển sau khi có thông tin chi tiết."
   },
   "step4": {
     "title": "Gói tham gia & áo lưu niệm",
-    "participantInfo": "Số người lớn & trẻ > 11t:",
-    "participantInstruction": "Vui lòng chọn gói người lớn cho bạn, vợ/chồng và các bé trên 11 tuổi.",
-    "childParticipantInfo": "Số lượng trẻ em (6-11t) tham gia:",
-    "childParticipantInstruction": "Vui lòng chọn đủ gói cho số trẻ em đã đăng ký.",
+    "participantInfo": "Số lượng người lớn và trẻ em trên 11 tuổi:",
+    "participantInstruction": "Vui lòng chọn gói người lớn cho bạn và người thân trên 11 tuổi cùng tham gia.",
+    "childParticipantInfo": "Số lượng trẻ em từ 6-11 tuổi tham gia:",
+    "childParticipantInstruction": "Vui lòng chọn gói trẻ em cho các bé từ 6 - 11 tuổi cùng tham gia.",
     "warning": {
       "adultCountMismatch": "Cảnh báo: Bạn đã chọn {{selected}} gói nhưng chỉ có {{expected}} người lớn (bao gồm trẻ >11t) đăng ký.",
       "childCountMismatch": "Cảnh báo: Bạn đã chọn {{selected}} gói nhưng chỉ có {{expected}} trẻ em (6-11t) đăng ký."
@@ -159,40 +158,42 @@
     "sizeChart": "Bảng Size Áo",
     "selectPackage": "Chọn gói tham gia",
     "packageA": {
-      "title": "Cầu Rồng (Gợi ý lựa chọn cho Hôn nhân)",
+      "title": "Cầu Rồng",
+      "suggestedFor": "Gợi ý lựa chọn cho Hôn nhân",
       "price": "2,000,000 VNĐ",
-      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
+      "description": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "packageB": {
-      "title": "Cầu Sông Hàn (Gợi ý lựa chọn cho Độc thân)",
+      "title": "Cầu Sông Hàn",
+      "suggestedFor": "Gợi ý lựa chọn cho Độc thân",
       "price": "1,700,000 VNĐ",
-      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)"
+      "description": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "packageC": {
       "title": "Cầu Trần Thị Lý",
       "price": "1,000,000 VNĐ",
-      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "description": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
     },
     "packageD": {
       "title": "Cầu Tiên Sơn",
       "price": "600,000 VNĐ",
-      "description": "Bao gồm: Hangout / Super Date (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "description": "Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
     },
-    "contactBTC": "Nếu ACE có nhu cầu khác ngoài 4 gói trên, xin vui lòng liên hệ BTC qua sdt [sdt c Linh] để được hỗ trợ",
+    "contactBTC": "Nếu ACE có nhu cầu khác ngoài 4 gói trên, xin vui lòng liên hệ CE Ngọc Linh 0388 549 925 để được hỗ trợ",
     "childPackageA": {
       "title": "Cầu Rồng",
       "price": "700,000 VNĐ",
-      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
+      "description": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "childPackageB": {
       "title": "Cầu Trần Thị Lý", 
       "price": "400,000 VNĐ",
-      "description": "Bao gồm: Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "description": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
     },
     "childPackageC": {
       "title": "Cầu Tiên Sơn",
       "price": "200,000 VNĐ",
-      "description": "Bao gồm: Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "description": "Buổi lễ kỷ niệm (trưa Chủ Nhật)"
     },
     "adultPackages": "Gói người lớn",
     "childPackages": "Gói trẻ em",
@@ -214,7 +215,7 @@
     "registerMagazine": "Đăng ký tạp chí kỷ niệm",
 
     "price": "Giá",
-    "shirtPrice": "160,000 VNĐ/chiếc",
+    "shirtPrice": "160,000 VNĐ/áo",
     "buyTShirt": "Mua áo lưu niệm",
     "tShirtSize": "Cỡ áo",
     "shirtSizes": {
@@ -233,11 +234,12 @@
     "paymentStatus": "Trạng thái thanh toán",
     "paymentOptions": {
       "paid": "Đã thanh toán",
-      "willPayLater": "Sẽ thanh toán sau"
+      "willPayLater": "Chuyển khoản sau"
     },
+    "deadlineNote": "ACE vui lòng chuyển khoản trước ngày 15/03/2026",
     "transferDate": "Ngày chuyển khoản",
     "bankInstructions": "Hướng dẫn chuyển khoản",
-    "bankSyntax": "Vui lòng sử dụng cú pháp sau cho mô tả chuyển khoản: Name_Church_Name",
+    "bankSyntax": "Vui lòng sử dụng cú pháp sau cho mô tả chuyển khoản:",
     "downloadQR": "Tải mã QR",
     "accountInfo": "Thông tin tài khoản",
     "accountNumber": "Số tài khoản",
@@ -251,6 +253,7 @@
     "paymentSummary": "Tóm tắt thanh toán",
     "packageCost": "Chi phí gói tham gia",
     "shirtCost": "Chi phí áo lưu niệm",
+    "magazineCost": "Chi phí tạp chí",
     "totalAmount": "Tổng số tiền",
     "mainPackage": "Gói chính",
     "spousePackage": "Gói vợ/chồng",
@@ -258,7 +261,7 @@
     "mainShirts": "Áo lưu niệm chính",
     "spouseShirts": "Áo lưu niệm vợ/chồng",
     "childrenShirts": "Áo lưu niệm con cái",
-    "additionalShirts": "Áo lưu niệm bổ sung",
+    "additionalShirts": "Áo lưu niệm",
     "shirtUnit": "áo",
     "transferDateRequired": "Vui lòng nhập ngày chuyển khoản",
     "receiptRequired": "Vui lòng tải lên ảnh biên lai chuyển khoản"
@@ -276,12 +279,16 @@
     "assistanceRequestPlaceholder": "Vui lòng ghi rõ nội dung cần hỗ trợ (VD: Sức khỏe, di chuyển, lưu trú, dị ứng, y tế, tài chính,..)",
     "assistanceNote": "ACE sẽ liên hệ với bạn để hỗ trợ nhu cầu của bạn.",
     "activityTip": "Đăng ký hoạt động",
-    "bigGame": "ACE có tham gia trò chơi lớn không?",
-    "sports": "ACE có tham gia thể thao trải nghiệm không?",
+    "bigGame": "ACE có tham gia Cuộc Đua Kỳ Thú chiều thứ 7 ngày 20/06 (Miễn phí)?",
+    "sports": "ACE có tham gia Thể Thao Trải Nghiệm sáng thứ 7 ngày 20/06?",
+    "volleyball": "ACE có tham gia giao lưu Bóng Chuyền không?",
     "participationOptions": {
       "yes": "Có",
       "no": "Không",
-      "considering": "Đang cân nhắc"
+      "considering": "Đang cân nhắc",
+      "walk": "Tham gia Đi bộ Sơn Trà (miễn phí)",
+      "sup": "Tham gia Chèo sup Mân Thái (dự kiến 105.000đ/ người)",
+      "notParticipate": "Không tham gia"
     },
     "sponsorshipAmount": "Số tiền tài trợ",
     "sponsorshipDescription": "Để góp phần cho chương trình kỷ niệm 10 năm “Từ nơi đại dương, Ngài gọi tên con” được diễn ra trọn vẹn trong ân phúc Chúa ban, đồng thời có thể san sẻ yêu thương đến những anh chị em cần sự hỗ trợ, Gia đình Đà Nẵng rất mong nhận được sự chung tay, tài trợ của ACE trong khả năng.\nTrân trọng và biết ơn tấm lòng rộng rãi của ACE.",
@@ -341,9 +348,10 @@
       "uploaded": "Đã tải lên",
       "notUploaded": "Chưa tải lên",
       "paid": "Đã thanh toán",
-      "willPayLater": "Sẽ thanh toán sau",
+      "willPayLater": "Chuyển khoản sau",
       "package": "Gói",
-      "pcs": "chiếc",
+      "pcs": "áo",
+      "pcsMagazine": "cuốn",
       "size": "Cỡ"
     }
   },
@@ -353,8 +361,8 @@
     "congratulations": "Cảm ơn bạn đã đăng ký sự kiện kỷ niệm hội thánh. Chúng tôi mong được gặp bạn tại đó!",
     "nextSteps": "Các bước tiếp theo:",
     "saveCode": "Vui lòng lưu mã này và trình bày tại quầy check-in sự kiện.",
-    "joinCommunity": "Tham gia nhóm cộng đồng của chúng tôi",
-    "communityDescription": "Cập nhật thông tin sự kiện và kết nối với các thí sinh khác.",
+    "joinCommunity": "Tham gia nhóm sự kiện",
+    "communityDescription": "Cập nhật thông tin sự kiện và kết nối với các ACE khác.",
     "joinZalo": "Tham gia nhóm Zalo",
     "joinTelegram": "Tham gia Telegram",
     "step1": "Lưu mã đăng ký và QR code",
@@ -381,10 +389,10 @@
     "pastDate": "Vui lòng chọn ngày trong quá khứ"
   },
   "notifications": {
-    "draftSaved": "Đã lưu bản nháp thành công",
+    "draftSaved": "Đã lưu tiến trình đăng ký thành công",
     "draftLoaded": "Đã tải lại tiến trình đăng ký của bạn. Bạn có thể tiếp tục điền form.",
-    "draftSaveError": "Có lỗi xảy ra khi lưu bản nháp",
-    "draftLoadError": "Có lỗi xảy ra khi tải bản nháp",
+    "draftSaveError": "Có lỗi xảy ra khi lưu tiến trình đăng ký",
+    "draftLoadError": "Có lỗi xảy ra khi tải lại tiến trình đăng ký",
     "validationError": "Vui lòng điền đầy đủ thông tin bắt buộc",
     "submitSuccess": "Đăng ký thành công",
     "submitError": "Có lỗi xảy ra khi gửi đăng ký",
@@ -408,12 +416,12 @@
     "closeButton": "Đóng"
   },
   "loadDraft": {
-    "title": "Tải bản nháp",
+    "title": "Tiếp tục đăng ký",
     "emailLabel": "Nhập email đã đăng ký",
     "emailPlaceholder": "your@email.com",
-    "description": "Nhập email bạn đã sử dụng để lưu bản nháp trước đó",
-    "loadButton": "Tải bản nháp",
-    "notFound": "Không tìm thấy bản nháp với email này",
-    "loadError": "Có lỗi xảy ra khi tải bản nháp"
+    "description": "Nhập email bạn đã sử dụng để lưu tiến trình đăng ký trước đó",
+    "loadButton": "Tiếp tục",
+    "notFound": "Không tìm thấy tiến trình đăng ký với email này",
+    "loadError": "Có lỗi xảy ra khi tải lại tiến trình đăng ký"
   }
 }

@@ -14,6 +14,7 @@ interface PaymentItem {
 interface PaymentBreakdown {
   packages: PaymentItem[];
   shirts: PaymentItem[];
+  magazines: PaymentItem[];
   total: number;
 }
 
@@ -65,6 +66,7 @@ export const Step5Payment = () => {
     const breakdown: PaymentBreakdown = {
       packages: [],
       shirts: [],
+      magazines: [],
       total: 0
     };
     
@@ -119,8 +121,11 @@ export const Step5Payment = () => {
       const totalShirts = shirts.reduce((sum: number, shirt: any) => sum + shirt.quantity, 0);
       const totalShirtCost = shirts.reduce((sum: number, shirt: any) => sum + (shirt.quantity * SHIRT_PRICE), 0);
       
-      // Group by size for display
-      const shirtDetails = shirts.map((s: any) => `${s.quantity}x ${s.size}`).join(', ');
+      // Group by gender + size for display
+      const shirtDetails = shirts.map((s: any) => {
+        const genderLabel = s.gender === 'female' ? 'Nữ' : 'Nam';
+        return `${genderLabel} ${s.size} x${s.quantity}`;
+      }).join(', ');
 
       breakdown.shirts.push({
         name: t('step5.additionalShirts'),
@@ -131,13 +136,11 @@ export const Step5Payment = () => {
     }
 
     // Magazine
-    const wantMagazine = watch('packageSelection.wantMagazine');
-    const magazineQuantity = watch('packageSelection.magazineQuantity') || 1;
-    if (wantMagazine) {
-        // SHIRT_PRICE was 160000, MAGAZINE_PRICE is also 160000
-        const magPrice = 160000; 
+    const magazineQuantity = watch('packageSelection.magazineQuantity') || 0;
+    if (magazineQuantity > 0) {
+        const magPrice = 180000; 
         const amount = magazineQuantity * magPrice;
-         breakdown.shirts.push({
+         breakdown.magazines.push({
             name: t('step4.magazine'),
             description: `${t('step4.quantity')}: ${magazineQuantity}`,
             amount: amount
@@ -146,9 +149,9 @@ export const Step5Payment = () => {
     }
 
     // Sponsorship
-    if (sponsorshipAmount > 0) {
-      breakdown.total += Number(sponsorshipAmount);
-    }
+    // if (sponsorshipAmount > 0) {
+    //   breakdown.total += Number(sponsorshipAmount);
+    // }
     
     return breakdown;
   };
@@ -284,23 +287,26 @@ export const Step5Payment = () => {
           </div>
         )}
 
-        {/* Sponsorship cost */}
-        {sponsorshipAmount > 0 && (
+        {/* Magazine costs */}
+        {paymentBreakdown.magazines.length > 0 && (
           <div className="mb-4">
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t('step6.sponsorshipAmount')}</h4>
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t('step5.magazineCost')}</h4>
             <div className="space-y-3">
-              <div className="flex justify-between items-start py-3 px-4 bg-white rounded-xl border border-slate-100 shadow-sm">
-                <div>
-                  <p className="text-sm font-medium text-slate-900">{t('step6.sponsorshipAmount')}</p>
+              {paymentBreakdown.magazines.map((item, index) => (
+                <div key={index} className="flex justify-between items-start py-3 px-4 bg-white rounded-xl border border-slate-100 shadow-sm">
+                  <div>
+                    <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{item.description}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-[#2E5AAC]">
+                    {formatCurrency(item.amount)}
+                  </span>
                 </div>
-                <span className="text-sm font-semibold text-[#2E5AAC]">
-                  {formatCurrency(sponsorshipAmount)}
-                </span>
-              </div>
+              ))}
             </div>
           </div>
         )}
-        
+
         {/* Total */}
         <div className="border-t border-slate-200 pt-4 mt-2">
           <div className="flex justify-between items-center">
@@ -310,6 +316,19 @@ export const Step5Payment = () => {
             </span>
           </div>
         </div>
+
+        {/* Sponsorship cost */}
+        {sponsorshipAmount > 0 && (
+          <div className="border-t border-slate-200 mt-4 pt-4">
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t('step6.sponsorshipAmount')}</h4>
+            <div className="flex justify-between items-center bg-green-50 rounded-xl px-4 py-3 border border-green-100">
+                <span className="text-sm font-medium text-green-800">{t('step6.sponsorshipAmount')}</span>
+                <span className="text-lg font-bold text-green-700 tracking-tight">
+                  {formatCurrency(sponsorshipAmount)}
+                </span>
+            </div>
+          </div>
+        )}
       </div>
       
       <div className="space-y-4">
@@ -324,7 +343,7 @@ export const Step5Payment = () => {
               {...register('payment.status')} 
               className="peer sr-only" 
             />
-            <div className="w-full py-4 px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:shadow-sm">
+            <div className="w-full h-full flex flex-col items-center justify-center py-3 px-2 sm:px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:shadow-sm">
               <span className="font-medium text-sm">{t('step5.paymentOptions.paid')}</span>
             </div>
           </label>
@@ -335,8 +354,9 @@ export const Step5Payment = () => {
               {...register('payment.status')} 
               className="peer sr-only" 
             />
-            <div className="w-full py-4 px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:shadow-sm">
+            <div className="w-full h-full flex flex-col items-center justify-center py-3 px-2 sm:px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:shadow-sm">
               <span className="font-medium text-sm">{t('step5.paymentOptions.willPayLater')}</span>
+              <span className="text-[10px] sm:text-xs mt-1 opacity-80 leading-tight">{t('step5.deadlineNote')}</span>
             </div>
           </label>
         </div>
@@ -457,9 +477,12 @@ export const Step5Payment = () => {
               {t('step5.bankSyntax')}
             </p>
             <div className="bg-slate-100 p-4 rounded-lg border border-slate-200">
-              <code className="text-sm font-mono text-[#2E5AAC] break-all">
-                Name_Church_Name
+              <code className="block text-sm font-mono text-[#2E5AAC] break-all font-semibold">
+                Tên ACE_Tên Hội Thánh_SDT
               </code>
+              <div className="text-sm text-slate-600 mt-2 pt-2 border-t border-slate-200">
+                Ví dụ: <code className="font-mono font-semibold text-slate-800">CaoThiThanhHuyen_DaNang_0392435683</code>
+              </div>
             </div>
 
             <div className="flex flex-col items-center justify-center py-2">

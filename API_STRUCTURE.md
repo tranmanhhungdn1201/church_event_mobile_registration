@@ -212,7 +212,8 @@ Hoặc nếu không có thông tin:
   ],
   "shirts": [
     {
-      "size": "S" | "M" | "L" | "XL" | "2XL" | "3XL" | "4XL",
+      "gender": "male" | "female",
+      "size": "S" | "M" | "L" | "XL" | "2XL" | "3XL" (Nam) / "S" | "M" | "L" | "XL" | "2XL" (Nữ),
       "quantity": number (min: 1)
     }
   ],

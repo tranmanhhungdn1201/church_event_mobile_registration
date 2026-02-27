@@ -65,10 +65,10 @@ export const Step3TravelSchedule = () => {
                 name="travelSchedule.arrivalDate" 
                 render={({ field }) => (
                   <input 
-                    type="datetime-local" 
+                    type="date" 
                     id="arrivalDate" 
                     className={`${formStyles.input} pl-10`}
-                    value={field.value ? format(new Date(field.value), "yyyy-MM-dd'T'HH:mm") : ''} 
+                    value={field.value ? format(new Date(field.value), 'yyyy-MM-dd') : ''} 
                     onChange={e => {
                       field.onChange(e.target.value ? new Date(e.target.value) : null);
                     }} 

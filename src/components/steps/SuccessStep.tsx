@@ -57,17 +57,6 @@ export const SuccessStep = ({
 
       {!showDetails && (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <button type="button" className="flex items-center justify-center py-4 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-              <CalendarIcon className="h-5 w-5 mr-2 text-slate-400" />
-              {t('common.addToCalendar')}
-            </button>
-            <button type="button" className="flex items-center justify-center py-4 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-              <ShareIcon className="h-5 w-5 mr-2 text-slate-400" />
-              {t('common.share')}
-            </button>
-          </div>
-          
           <div className="bg-[#2E5AAC]/5 rounded-2xl p-6 text-left border border-[#2E5AAC]/10">
             <h3 className="font-semibold text-slate-900 mb-2 flex items-center text-lg">
               <MessageCircleIcon className="h-5 w-5 mr-2.5 text-[#2E5AAC]" />
@@ -76,13 +65,15 @@ export const SuccessStep = ({
             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
               {t('success.communityDescription')}
             </p>
-            <div className="flex space-x-3">
-              <button type="button" className="flex-1 bg-white py-2.5 px-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+            <div className="flex justify-center mt-6">
+              <a
+                href="https://zalo.me/g/zjqgou153"
+                target="_blank"
+                rel="noopener noreferrer" 
+                className="inline-flex items-center justify-center bg-white py-2.5 px-6 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+              >
                 {t('success.joinZalo')}
-              </button>
-              <button type="button" className="flex-1 bg-white py-2.5 px-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
-                {t('success.joinTelegram')}
-              </button>
+              </a>
             </div>
           </div>
           

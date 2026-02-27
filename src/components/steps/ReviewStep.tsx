@@ -12,7 +12,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
   const {
     getValues
   } = useFormContext();
-  const { t } = useLanguage();
+  const { t, language: lang } = useLanguage();
   const formData = formDataProp || getValues();
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -60,8 +60,9 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
     }, 0);
     
     // Magazine
-    if (formData.packageSelection?.wantMagazine) {
-        total += (formData.packageSelection.magazineQuantity || 1) * 180000;
+    const magazineQuantity = formData.packageSelection?.magazineQuantity || 0;
+    if (magazineQuantity > 0) {
+        total += Number(magazineQuantity) * 180000;
     }
     
     return total + shirtTotal;
@@ -98,7 +99,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             </div>
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.gender')}</span>
-              <span className="text-sm font-medium text-slate-900 capitalize">{formData.personalInfo.gender}</span>
+              <span className="text-sm font-medium text-slate-900 capitalize">{formData.personalInfo.gender === 'male' ? t('common.male') : t('common.female')}</span>
             </div>
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.phone')}</span>
@@ -114,7 +115,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             </div>
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.maritalStatus')}</span>
-              <span className="text-sm font-medium text-slate-900 capitalize">{formData.personalInfo.maritalStatus}</span>
+              <span className="text-sm font-medium text-slate-900 capitalize">{formData.personalInfo.maritalStatus === 'single' ? t('step1.maritalStatusOptions.single') : t('step1.maritalStatusOptions.married')}</span>
             </div>
           </div>
         </div>
@@ -170,21 +171,44 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
               </span>
             </div>
             
-            {formData.familyParticipation.numberOfChildren > 0 && formData.familyParticipation.children && (
+            {formData.familyParticipation.numberOfChildren > 0 && (
               <div className="space-y-2">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('review.fields.children')}</span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {formData.familyParticipation.children.map((child: any, index: number) => (
-                    <div key={index} className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                      <span className="text-sm font-medium text-slate-900 block">
-                        {child.name}
-                      </span>
-                      <span className="text-xs text-slate-500">
-                        {t('review.fields.age')}: {child.age}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                {formData.familyParticipation.counts ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {formData.familyParticipation.counts.above11 > 0 && (
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-700">{t('step2.ageGroups.above11')}</span>
+                        <span className="min-w-[2rem] text-center px-2 py-1 bg-white rounded-md text-sm font-semibold text-[#2E5AAC] shadow-sm border border-slate-200">{formData.familyParticipation.counts.above11}</span>
+                      </div>
+                    )}
+                    {formData.familyParticipation.counts.between6And11 > 0 && (
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-700">{t('step2.ageGroups.between6And11')}</span>
+                        <span className="min-w-[2rem] text-center px-2 py-1 bg-white rounded-md text-sm font-semibold text-[#2E5AAC] shadow-sm border border-slate-200">{formData.familyParticipation.counts.between6And11}</span>
+                      </div>
+                    )}
+                    {formData.familyParticipation.counts.under6 > 0 && (
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-700">{t('step2.ageGroups.under6')}</span>
+                        <span className="min-w-[2rem] text-center px-2 py-1 bg-white rounded-md text-sm font-semibold text-[#2E5AAC] shadow-sm border border-slate-200">{formData.familyParticipation.counts.under6}</span>
+                      </div>
+                    )}
+                  </div>
+                ) : formData.familyParticipation.children && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {formData.familyParticipation.children.map((child: any, index: number) => (
+                      <div key={index} className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <span className="text-sm font-medium text-slate-900 block">
+                          {child.name}
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          {t('review.fields.age')}: {child.age}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -277,7 +301,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                     return null;
                  })}
                   {(!formData.packageSelection?.adultPackages || formData.packageSelection.adultPackages.every((p:any) => p.quantity === 0)) && (
-                      <span className="text-sm text-slate-400 italic">None selected</span>
+                      <span className="text-sm text-slate-400 italic">{lang === 'vi' ? "Chưa chọn" : "None selected"}</span>
                   )}
                </div>
              </div>
@@ -300,7 +324,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                      return null;
                  })}
                   {(!formData.packageSelection?.childPackages || formData.packageSelection.childPackages.every((p:any) => p.quantity === 0)) && (
-                      <span className="text-sm text-slate-400 italic">None selected</span>
+                      <span className="text-sm text-slate-400 italic">{lang === 'vi' ? "Chưa chọn" : "None selected"}</span>
                   )}
                </div>
             </div>
@@ -312,7 +336,9 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                 <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
                   {formData.packageSelection.shirts.map((shirt: any, index: number) => 
                     <div key={index} className="flex justify-between border-b border-slate-200 last:border-0 pb-2 last:pb-0">
-                      <span className="text-sm text-slate-600">{t('review.values.size')} {shirt.size}:</span>
+                      <span className="text-sm text-slate-600">
+                        {shirt.gender === 'female' ? '👗 Nữ' : '👔 Nam'} — Size {shirt.size}:
+                      </span>
                       <span className="text-sm font-medium text-slate-900">
                         {shirt.quantity} {t('review.values.pcs')}
                       </span>
@@ -330,7 +356,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                     <div className="flex justify-between pb-2">
                       <span className="text-sm text-slate-600">{t('step4.registerMagazine')}:</span>
                       <span className="text-sm font-medium text-slate-900">
-                        {formData.packageSelection.magazineQuantity} {t('review.values.pcs')}
+                        {formData.packageSelection.magazineQuantity} {t('review.values.pcsMagazine')}
                       </span>
                     </div>
                 </div>
@@ -436,6 +462,15 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.sports')}</span>
                 <span className="text-sm font-medium text-slate-900">
                    {t(`step6.participationOptions.${formData.accommodation.participateSports}`)}
+                </span>
+              </div>
+            )}
+            
+            {formData.accommodation.participateVolleyball && (
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.volleyball')}</span>
+                <span className="text-sm font-medium text-slate-900">
+                   {t(`step6.participationOptions.${formData.accommodation.participateVolleyball}`)}
                 </span>
               </div>
             )}

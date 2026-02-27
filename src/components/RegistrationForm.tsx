@@ -70,7 +70,8 @@ const createRegistrationSchema = () => z.object({
       quantity: z.number().min(0)
     })).default([]),
     shirts: z.array(z.object({
-      size: z.enum(['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL']),
+      gender: z.enum(['male', 'female']),
+      size: z.enum(['S', 'M', 'L', 'XL', '2XL', '3XL']),
       quantity: z.number().min(1)
     })).optional(),
     magazineQuantity: z.number().min(0).default(0).optional()
@@ -103,7 +104,8 @@ const createRegistrationSchema = () => z.object({
   accommodation: z.object({
     assistanceDetails: z.string().optional(),
     participateBigGame: z.enum(['yes', 'no', 'considering']).optional(),
-    participateSports: z.enum(['yes', 'no', 'considering']).optional(),
+    participateSports: z.enum(['walk', 'sup', 'notParticipate', 'considering']).optional(),
+    participateVolleyball: z.enum(['yes', 'no', 'considering']).optional(),
     sponsorshipAmount: z.number().optional(),
     bankNote: z.string().optional()
   }),
@@ -181,6 +183,7 @@ const DEFAULT_VALUES: any = {
     assistanceDetails: '',
     participateBigGame: 'considering',
     participateSports: 'considering',
+    participateVolleyball: 'considering',
     bankNote: ''
   }
 };
@@ -188,6 +191,7 @@ const DEFAULT_VALUES: any = {
 export const RegistrationForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaveDraftModalOpen, setIsSaveDraftModalOpen] = useState(false);
   const [isLoadDraftModalOpen, setIsLoadDraftModalOpen] = useState(false);
   const [notification, setNotification] = useState<{
@@ -411,7 +415,9 @@ export const RegistrationForm = () => {
         const formData = methods.getValues();
         
         // Gửi API để submit đăng ký
+        setIsSubmitting(true);
         const result = await submitRegistration(formData);
+        setIsSubmitting(false);
         
         if (result.success) {
           // Xóa draft đã lưu
@@ -522,7 +528,7 @@ export const RegistrationForm = () => {
   };
   
   return <FormProvider {...methods}>
-      {isComplete ? renderCurrentStep() : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} onLoadDraft={() => setIsLoadDraftModalOpen(true)} isLastStep={currentStep === steps.length} maritalStatus={maritalStatus} church={church}>
+      {isComplete ? renderCurrentStep() : <FormLayout title={steps[currentStep - 1]?.title} currentStep={currentStep} totalSteps={steps.length} progress={progress} onNext={handleNext} onBack={handleBack} onSaveDraft={saveFormData} onLoadDraft={() => setIsLoadDraftModalOpen(true)} isLastStep={currentStep === steps.length} isSubmitting={isSubmitting} maritalStatus={maritalStatus} church={church}>
           {renderCurrentStep()}
           {/* Notification */}
           {notification && (

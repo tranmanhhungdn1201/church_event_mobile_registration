@@ -56,8 +56,6 @@
     "select": "Select",
     "upload": "Upload",
     "copy": "Copy",
-    "share": "Share",
-    "addToCalendar": "Add to Calendar",
     "add": "Add",
     "delete": "Delete",
     "loadDraft": "Load Draft"
@@ -194,11 +192,12 @@
     "paymentStatus": "Payment Status",
     "paymentOptions": {
       "paid": "Paid",
-      "willPayLater": "Will pay later"
+      "willPayLater": "Transfer later"
     },
+    "deadlineNote": "Please transfer before March 15, 2026",
     "transferDate": "Transfer Date",
     "bankInstructions": "Bank Transfer Instructions",
-    "bankSyntax": "Please use the following syntax for your transfer description: Name_Church_Name",
+    "bankSyntax": "Please use the following syntax for your transfer description:",
     "downloadQR": "Download QR Code",
     "accountInfo": "Account Information",
     "accountNumber": "Account Number",
@@ -212,6 +211,7 @@
     "paymentSummary": "Payment Summary",
     "packageCost": "Package Cost",
     "shirtCost": "T-shirt Cost",
+    "magazineCost": "Magazine Cost",
     "totalAmount": "Total Amount",
     "mainPackage": "Main Package",
     "spousePackage": "Spouse Package",
@@ -235,12 +235,16 @@
     "assistanceRequestPlaceholder": "Please specify your assistance needs (e.g., Need hotel near church, shared room...)",
     "assistanceNote": "Our team will contact you to arrange suitable accommodation based on your needs.",
     "activityTip": "Activity Registration",
-    "bigGame": "Do you participate in the big game?",
-    "sports": "Do you participate in experiential sports?",
+    "bigGame": "Big Game - Do you participate in Big Game on Saturday afternoon, June 20 (Free)?",
+    "sports": "Sports - Do you participate in Sports on Saturday morning, June 20?",
+    "volleyball": "Volleyball - Do you participate in Volleyball?",
     "participationOptions": {
       "yes": "Yes",
       "no": "No",
-      "considering": "Considering"
+      "considering": "Considering",
+      "walk": "Participate in Son Tra walking (free)",
+      "sup": "Participate in Man Thai SUP rowing (estimated 105,000 VND/person)",
+      "notParticipate": "Not participate"
     },
     "sponsorshipAmount": "Sponsorship Amount",
     "sponsorshipDescription": "To contribute to the 10th anniversary program “From the ocean, You call my name” to be celebrated fully in God's grace, and to share love with brothers and sisters in need of support, the Da Nang Family looks forward to receiving your cooperation and sponsorship within your ability.\nSincerely grateful for your generosity.",
@@ -300,9 +304,10 @@
       "uploaded": "Uploaded",
       "notUploaded": "Not uploaded",
       "paid": "Paid",
-      "willPayLater": "Will Pay Later",
+      "willPayLater": "Transfer later",
       "package": "Package",
       "pcs": "pcs",
+      "pcsMagazine": "pcs",
       "size": "Size"
     }
   },

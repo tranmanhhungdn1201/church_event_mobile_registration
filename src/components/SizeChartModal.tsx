@@ -32,7 +32,7 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
         <div className="p-2 overflow-y-auto bg-white flex justify-center">
             {/* Using the public path to the image */}
           <img 
-            src="/assets/size-chart.png" 
+            src="/assets/size-chart.jpg" 
             alt="Size Chart" 
             className="max-w-full h-auto rounded-lg"
           />
