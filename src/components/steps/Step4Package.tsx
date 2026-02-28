@@ -11,7 +11,6 @@ const MAGAZINE_PRICE = 180000;
 export const Step4Package = () => {
   const {
     control,
-    register,
     watch,
     setValue,
     getValues
@@ -54,6 +53,13 @@ export const Step4Package = () => {
       price: 600000,
       description: t('step4.packageD.description'),
       suggestedFor: getSuggestedFor('step4.packageD.suggestedFor')
+    },
+    {
+      id: 'ADULT_E',
+      name: t('step4.packageE.title'),
+      price: 0,
+      description: t('step4.packageE.description'),
+      suggestedFor: getSuggestedFor('step4.packageE.suggestedFor')
     }
   ];
 
@@ -98,7 +104,6 @@ export const Step4Package = () => {
   const currentShirtSizes = selectedGender === 'male' ? maleShirtSizes : femaleShirtSizes;
 
   const shirts = watch('packageSelection.shirts') || [];
-  const wantMagazine = watch('packageSelection.wantMagazine');
   const magazineQuantity = watch('packageSelection.magazineQuantity') ?? 0;
   
   const adultPackages = watch('packageSelection.adultPackages') || [];
@@ -128,7 +133,6 @@ export const Step4Package = () => {
   const {
     fields: adultFields,
     append: appendAdultPkg,
-    remove: removeAdultPkg,
     update: updateAdultPkg
   } = useFieldArray({
     control,
@@ -138,7 +142,6 @@ export const Step4Package = () => {
   const {
     fields: childFields,
     append: appendChildPkg,
-    remove: removeChildPkg,
     update: updateChildPkg
   } = useFieldArray({
     control,
@@ -324,51 +327,68 @@ export const Step4Package = () => {
                          <p className="text-sm italic text-[#2E5AAC] mt-0.5">{pkg.suggestedFor}</p>
                        )}
                      </div>
-                     <p className="text-lg font-bold text-[#2E5AAC] sm:hidden">
-                        {formatCurrency(pkg.price)}
-                     </p>
+                     {pkg.price !== 0 && (
+                       <p className="text-lg font-bold text-[#2E5AAC] sm:hidden">
+                         {formatCurrency(pkg.price)}
+                       </p>
+                     )}
                   </div>
                   {renderDescription(pkg.description)}
-                  <p className="text-xl font-bold text-[#2E5AAC] mt-3 hidden sm:block">
-                    {formatCurrency(pkg.price)}
-                  </p>
+                  {pkg.price !== 0 && (
+                    <p className="text-xl font-bold text-[#2E5AAC] mt-3 hidden sm:block">
+                      {formatCurrency(pkg.price)}
+                    </p>
+                  )}
                 </div>
                 
                 <div className="flex items-center justify-between sm:justify-end mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-none">
-                    <span className="text-slate-600 font-medium sm:hidden">{t('step4.quantity') || 'Số lượng'}</span>
-                    <div className="flex items-center gap-3 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                        <button 
-                          type="button" 
-                          onClick={() => updatePackageQuantity('adult', indexToUse, -1)}
-                          className="w-8 h-8 rounded-md bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-all disabled:opacity-50"
-                          disabled={currentQty <= 0}
-                        >
-                          <MinusIcon className="h-4 w-4" />
-                        </button>
-                        <input 
-                            type="number"
-                            className="w-10 text-center font-bold text-lg text-slate-800 bg-transparent border-none focus:ring-0 p-0"
-                            value={currentQty}
-                            readOnly
-                        />
-                        <button 
-                          type="button" 
-                          onClick={() => updatePackageQuantity('adult', indexToUse, 1)}
-                          className="w-8 h-8 rounded-md bg-[#2E5AAC] text-white hover:bg-[#254a8f] flex items-center justify-center transition-all shadow-sm"
-                        >
-                          <PlusIcon className="h-4 w-4" />
-                        </button>
-                    </div>
+                  {pkg.price === 0 ? (
+                    <label className="relative flex items-center cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={currentQty > 0}
+                        onChange={(e) => {
+                          updatePackageQuantity('adult', indexToUse, e.target.checked ? expectedAdults - currentQty : -currentQty);
+                        }}
+                      />
+                      <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none ring-2 ring-transparent peer-focus:ring-[#2E5AAC]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E5AAC]"></div>
+                      <span className="ml-3 text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                        {currentQty > 0 ? t('common.selected') || 'Đã chọn' : t('common.select') || 'Chọn'}
+                      </span>
+                    </label>
+                  ) : (
+                    <>
+                      <span className="text-slate-600 font-medium sm:hidden">{t('step4.quantity') || 'Số lượng'}</span>
+                      <div className="flex items-center gap-3 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                          <button 
+                            type="button" 
+                            onClick={() => updatePackageQuantity('adult', indexToUse, -1)}
+                            className="w-8 h-8 rounded-md bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-all disabled:opacity-50"
+                            disabled={currentQty <= 0}
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                          </button>
+                          <input 
+                              type="number"
+                              className="w-10 text-center font-bold text-lg text-slate-800 bg-transparent border-none focus:ring-0 p-0"
+                              value={currentQty}
+                              readOnly
+                          />
+                          <button 
+                            type="button" 
+                            onClick={() => updatePackageQuantity('adult', indexToUse, 1)}
+                            className="w-8 h-8 rounded-md bg-[#2E5AAC] text-white hover:bg-[#254a8f] flex items-center justify-center transition-all shadow-sm"
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                          </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           )})}
-        </div>
-        
-        {/* Contact Note */}
-         <div className="mt-4 p-4 bg-teal-50 border border-teal-100 rounded-xl text-sm text-teal-800 flex items-start">
-             <InfoIcon className="h-5 w-5 text-teal-600 mr-2 flex-shrink-0 mt-0.5" />
-             <p>{t('step4.contactBTC')}</p>
         </div>
       </div>
 
@@ -429,25 +449,44 @@ export const Step4Package = () => {
                   </p>
                 </div>
                  <div className="flex items-center justify-between sm:justify-end mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-none">
-                     <span className="text-slate-600 font-medium sm:hidden">{t('step4.quantity') || 'Số lượng'}</span>
-                     <div className="flex items-center gap-3 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                        <button 
-                          type="button" 
-                          onClick={() => updatePackageQuantity('child', indexToUse, -1)}
-                          className="w-8 h-8 rounded-md bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-all disabled:opacity-50"
-                          disabled={currentQty <= 0}
-                        >
-                          <MinusIcon className="h-4 w-4" />
-                        </button>
-                        <span className="w-10 text-center font-bold text-lg text-slate-800">{currentQty}</span>
-                        <button 
-                          type="button" 
-                          onClick={() => updatePackageQuantity('child', indexToUse, 1)}
-                          className="w-8 h-8 rounded-md bg-[#2E5AAC] text-white hover:bg-[#254a8f] flex items-center justify-center transition-all shadow-sm"
-                        >
-                          <PlusIcon className="h-4 w-4" />
-                        </button>
-                    </div>
+                  {pkg.price === 0 ? (
+                    <label className="relative flex items-center cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={currentQty > 0}
+                        onChange={(e) => {
+                          updatePackageQuantity('child', indexToUse, e.target.checked ? expectedChildren - currentQty : -currentQty);
+                        }}
+                      />
+                      <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none ring-2 ring-transparent peer-focus:ring-[#2E5AAC]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E5AAC]"></div>
+                      <span className="ml-3 text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                        {currentQty > 0 ? t('common.selected') || 'Đã chọn' : t('common.select') || 'Chọn'}
+                      </span>
+                    </label>
+                  ) : (
+                    <>
+                       <span className="text-slate-600 font-medium sm:hidden">{t('step4.quantity') || 'Số lượng'}</span>
+                       <div className="flex items-center gap-3 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                          <button 
+                            type="button" 
+                            onClick={() => updatePackageQuantity('child', indexToUse, -1)}
+                            className="w-8 h-8 rounded-md bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-all disabled:opacity-50"
+                            disabled={currentQty <= 0}
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                          </button>
+                          <span className="w-10 text-center font-bold text-lg text-slate-800">{currentQty}</span>
+                          <button 
+                            type="button" 
+                            onClick={() => updatePackageQuantity('child', indexToUse, 1)}
+                            className="w-8 h-8 rounded-md bg-[#2E5AAC] text-white hover:bg-[#254a8f] flex items-center justify-center transition-all shadow-sm"
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                          </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

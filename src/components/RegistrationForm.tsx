@@ -47,10 +47,10 @@ const createRegistrationSchema = () => z.object({
   // Step 4: Travel Schedule (now optional)
   travelSchedule: z.object({
     noTravelInfo: z.boolean().optional(),
-    arrivalDate: z.date().optional(),
-    transport: z.enum(['plane', 'train', 'bus', 'self']).optional(),
-    flightCode: z.string().optional(),
-    returnDate: z.date().optional()
+    arrivalDate: z.date().nullable().optional(),
+    transport: z.enum(['plane', 'train', 'bus', 'self']).nullable().optional(),
+    flightCode: z.string().nullable().optional(),
+    returnDate: z.date().nullable().optional()
   }).refine((data) => {
     // If noTravelInfo is true, all other fields are optional
     if (data.noTravelInfo) {

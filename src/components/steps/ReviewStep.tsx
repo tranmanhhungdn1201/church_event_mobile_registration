@@ -67,7 +67,10 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
     
     return total + shirtTotal;
   };
-  const totalAmount = calculatePackageTotal();
+  
+  const packageTotal = calculatePackageTotal();
+  const sponsorshipAmount = formData.accommodation?.sponsorshipAmount || 0;
+  const totalAmount = packageTotal + sponsorshipAmount;
   return (
     <div className="space-y-6 animate-fade-in-up">
       <p className="text-slate-600 leading-relaxed">
@@ -363,12 +366,6 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
               </div>
             )}
             
-            <div className="flex justify-between pt-4 border-t border-slate-200 mt-2">
-              <span className="text-base font-semibold text-slate-700">{t('review.totalAmount')}:</span>
-              <span className="text-lg font-bold text-[#2E5AAC]">
-                {formatCurrency(totalAmount)}
-              </span>
-            </div>
           </div>
         </div>
       </div>
@@ -411,11 +408,34 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             )}
             
             <div>
-               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.receipt')}</span>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.receipt')}</span>
                <span className="text-sm font-medium text-slate-900">
                 {formData.payment.receiptImage ? t('review.values.uploaded') : t('review.values.notUploaded')}
               </span>
             </div>
+          </div>
+          
+          <div className="flex justify-between pt-4 border-t border-slate-200 mt-2">
+            <span className="text-sm font-medium text-slate-600">{t('review.packageCost')}:</span>
+            <span className="text-base font-semibold text-slate-800">
+              {formatCurrency(packageTotal)}
+            </span>
+          </div>
+
+          {sponsorshipAmount > 0 && (
+            <div className="flex justify-between pt-2">
+              <span className="text-sm font-medium text-slate-600">{t('review.fields.sponsorship')}:</span>
+              <span className="text-base font-semibold text-slate-800">
+                {formatCurrency(sponsorshipAmount)}
+              </span>
+            </div>
+          )}
+
+          <div className="flex justify-between pt-4 border-t border-slate-200 mt-2">
+            <span className="text-base font-bold text-slate-800">{t('review.totalAmount')}:</span>
+            <span className="text-xl font-bold text-[#2E5AAC]">
+              {formatCurrency(totalAmount)}
+            </span>
           </div>
         </div>
       </div>
@@ -471,15 +491,6 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.volleyball')}</span>
                 <span className="text-sm font-medium text-slate-900">
                    {t(`step6.participationOptions.${formData.accommodation.participateVolleyball}`)}
-                </span>
-              </div>
-            )}
-            
-            {formData.accommodation.sponsorshipAmount && formData.accommodation.sponsorshipAmount > 0 && (
-              <div>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.sponsorship')}</span>
-                <span className="text-lg font-bold text-green-600">
-                  {formatCurrency(formData.accommodation.sponsorshipAmount)}
                 </span>
               </div>
             )}

@@ -1,5 +1,5 @@
 import { useFormContext, Controller } from 'react-hook-form';
-import { CalendarIcon, PlaneIcon, TrainIcon, BusIcon, CarIcon, InfoIcon, CheckIcon } from 'lucide-react';
+import { CalendarIcon, PlaneIcon, TrainIcon, BusIcon, CarIcon, InfoIcon, CheckIcon, ClockIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formStyles } from '../../utils/styles';
@@ -56,26 +56,56 @@ export const Step3TravelSchedule = () => {
             <label htmlFor="arrivalDate" className={formStyles.label}>
               {t('step3.arrivalDate')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <CalendarIcon className="h-5 w-5 text-slate-400" />
-              </div>
-              <Controller 
-                control={control} 
-                name="travelSchedule.arrivalDate" 
-                render={({ field }) => (
-                  <input 
-                    type="date" 
-                    id="arrivalDate" 
-                    className={`${formStyles.input} pl-10`}
-                    value={field.value ? format(new Date(field.value), 'yyyy-MM-dd') : ''} 
-                    onChange={e => {
-                      field.onChange(e.target.value ? new Date(e.target.value) : null);
-                    }} 
-                  />
-                )} 
-              />
-            </div>
+            <Controller 
+              control={control} 
+              name="travelSchedule.arrivalDate" 
+              render={({ field }) => {
+                const dateVal = field.value ? new Date(field.value) : null;
+                const isValidDate = dateVal && !isNaN(dateVal.getTime());
+                const dateStr = isValidDate ? format(dateVal, 'yyyy-MM-dd') : '';
+                const timeStr = isValidDate ? format(dateVal, 'HH:mm') : '';
+
+                return (
+                  <div className="flex gap-3">
+                    <div className="relative flex-[2]">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <CalendarIcon className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input 
+                        type="date" 
+                        id="arrivalDate" 
+                        className={`${formStyles.input} pl-10`}
+                        value={dateStr} 
+                        onChange={e => {
+                          if (!e.target.value) {
+                            field.onChange(null);
+                            return;
+                          }
+                          const timePart = timeStr || '00:00';
+                          field.onChange(new Date(`${e.target.value}T${timePart}`));
+                        }} 
+                      />
+                    </div>
+                    <div className="relative flex-1">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <ClockIcon className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input 
+                        type="time" 
+                        className={`${formStyles.input} pl-10`}
+                        value={timeStr}
+                        onChange={e => {
+                          if (!dateStr) return;
+                          const newTime = e.target.value || '00:00';
+                          field.onChange(new Date(`${dateStr}T${newTime}`));
+                        }} 
+                        disabled={!dateStr}
+                      />
+                    </div>
+                  </div>
+                );
+              }} 
+            />
           </div>
           
           <div>
@@ -129,26 +159,56 @@ export const Step3TravelSchedule = () => {
             <label htmlFor="returnDate" className={formStyles.label}>
               {t('step3.returnDate')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <CalendarIcon className="h-5 w-5 text-slate-400" />
-              </div>
-              <Controller 
-                control={control} 
-                name="travelSchedule.returnDate" 
-                render={({ field }) => (
-                  <input 
-                    type="date" 
-                    id="returnDate" 
-                    className={`${formStyles.input} pl-10`}
-                    value={field.value ? format(new Date(field.value), 'yyyy-MM-dd') : ''} 
-                    onChange={e => {
-                      field.onChange(e.target.value ? new Date(e.target.value) : null);
-                    }} 
-                  />
-                )} 
-              />
-            </div>
+            <Controller 
+              control={control} 
+              name="travelSchedule.returnDate" 
+              render={({ field }) => {
+                const dateVal = field.value ? new Date(field.value) : null;
+                const isValidDate = dateVal && !isNaN(dateVal.getTime());
+                const dateStr = isValidDate ? format(dateVal, 'yyyy-MM-dd') : '';
+                const timeStr = isValidDate ? format(dateVal, 'HH:mm') : '';
+
+                return (
+                  <div className="flex gap-3">
+                    <div className="relative flex-[2]">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <CalendarIcon className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input 
+                        type="date" 
+                        id="returnDate" 
+                        className={`${formStyles.input} pl-10`}
+                        value={dateStr} 
+                        onChange={e => {
+                          if (!e.target.value) {
+                            field.onChange(null);
+                            return;
+                          }
+                          const timePart = timeStr || '00:00';
+                          field.onChange(new Date(`${e.target.value}T${timePart}`));
+                        }} 
+                      />
+                    </div>
+                    <div className="relative flex-1">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <ClockIcon className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input 
+                        type="time" 
+                        className={`${formStyles.input} pl-10`}
+                        value={timeStr}
+                        onChange={e => {
+                          if (!dateStr) return;
+                          const newTime = e.target.value || '00:00';
+                          field.onChange(new Date(`${dateStr}T${newTime}`));
+                        }} 
+                        disabled={!dateStr}
+                      />
+                    </div>
+                  </div>
+                );
+              }} 
+            />
           </div>
         </div>
       )}

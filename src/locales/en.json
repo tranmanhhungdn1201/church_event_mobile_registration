@@ -159,6 +159,16 @@
       "price": "1,200,000 VND",
       "description": "Includes: Package B + 1 night accommodation, city tour"
     },
+    "packageD": {
+      "title": "Package D",
+      "price": "600,000 VND",
+      "description": "Super date (Sat evening), Anniversary celebration (Sun noon)"
+    },
+    "packageE": {
+      "title": "Contacted Organizing Committee directly",
+      "description": "For those with other needs who have already contacted the committee",
+      "suggestedFor": ""
+    },
     "quantity": "Quantity",
     "spouseTShirt": "Souvenir T-shirt for Spouse",
     "spouseWantsTShirt": "Purchase T-shirt for spouse",

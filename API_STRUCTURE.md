@@ -192,7 +192,7 @@ Hoặc nếu không có thông tin:
 
 ---
 
-## 4. packageSelection (Gói tham gia & Áo lưu niệm & Tạp chí)
+## 4. packageSelection (Gói tham gia & Áo kỷ niệm & Tạp chí)
 
 **Required:** ✅
 

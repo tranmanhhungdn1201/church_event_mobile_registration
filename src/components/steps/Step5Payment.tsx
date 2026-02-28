@@ -118,7 +118,6 @@ export const Step5Payment = () => {
     
     // Shirts
     if (shirts.length > 0) {
-      const totalShirts = shirts.reduce((sum: number, shirt: any) => sum + shirt.quantity, 0);
       const totalShirtCost = shirts.reduce((sum: number, shirt: any) => sum + (shirt.quantity * SHIRT_PRICE), 0);
       
       // Group by gender + size for display
@@ -149,9 +148,9 @@ export const Step5Payment = () => {
     }
 
     // Sponsorship
-    // if (sponsorshipAmount > 0) {
-    //   breakdown.total += Number(sponsorshipAmount);
-    // }
+    if (sponsorshipAmount > 0) {
+      breakdown.total += Number(sponsorshipAmount);
+    }
     
     return breakdown;
   };
@@ -240,6 +239,60 @@ export const Step5Payment = () => {
 
   return (
     <div className={formStyles.section}>
+      {/* Sponsorship Section */}
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <label htmlFor="sponsorshipAmount" className="text-[15px] font-bold text-slate-800">
+            {t('step6.sponsorshipAmount')} <span className="text-slate-400 font-normal">({t('common.optional')})</span>
+          </label>
+          <p className="text-sm text-slate-600 mb-2 whitespace-pre-line">
+            {t('step6.sponsorshipDescription')}
+          </p>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+              <span className="text-slate-500 font-medium">₫</span>
+            </div>
+            <Controller 
+              control={control} 
+              name="accommodation.sponsorshipAmount" 
+              render={({ field }) => (
+                <input 
+                  type="text" 
+                  id="sponsorshipAmount" 
+                  className={`${formStyles.input} pl-8 font-medium`}
+                  placeholder="0" 
+                  value={field.value ? new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                  }).format(field.value).replace('₫', '').trim() : ''} 
+                  onChange={e => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    field.onChange(value ? parseInt(value, 10) : undefined);
+                  }} 
+                />
+              )} 
+            />
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <label htmlFor="bankNote" className="text-[15px] font-bold text-slate-800">
+            {t('step6.bankNote')}
+          </label>
+          <textarea 
+            id="bankNote" 
+            {...register('accommodation.bankNote')} 
+            rows={2} 
+            className={formStyles.textarea}
+            placeholder={t('step6.bankNotePlaceholder')} 
+          />
+        </div>
+      </div>
+
+      <div className="border-t border-slate-200 my-8"></div>
+
       {/* Payment Summary */}
       <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
         <h3 className="text-lg font-semibold text-slate-800 flex items-center mb-4">
@@ -307,6 +360,21 @@ export const Step5Payment = () => {
           </div>
         )}
 
+        {/* Sponsorship cost */}
+        {sponsorshipAmount > 0 && (
+          <div className="mb-4">
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t('step6.sponsorshipAmount')}</h4>
+            <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl border border-green-100 shadow-sm">
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{t('step6.sponsorshipAmount')}</p>
+                </div>
+                <span className="text-sm font-semibold text-green-600">
+                  {formatCurrency(sponsorshipAmount)}
+                </span>
+            </div>
+          </div>
+        )}
+
         {/* Total */}
         <div className="border-t border-slate-200 pt-4 mt-2">
           <div className="flex justify-between items-center">
@@ -316,19 +384,6 @@ export const Step5Payment = () => {
             </span>
           </div>
         </div>
-
-        {/* Sponsorship cost */}
-        {sponsorshipAmount > 0 && (
-          <div className="border-t border-slate-200 mt-4 pt-4">
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t('step6.sponsorshipAmount')}</h4>
-            <div className="flex justify-between items-center bg-green-50 rounded-xl px-4 py-3 border border-green-100">
-                <span className="text-sm font-medium text-green-800">{t('step6.sponsorshipAmount')}</span>
-                <span className="text-lg font-bold text-green-700 tracking-tight">
-                  {formatCurrency(sponsorshipAmount)}
-                </span>
-            </div>
-          </div>
-        )}
       </div>
       
       <div className="space-y-4">
