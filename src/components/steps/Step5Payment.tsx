@@ -77,7 +77,7 @@ export const Step5Payment = () => {
         if (option) {
           const amount = pkg.quantity * option.price;
           breakdown.packages.push({
-            name: `${option.name} (${t('step4.quantity')}: ${pkg.quantity})`,
+            name: `${t('step4.adultPackages')} - ${option.name} (${t('step4.quantity')}: ${pkg.quantity})`,
             description: '',
             amount: amount
           });
