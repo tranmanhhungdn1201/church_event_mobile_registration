@@ -29,28 +29,28 @@ export const Step4Package = () => {
     {
       id: 'ADULT_A',
       name: t('step4.packageA.title'),
-      price: 2000000,
+      price: 1900000,
       description: t('step4.packageA.description'),
       suggestedFor: getSuggestedFor('step4.packageA.suggestedFor')
     },
     {
       id: 'ADULT_B', 
       name: t('step4.packageB.title'),
-      price: 1700000,
+      price: 1600000,
       description: t('step4.packageB.description'),
       suggestedFor: getSuggestedFor('step4.packageB.suggestedFor')
     },
     {
       id: 'ADULT_C',
       name: t('step4.packageC.title'),
-      price: 1000000,
+      price: 900000,
       description: t('step4.packageC.description'),
       suggestedFor: getSuggestedFor('step4.packageC.suggestedFor')
     },
     {
       id: 'ADULT_D',
       name: t('step4.packageD.title'),
-      price: 600000,
+      price: 500000,
       description: t('step4.packageD.description'),
       suggestedFor: getSuggestedFor('step4.packageD.suggestedFor')
     },
@@ -349,7 +349,7 @@ export const Step4Package = () => {
                         className="sr-only peer"
                         checked={currentQty > 0}
                         onChange={(e) => {
-                          updatePackageQuantity('adult', indexToUse, e.target.checked ? expectedAdults - currentQty : -currentQty);
+                          updatePackageQuantity('adult', indexToUse, e.target.checked ? 1 - currentQty : -currentQty);
                         }}
                       />
                       <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none ring-2 ring-transparent peer-focus:ring-[#2E5AAC]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E5AAC]"></div>
@@ -456,7 +456,7 @@ export const Step4Package = () => {
                         className="sr-only peer"
                         checked={currentQty > 0}
                         onChange={(e) => {
-                          updatePackageQuantity('child', indexToUse, e.target.checked ? expectedChildren - currentQty : -currentQty);
+                          updatePackageQuantity('child', indexToUse, e.target.checked ? 1 - currentQty : -currentQty);
                         }}
                       />
                       <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none ring-2 ring-transparent peer-focus:ring-[#2E5AAC]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E5AAC]"></div>
@@ -500,7 +500,7 @@ export const Step4Package = () => {
       <div className="border-t border-slate-200 pt-8 mt-8 space-y-6">
         <h3 className="text-lg font-semibold text-slate-800 flex items-center">
           <ShirtIcon className="h-5 w-5 mr-2 text-[#2E5AAC]" />
-          {t('step4.souvenirShirt')} & {t('step4.magazine')}
+          {t('step4.souvenirShirtMagazine')}
         </h3>
 
         {/* Shirts */}
@@ -601,7 +601,7 @@ export const Step4Package = () => {
                 }`}>
                     <div className="flex items-center justify-between gap-3">
                         {/* Left: Icon + Info */}
-                        <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                             <div className={`rounded-lg p-2 sm:p-3 flex-shrink-0 ${
                               field.gender === 'female' ? 'bg-pink-50' : 'bg-blue-50'
                             }`}>
@@ -622,7 +622,7 @@ export const Step4Package = () => {
                         </div>
 
                         {/* Right: Controls */}
-                        <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                              {/* Price Desktop */}
                             <div className="hidden sm:block text-right min-w-[6rem]">
                                 <span className={`text-lg font-bold whitespace-nowrap ${

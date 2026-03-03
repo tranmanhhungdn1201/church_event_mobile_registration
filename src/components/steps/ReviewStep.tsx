@@ -27,10 +27,10 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
   // Calculate total
   const calculatePackageTotal = () => {
     const packagePrices: Record<string, number> = {
-      ADULT_A: 2000000,
-      ADULT_B: 1700000,
-      ADULT_C: 1000000,
-      ADULT_D: 600000
+      ADULT_A: 1900000,
+      ADULT_B: 1600000,
+      ADULT_C: 900000,
+      ADULT_D: 500000
     };
     const childPackagePrices: Record<string, number> = {
       CHILD_A: 700000,
@@ -71,6 +71,18 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
   const packageTotal = calculatePackageTotal();
   const sponsorshipAmount = formData.accommodation?.sponsorshipAmount || 0;
   const totalAmount = packageTotal + sponsorshipAmount;
+
+  const formatTravelDate = (dateString: any) => {
+    if (!dateString) return t('review.values.notSpecified');
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return t('review.values.notSpecified');
+    
+    if (date.getHours() !== 0 || date.getMinutes() !== 0) {
+      return format(date, 'MMM d, yyyy h:mm a');
+    }
+    return format(date, 'MMM d, yyyy');
+  };
+
   return (
     <div className="space-y-6 animate-fade-in-up">
       <p className="text-slate-600 leading-relaxed">
@@ -114,7 +126,11 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             </div>
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.church')}</span>
-              <span className="text-sm font-medium text-slate-900">{formData.personalInfo.church}</span>
+              <span className="text-sm font-medium text-slate-900">
+                {formData.personalInfo.church === 'Other' && formData.personalInfo.otherChurch 
+                  ? formData.personalInfo.otherChurch 
+                  : formData.personalInfo.church}
+              </span>
             </div>
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.maritalStatus')}</span>
@@ -254,14 +270,14 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.arrival')}</span>
               <span className="text-sm font-medium text-slate-900">
-                {formData.travelSchedule.arrivalDate ? format(new Date(formData.travelSchedule.arrivalDate), 'MMM d, yyyy h:mm a') : t('review.values.notSpecified')}
+                {formatTravelDate(formData.travelSchedule.arrivalDate)}
               </span>
             </div>
             
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('review.fields.returnDate')}</span>
               <span className="text-sm font-medium text-slate-900">
-                {formData.travelSchedule.returnDate ? format(new Date(formData.travelSchedule.returnDate), 'MMM d, yyyy') : t('review.values.notSpecified')}
+                {formatTravelDate(formData.travelSchedule.returnDate)}
               </span>
             </div>
           </div>
@@ -333,7 +349,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             </div>
 
             {/* Show T-shirt selections */}
-            {(formData.packageSelection?.shirts && formData.packageSelection.shirts.length > 0) && (
+            {(formData.packageSelection?.shirts?.length > 0) && (
               <div className="space-y-2">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('review.fields.souvenirShirts')}</span>
                 <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -352,9 +368,9 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
             )}
 
             {/* Show Magazine selections */}
-            {(formData.packageSelection?.magazineQuantity && formData.packageSelection.magazineQuantity > 0) && (
+            {(formData.packageSelection?.magazineQuantity > 0) && (
               <div className="space-y-2 pt-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('step4.magazine')}</span>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block">{t('step4.magazineOnly')}</span>
                 <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
                     <div className="flex justify-between pb-2">
                       <span className="text-sm text-slate-600">{t('step4.registerMagazine')}:</span>
@@ -491,6 +507,15 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({ formData: formDataProp, 
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.volleyball')}</span>
                 <span className="text-sm font-medium text-slate-900">
                    {t(`step6.participationOptions.${formData.accommodation.participateVolleyball}`)}
+                </span>
+              </div>
+            )}
+
+            {formData.accommodation.participateSuperDate && (
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1">{t('step6.superDate')}</span>
+                <span className="text-sm font-medium text-slate-900">
+                   {t(`step6.participationOptions.${formData.accommodation.participateSuperDate}`)}
                 </span>
               </div>
             )}

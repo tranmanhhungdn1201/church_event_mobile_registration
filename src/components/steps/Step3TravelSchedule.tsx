@@ -63,11 +63,13 @@ export const Step3TravelSchedule = () => {
                 const dateVal = field.value ? new Date(field.value) : null;
                 const isValidDate = dateVal && !isNaN(dateVal.getTime());
                 const dateStr = isValidDate ? format(dateVal, 'yyyy-MM-dd') : '';
-                const timeStr = isValidDate ? format(dateVal, 'HH:mm') : '';
-
+                
+                // Instead of this complex parsing, we can just grab what's available
+                const timeStrValue = isValidDate && (dateVal.getHours() !== 0 || dateVal.getMinutes() !== 0) ? format(dateVal, 'HH:mm') : '';
+                
                 return (
-                  <div className="flex gap-3">
-                    <div className="relative flex-[2]">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative sm:flex-[2]">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <CalendarIcon className="h-5 w-5 text-slate-400" />
                       </div>
@@ -81,19 +83,20 @@ export const Step3TravelSchedule = () => {
                             field.onChange(null);
                             return;
                           }
-                          const timePart = timeStr || '00:00';
+                          // Only keep time part if it was set
+                          const timePart = timeStrValue || '00:00';
                           field.onChange(new Date(`${e.target.value}T${timePart}`));
                         }} 
                       />
                     </div>
-                    <div className="relative flex-1">
+                    <div className="relative sm:flex-1">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <ClockIcon className="h-5 w-5 text-slate-400" />
                       </div>
                       <input 
                         type="time" 
                         className={`${formStyles.input} pl-10`}
-                        value={timeStr}
+                        value={timeStrValue}
                         onChange={e => {
                           if (!dateStr) return;
                           const newTime = e.target.value || '00:00';
@@ -166,11 +169,11 @@ export const Step3TravelSchedule = () => {
                 const dateVal = field.value ? new Date(field.value) : null;
                 const isValidDate = dateVal && !isNaN(dateVal.getTime());
                 const dateStr = isValidDate ? format(dateVal, 'yyyy-MM-dd') : '';
-                const timeStr = isValidDate ? format(dateVal, 'HH:mm') : '';
+                const timeStrValue = isValidDate && (dateVal.getHours() !== 0 || dateVal.getMinutes() !== 0) ? format(dateVal, 'HH:mm') : '';
 
                 return (
-                  <div className="flex gap-3">
-                    <div className="relative flex-[2]">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative sm:flex-[2]">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <CalendarIcon className="h-5 w-5 text-slate-400" />
                       </div>
@@ -184,19 +187,19 @@ export const Step3TravelSchedule = () => {
                             field.onChange(null);
                             return;
                           }
-                          const timePart = timeStr || '00:00';
+                          const timePart = timeStrValue || '00:00';
                           field.onChange(new Date(`${e.target.value}T${timePart}`));
                         }} 
                       />
                     </div>
-                    <div className="relative flex-1">
+                    <div className="relative sm:flex-1">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <ClockIcon className="h-5 w-5 text-slate-400" />
                       </div>
                       <input 
                         type="time" 
                         className={`${formStyles.input} pl-10`}
-                        value={timeStr}
+                        value={timeStrValue}
                         onChange={e => {
                           if (!dateStr) return;
                           const newTime = e.target.value || '00:00';

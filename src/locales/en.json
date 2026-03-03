@@ -82,6 +82,8 @@
     "emailPlaceholder": "example@email.com",
     "church": "Church",
     "churchPlaceholder": "Select church",
+    "otherChurch": "Church Name (if Other)",
+    "otherChurchPlaceholder": "Enter your church name",
     "maritalStatus": "Marital Status",
     "maritalStatusPlaceholder": "Select marital status",
     "maritalStatusOptions": {
@@ -178,9 +180,11 @@
     "childTShirtSize": "Select child T-shirt size",
     "souvenirShirt": "Register for additional souvenir shirts",
     "additionalSouvenirShirt": "Register for souvenir shirts",
+    "souvenirShirtMagazine": "Register for souvenir shirts & magazines",
     "selectSize": "Select Size",
     "addedShirts": "Added Shirts",
     "size": "Size",
+    "magazineOnly": "Magazine",
     "magazine": "Magazine Registration",
     "registerMagazine": "Register for commemorative magazine",
 
@@ -248,12 +252,13 @@
     "bigGame": "Big Game - Do you participate in Big Game on Saturday afternoon, June 20 (Free)?",
     "sports": "Sports - Do you participate in Sports on Saturday morning, June 20?",
     "volleyball": "Volleyball - Do you participate in Volleyball?",
+    "superDate": "Do you participate in Super Date/ Marriage Connection on Saturday evening, June 20th (estimated 200,000 VND/person)?",
     "participationOptions": {
       "yes": "Yes",
       "no": "No",
       "considering": "Considering",
       "walk": "Participate in Son Tra walking (free)",
-      "sup": "Participate in Man Thai SUP rowing (estimated 105,000 VND/person)",
+      "sup": "Participate in Man Thai SUP rowing (estimated 0,000 VND/person)",
       "notParticipate": "Not participate"
     },
     "sponsorshipAmount": "Sponsorship Amount",

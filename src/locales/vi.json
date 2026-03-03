@@ -24,27 +24,27 @@
     "day3": "Ngày 3 - Lễ Bế Mạc",
     "day3Details": "Buổi lễ bế mạc, cảm tạ và tiệc chia tay",
     "packages": "Gói Tham Gia",
-    "packageA": "Cầu Rồng (Gợi ý lựa chọn cho Hôn nhân)",
-    "packageAPrice": "2,000,000 VNĐ",
-    "packageADesc": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "packageA": "Cầu Rồng (Gợi ý lựa chọn cho Hôn nhân (Chi phí bên dưới tính cho một người))",
+    "packageAPrice": "1,900,000 VNĐ",
+    "packageADesc": "Welcome dinner (tối Thứ 6), Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật, Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
     "packageB": "Cầu Sông Hàn (Gợi ý lựa chọn cho Độc thân)",
     "packageBPrice": "1,700,000 VNĐ",
-    "packageBDesc": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "packageBDesc": "Welcome dinner (tối Thứ 6), Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật, Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)",
     "packageC": "Cầu Trần Thị Lý",
     "packageCPrice": "1,000,000 VNĐ",
-    "packageCDesc": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "packageCDesc": "Welcome dinner (tối Thứ 6), Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật",
     "packageD": "Cầu Tiên Sơn",
     "packageDPrice": "600,000 VNĐ",
-    "packageDDesc": "Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "packageDDesc": "Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật",
     "childPackageA": "Cầu Rồng",
     "childPackageAPrice": "700,000 VNĐ",
-    "childPackageADesc": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
+    "childPackageADesc": "Welcome dinner (tối Thứ 6), Tham gia Kid Kingdom (sáng Chủ nhật), Ăn trưa Chủ nhật, Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)",
     "childPackageB": "Cầu Trần Thị Lý",
     "childPackageBPrice": "400,000 VNĐ",
-    "childPackageBDesc": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "childPackageBDesc": "Welcome dinner (tối Thứ 6), Tham gia Kid Kingdom (sáng Chủ nhật), Ăn trưa Chủ nhật",
     "childPackageC": "Cầu Tiên Sơn",
     "childPackageCPrice": "200,000 VNĐ",
-    "childPackageCDesc": "Buổi lễ kỷ niệm (trưa Chủ Nhật)",
+    "childPackageCDesc": "Tham gia Kid Kingdom (sáng Chủ nhật), Ăn trưa Chủ nhật",
     "startRegistration": "Bắt Đầu Đăng Ký",
     "contactUs": "Liên Hệ",
     "phone": "Điện thoại: 0123 456 789",
@@ -72,7 +72,7 @@
     "share": "Chia sẻ",
     "add": "Thêm",
     "delete": "Xóa",
-    "loadDraft": "Tiếp tục đăng ký"
+    "loadDraft": "Nhập mail"
   },
   "navigation": {
     "step1": "Thông tin cá nhân",
@@ -96,6 +96,8 @@
     "emailPlaceholder": "example@email.com",
     "church": "Hội thánh",
     "churchPlaceholder": "Chọn hội thánh",
+    "otherChurch": "Tên Hội thánh",
+    "otherChurchPlaceholder": "Nhập tên Hội thánh của bạn",
     "maritalStatus": "Tình trạng hôn nhân",
     "maritalStatusPlaceholder": "Chọn tình trạng hôn nhân",
     "maritalStatusOptions": {
@@ -160,27 +162,27 @@
     "selectPackage": "Chọn gói tham gia",
     "packageA": {
       "title": "Cầu Rồng",
-      "suggestedFor": "Gợi ý lựa chọn cho Hôn nhân",
-      "price": "2,000,000 VNĐ",
-      "description": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
+      "suggestedFor": "Gợi ý lựa chọn cho Hôn nhân (Chi phí bên dưới tính cho một người)",
+      "price": "1,900,000 VNĐ",
+      "description": "Welcome dinner (tối Thứ 6), Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật, Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "packageB": {
       "title": "Cầu Sông Hàn",
       "suggestedFor": "Gợi ý lựa chọn cho Độc thân",
-      "price": "1,700,000 VNĐ",
-      "description": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)"
+      "price": "1,600,000 VNĐ",
+      "description": "Welcome dinner (tối Thứ 6), Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật, Lưu trú Homestay 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "packageC": {
       "title": "Cầu Trần Thị Lý",
       "suggestedFor": "",
-      "price": "1,000,000 VNĐ",
-      "description": "Welcome dinner (tối Thứ 6), Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "price": "900,000 VNĐ",
+      "description": "Welcome dinner (tối Thứ 6), Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật"
     },
     "packageD": {
       "title": "Cầu Tiên Sơn",
       "suggestedFor": "",
-      "price": "600,000 VNĐ",
-      "description": "Super date/ Kết nối hôn nhân (tối Thứ 7), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "price": "500,000 VNĐ",
+      "description": "Các hoạt động giao hảo ngày Thứ 7: Đi bộ Sơn Trà; Cuộc đua kỳ thú, Các hoạt động kỷ niệm; thờ phượng; thể thao ngày Chủ nhật ,Ăn trưa Chủ nhật"
     },
     "packageE": {
       "title": "Liên hệ trực tiếp với BTC",
@@ -191,17 +193,17 @@
     "childPackageA": {
       "title": "Cầu Rồng",
       "price": "700,000 VNĐ",
-      "description": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật), Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
+      "description": "Welcome dinner (tối Thứ 6), Tham gia Kid Kingdom (sáng Chủ nhật), Ăn trưa Chủ nhật, Lưu trú Khách sạn 2 đêm (đêm Thứ 6 & Thứ 7)"
     },
     "childPackageB": {
       "title": "Cầu Trần Thị Lý", 
       "price": "400,000 VNĐ",
-      "description": "Welcome dinner (tối Thứ 6), Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "description": "Welcome dinner (tối Thứ 6), Tham gia Kid Kingdom (sáng Chủ nhật), Ăn trưa Chủ nhật"
     },
     "childPackageC": {
       "title": "Cầu Tiên Sơn",
       "price": "200,000 VNĐ",
-      "description": "Buổi lễ kỷ niệm (trưa Chủ Nhật)"
+      "description": "Tham gia Kid Kingdom (sáng Chủ nhật), Ăn trưa Chủ nhật"
     },
     "adultPackages": "Gói người lớn",
     "childPackages": "Gói trẻ em",
@@ -218,7 +220,9 @@
     "additionalSouvenirShirt": "Đăng ký áo kỷ niệm bổ sung",
     "selectSize": "Chọn cỡ áo",
     "addedShirts": "Danh sách áo đã thêm",
+    "souvenirShirtMagazine": "Đăng ký áo kỷ niệm & tạp chí",
     "size": "Cỡ áo",
+    "magazineOnly": "Tạp chí",
     "magazine": "Đăng ký tạp chí",
     "registerMagazine": "Đăng ký tạp chí kỷ niệm",
 
@@ -244,7 +248,7 @@
       "paid": "Đã thanh toán",
       "willPayLater": "Chuyển khoản sau"
     },
-    "deadlineNote": "ACE vui lòng chuyển khoản trước ngày 15/03/2026",
+    "deadlineNote": "ACE vui lòng chuyển khoản trước ngày 24/03/2026",
     "transferDate": "Ngày chuyển khoản",
     "bankInstructions": "Hướng dẫn chuyển khoản",
     "bankSyntax": "Vui lòng sử dụng cú pháp sau cho mô tả chuyển khoản:",
@@ -289,13 +293,14 @@
     "activityTip": "Đăng ký hoạt động",
     "bigGame": "ACE có tham gia Cuộc Đua Kỳ Thú chiều thứ 7 ngày 20/06 (Miễn phí)?",
     "sports": "ACE có tham gia Thể Thao Trải Nghiệm sáng thứ 7 ngày 20/06?",
-    "volleyball": "ACE có tham gia Giao lưu Bóng Chuyền không?",
+    "volleyball": "ACE có tham gia Giao Lưu Bóng Chuyền chiều chủ nhật ngày 21/06 (Miễn phí)?",
+    "superDate": "ACE có tham gia Super date/ Kết nối hôn nhân tối thứ 7 ngày 20/06 (dự kiến 200.000đ/ người)?",
     "participationOptions": {
       "yes": "Có",
       "no": "Không",
       "considering": "Đang cân nhắc",
       "walk": "Tham gia Đi bộ Sơn Trà (miễn phí)",
-      "sup": "Tham gia Chèo sup Mân Thái (dự kiến 105.000đ/ người)",
+      "sup": "Tham gia Chèo sup Mân Thái (dự kiến 100.000đ/ người)",
       "notParticipate": "Không tham gia"
     },
     "sponsorshipAmount": "Số tiền tài trợ",
@@ -314,7 +319,7 @@
     "personalInfo": "Thông tin cá nhân",
     "familyParticipation": "Tham gia gia đình",
     "travelSchedule": "Lịch trình di chuyển",
-    "packageSouvenir": "Gói tham gia & áo kỷ niệm",
+    "packageSouvenir": "Gói tham gia và ấn phẩm kỷ niệm",
     "payment": "Thanh toán",
     "accommodationSponsorship": "Đăng ký hoạt động",
     "totalAmount": "Tổng số tiền",

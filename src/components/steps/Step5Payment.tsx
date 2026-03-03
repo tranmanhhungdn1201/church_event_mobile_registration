@@ -55,10 +55,10 @@ export const Step5Payment = () => {
   const SHIRT_PRICE = 160000;
   
   const packageOptions = [
-    { id: 'ADULT_A', name: t('step4.packageA.title'), price: 2000000 },
-    { id: 'ADULT_B', name: t('step4.packageB.title'), price: 1700000 },
-    { id: 'ADULT_C', name: t('step4.packageC.title'), price: 1000000 },
-    { id: 'ADULT_D', name: t('step4.packageD.title'), price: 600000 }
+    { id: 'ADULT_A', name: t('step4.packageA.title'), price: 1900000 },
+    { id: 'ADULT_B', name: t('step4.packageB.title'), price: 1600000 },
+    { id: 'ADULT_C', name: t('step4.packageC.title'), price: 900000 },
+    { id: 'ADULT_D', name: t('step4.packageD.title'), price: 500000 }
   ];
   
   // Calculate payment breakdown
@@ -78,9 +78,7 @@ export const Step5Payment = () => {
           const amount = pkg.quantity * option.price;
           breakdown.packages.push({
             name: `${option.name} (${t('step4.quantity')}: ${pkg.quantity})`,
-            description: option.id === 'ADULT_A' || option.id === 'ADULT_B' 
-              ? option.name.includes('Hôn nhân') ? 'Gói gia đình' : 'Gói độc thân'
-              : option.name,
+            description: '',
             amount: amount
           });
           breakdown.total += amount;
@@ -108,7 +106,7 @@ export const Step5Payment = () => {
           const amount = pkg.quantity * price;
           breakdown.packages.push({
              name: `${t('step4.childPackages')} - ${name} (${t('step4.quantity')}: ${pkg.quantity})`,
-             description: 'Gói trẻ em',
+             description: '',
              amount: amount
           });
           breakdown.total += amount;
@@ -536,7 +534,7 @@ export const Step5Payment = () => {
                 Tên ACE_Tên Hội Thánh_SDT
               </code>
               <div className="text-sm text-slate-600 mt-2 pt-2 border-t border-slate-200">
-                Ví dụ: <code className="font-mono font-semibold text-slate-800">CaoThiThanhHuyen_DaNang_0392435683</code>
+                Ví dụ: <code className="font-mono font-semibold text-slate-800 break-all">CaoThiThanhHuyen_DaNang_0392435683</code>
               </div>
             </div>
 

@@ -90,6 +90,32 @@ export const Step6Accommodation = () => {
           </div>
         </div>
 
+        {/* Super Date */}
+        <div className="space-y-4 mt-8">
+          <label className="block text-[16px] font-bold text-slate-800 leading-relaxed">
+            {t('step6.superDate')}
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            {[
+              { value: 'yes', label: t('step6.participationOptions.yes') },
+              { value: 'no', label: t('step6.participationOptions.no') },
+              { value: 'considering', label: t('step6.participationOptions.considering') }
+            ].map((option) => (
+              <label key={option.value} className="relative flex group cursor-pointer h-full">
+                <input 
+                  type="radio" 
+                  value={option.value} 
+                  {...register('accommodation.participateSuperDate')} 
+                  className="peer sr-only" 
+                />
+                <div className="w-full py-3.5 px-4 text-center rounded-xl border border-slate-200 bg-white transition-all duration-200 peer-checked:border-[#2E5AAC] peer-checked:bg-[#2E5AAC] peer-checked:text-white hover:border-slate-300 hover:shadow-sm peer-checked:shadow-md flex items-center justify-center">
+                  <span className="font-normal text-[15px]">{option.label}</span>
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
         {/* Volleyball */}
         <div className="space-y-4 mt-8">
           <label className="block text-[16px] font-bold text-slate-800 leading-relaxed">

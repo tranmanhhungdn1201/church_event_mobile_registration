@@ -20,6 +20,11 @@ export const Step1PersonalInfo = () => {
     name: 'personalInfo.gender'
   });
   
+  const selectedChurch = useWatch({
+    control,
+    name: 'personalInfo.church'
+  });
+  
   const churches = ['Cần Thơ', 'Hồ Chí Minh', 'Hà Nội', 'Bình Dương', 'Other'];
   const maritalStatusOptions = [
     { value: 'single', label: t('step1.maritalStatusOptions.single') },
@@ -143,26 +148,50 @@ export const Step1PersonalInfo = () => {
         <label htmlFor="church" className={formStyles.label}>
           {t('step1.church')} <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-            <HomeIcon className="h-5 w-5 text-slate-400" />
+        <div className="relative space-y-4">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+              <HomeIcon className="h-5 w-5 text-slate-400" />
+            </div>
+            <select 
+              id="church" 
+              {...register('personalInfo.church')} 
+              className={`${formStyles.input} pl-10 appearance-none`}
+              style={{ backgroundImage: 'none' }}
+            >
+              <option value="" disabled>{t('step1.churchPlaceholder')}</option>
+              {churches.map(church => (
+                <option key={church} value={church}>
+                  {church}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+              <ChevronDownIcon className="w-4 h-4" />
+            </div>
           </div>
-          <select 
-            id="church" 
-            {...register('personalInfo.church')} 
-            className={`${formStyles.input} pl-10 appearance-none`}
-            style={{ backgroundImage: 'none' }}
-          >
-            <option value="" disabled>{t('step1.churchPlaceholder')}</option>
-            {churches.map(church => (
-              <option key={church} value={church}>
-                {church}
-              </option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-            <ChevronDownIcon className="w-4 h-4" />
-          </div>
+          
+          {selectedChurch === 'Other' && (
+            <div className="animate-fade-in-up">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <HomeIcon className="h-5 w-5 text-slate-400" />
+                </div>
+                <input 
+                  id="otherChurch" 
+                  type="text" 
+                  {...register('personalInfo.otherChurch')} 
+                  className={`${formStyles.input} pl-10`}
+                  placeholder={t('step1.otherChurchPlaceholder')} 
+                />
+              </div>
+              {getError('otherChurch') && (
+                <p className={formStyles.errorText}>
+                  {getValidationMessage(getError('otherChurch'))}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

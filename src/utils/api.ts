@@ -31,6 +31,7 @@ const prepareFormData = (formData: RegistrationFormData, isDraft: boolean = fals
       phoneNumber: formData.personalInfo.phoneNumber,
       email: formData.personalInfo.email,
       church: formData.personalInfo.church,
+      otherChurch: formData.personalInfo.otherChurch,
       maritalStatus: formData.personalInfo.maritalStatus
     },
     familyParticipation: {

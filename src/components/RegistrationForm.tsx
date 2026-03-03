@@ -25,7 +25,16 @@ const createRegistrationSchema = () => z.object({
     phoneNumber: z.string().min(10, 'Invalid phone number').regex(/^[0-9+\-\s()]+$/, 'Invalid phone number'),
     email: z.string().email('Invalid email').min(1, 'Required'),
     church: z.string().min(1, 'Required'),
+    otherChurch: z.string().optional(),
     maritalStatus: z.string().min(1, 'Required')
+  }).refine((data) => {
+    if (data.church === 'Other' && (!data.otherChurch || data.otherChurch.trim() === '')) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Required',
+    path: ['otherChurch']
   }),
   // Step 2: Family Participation
   familyParticipation: z.object({
@@ -106,6 +115,7 @@ const createRegistrationSchema = () => z.object({
     participateBigGame: z.enum(['yes', 'no', 'considering']).optional(),
     participateSports: z.enum(['walk', 'sup', 'notParticipate', 'considering']).optional(),
     participateVolleyball: z.enum(['yes', 'no', 'considering']).optional(),
+    participateSuperDate: z.enum(['yes', 'no', 'considering']).optional(),
     sponsorshipAmount: z.number().optional(),
     bankNote: z.string().optional()
   }),
@@ -150,6 +160,7 @@ const DEFAULT_VALUES: any = {
     phoneNumber: '',
     email: '',
     church: 'Cần Thơ',
+    otherChurch: '',
     maritalStatus: ''
   },
   familyParticipation: {
@@ -184,6 +195,7 @@ const DEFAULT_VALUES: any = {
     participateBigGame: 'considering',
     participateSports: 'considering',
     participateVolleyball: 'considering',
+    participateSuperDate: 'considering',
     bankNote: ''
   }
 };
