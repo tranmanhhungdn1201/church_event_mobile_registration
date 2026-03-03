@@ -18,12 +18,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const [language, setLanguageState] = useState<Language>('vi'); // Default to Vietnamese
   const [translations, setTranslations] = useState<Record<string, any>>({});
 
-  // Load language from localStorage on mount
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('churchAppLanguage') as Language;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'vi')) {
-      setLanguageState(savedLanguage);
-    }
+    setLanguageState('vi');
+    localStorage.setItem('churchAppLanguage', 'vi');
   }, []);
 
   // Load translations dynamically
