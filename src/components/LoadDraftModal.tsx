@@ -75,7 +75,7 @@ export const LoadDraftModal: React.FC<LoadDraftModalProps> = ({
       packageSelection: apiData.packageSelection ? {
         ...apiData.packageSelection,
         wantMagazine: apiData.packageSelection.wantMagazine || false,
-        magazineQuantity: apiData.packageSelection.magazineQuantity || 1
+        magazineQuantity: apiData.packageSelection.magazineQuantity ?? 0
       } : {},
       payment: apiData.payment ? {
         ...apiData.payment,
